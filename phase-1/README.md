@@ -2,6 +2,16 @@
 
 Здесь располагаются гайды для 1 фазы
 
+## Git
+
+- [Github flow -- пошаговая инструкция по работе с гитом в команде](./github-flow.md)
+
+## MVC
+
+- [Простой гайд по MVC](./mvc/mvc-simple.md)
+- [MVC через EventEmitter](./mvc/event-emitter/MVC-guide.md)
+- [Гайд по MVC, где C связывает M и V, то есть: M <-> C <-> V](./mvc/fat-controller/MVC-guide.md)
+
 ## Базы данных, Sequelize ORM
 
 - [Инициализация базы данных на Sequelize](./sequelize/sequelize.md)
