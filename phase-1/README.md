@@ -14,4 +14,5 @@
 
 ## Базы данных, Sequelize ORM
 
-- [Инициализация базы данных на Sequelize](./sequelize/sequelize.md)
+- [Полный гайд по ORM Sequelize](./sequelize/full-sequelize-guide.md)
+- [Инициализация базы данных на Sequelize](./sequelize/sequelize-initialization.md)
