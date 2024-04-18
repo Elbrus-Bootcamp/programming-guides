@@ -1,35 +1,57 @@
 # Service guide
 
+Данный гайд описывает абстракцию, которая строится над сетевыми запросами внутри frontend приложения
+
 ## Описание
 
-Для начала создается экземпляр axios, который можно единообразно сконфигурировать для всех запросов совершаемых с через него:
+### Создание HTTP клиента
+
+Для начала можно использовать готовые решения HTTP клиентов, как экземпляр axios. Его можно единообразно сконфигурировать для всех совершаемых запросов:
 
 ```tsx
-import axios from 'axios';
+import axios from "axios";
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: "http://localhost:3001/api",
   withCredentials: true,
 });
 ```
 
-Затем создается класс или несколько классов для различных сущностный приложения что бы код был более читаемым, так же такое разделение может быть полезно при тестировании. Внедрение axiosInstance через конструктор позволяет классу быть более гибким и не быть привязанным к конкретному экземпляру axios:
+### Создание сервиса
 
-```tsx
+Сервис -- абстракция над сетевыми запросами, которая содержит логику по отправлению запросов, обработке ответов и предоставлению данных. Любой сервис должен использовать в себе клиент для совершения запросов -- такой экземпляр внедряется во время конструирования сервиса. Это позволяет классу быть более гибким и не быть привязанным к конкретной имплементации клиента. Ниже пример через паттерн `Dependency Injection`.
+
+Необходимо создать класс или несколько классов для различных сущностный приложения. Это позволит коду быть более читаемым и окажется полезным при тестировании. Внедрение HTTP клиента (axiosInstance) через конструктор:
+
+```ts
 class ItemService {
-  constructor(private readonly apiInstance: AxiosInstance) {}
+  constructor(private readonly client: AxiosInstance) {}
 
-  getItems(): Promise<CategoryWithItemsType[]> {
-    return this.apiInstance<CategoryWithItemsType[]>('/item').then((res) => res.data);
+  async getItems(): Promise<Item[]> {
+    const response = await this.client<Item[]>("/items");
+    if (response.status !== 200) return Promise.reject("Ошибка запроса");
+    return response.data;
   }
 
-  addItem(data: FormData): Promise<ItemType> {
-    return this.apiInstance.post<ItemType>('/item', data).then((res) => res.data);
+  async addItem(data: FormData): Promise<ItemType> {
+    const response = await this.client.post<ItemType>("/items", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    if (response.status !== 201) return Promise.reject("Ошибка создания");
+    return response.data;
   }
 
   deleteItem(id: number): Promise<void> {
-    return this.apiInstance.delete(`/item/${id}`);
+    return this.client.delete(`/items/${id}`);
   }
 }
 
-export default new ItemService(axiosInstance);
+const itemService = new ItemService(axiosInstance);
+
+export default itemService;
 ```
+
+### Абстракция клиента
+
+Чтобы не зависит от явной имплементации HTTP клиента можно построить абстракцию и над ним
