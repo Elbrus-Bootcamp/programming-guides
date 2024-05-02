@@ -7,10 +7,15 @@
 - [Как реализовать аутентификацию и авторизацию в приложении](./auth.md)
 - [Способы защиты приложения](./security.md)
 
+## Паттерны, подходы, общепринятые практики
+
+- [Компоненты высшего порядка](./hoc.md)
+
 ## Деплой
 
 ### CSR
 
+- [Деплой CSR приложения с сервером на Selectel через Portainer](./deploy/csr-selectel-portainer.md)
 - [Деплой CSR Typescript приложения без сервера на Selectel через Portainer](./deploy/csr-typescript-selectel-portainer.md)
 
 ### SSR
