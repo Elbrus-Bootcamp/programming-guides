@@ -1,34 +1,43 @@
 # `Sequelize` Guide :metal:
 
-<a href="https://sequelize.org/master/">`Sequelize`</a> - это <a href="https://ru.wikipedia.org/wiki/ORM">`ORM`</a> (Object-Relational Mapping - объектно-реляционное отображение или преобразование) для работы с такими <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F_%D0%B1%D0%B0%D0%B7%D0%B0%D0%BC%D0%B8_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">СУБД</a> (системами управления (реляционными) базами данных, Relational Database Management System, RDBMS), как `Postgres`, `MySQL`, `MariaDB`, `SQLite` и `MSSQL`. Это далеко не единственная `ORM` для работы с названными базами данных (далее - БД), но, одна из самых продвинутых и, что называется, "battle tested" (проверенных временем).
+<a href="https://sequelize.org/master/">`Sequelize`</a> - это
+<a href="https://ru.wikipedia.org/wiki/ORM">`ORM`</a> (Object-Relational Mapping -
+объектно-реляционное отображение или преобразование) для работы с такими
+<a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F_%D0%B1%D0%B0%D0%B7%D0%B0%D0%BC%D0%B8_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">СУБД</a>
+(системами управления (реляционными) базами данных, Relational Database Management System,
+RDBMS), как `Postgres`, `MySQL`, `MariaDB`, `SQLite` и `MSSQL`. Это далеко не единственная
+`ORM` для работы с названными базами данных (далее - БД), но, одна из самых продвинутых и,
+что называется, "battle tested" (проверенных временем).
 
 ## Содержание
 
-- [Начало работы](#начало-работы)
-- [Модели](#модели)
-- [Экземпляры](#экземпляры)
-- [Основы выполнения запросов](#основы-выполнения-запросов)
-- [Поисковые запросы](#поисковые-запросы)
-- [Геттеры, сеттеры и виртуальные атрибуты](#геттеры-сеттеры-и-виртуальные-атрибуты)
-- [Валидация и ограничения](#валидация-и-ограничения)
-- [Необработанные запросы](#необработанные-запросы)
-- [Ассоциации](#ассоциации)
-- ["Параноик"](#параноик)
-- [Нетерпеливая загрузка](#нетерпеливая-загрузка)
-- [Создание экземпляров с ассоциациями](#создание-экземпляров-с-ассоциациями)
-- [Продвинутые ассоциации M:N](#продвинутые-ассоциации-mn)
-- [Область видимости ассоциаций](#область-видимости-ассоциаций)
-- [Полиморфные ассоциации](#полиморфные-ассоциации)
-- [Транзакции](#транзакции)
-- [Хуки](#хуки)
-- [Интерфейс запросов](#интерфейс-запросов)
-- [Стратегии именования](#стратегии-именования)
-- [Области видимости](#области-видимости)
-- [Подзапросы](#подзапросы)
-- [Ограничения и циклические ссылки](#ограничения-и-циклические-ссылки)
-- [Индексы](#индексы)
-- [Пул соединений](#пул-соединений)
-- [Миграции](#миграции)
+- [`Sequelize` Guide :metal:](#sequelize-guide-metal)
+  - [Содержание](#содержание)
+  - [Начало работы](#начало-работы)
+  - [Модели](#модели)
+  - [Экземпляры](#экземпляры)
+  - [Основы выполнения запросов](#основы-выполнения-запросов)
+  - [Поисковые запросы](#поисковые-запросы)
+  - [Геттеры, сеттеры и виртуальные атрибуты](#геттеры-сеттеры-и-виртуальные-атрибуты)
+  - [Валидация и ограничения](#валидация-и-ограничения)
+  - [Необработанные запросы](#необработанные-запросы)
+  - [Ассоциации](#ассоциации)
+  - ["Параноик"](#параноик)
+  - [Нетерпеливая загрузка](#нетерпеливая-загрузка)
+  - [Создание экземпляров с ассоциациями](#создание-экземпляров-с-ассоциациями)
+  - [Продвинутые ассоциации M:N](#продвинутые-ассоциации-mn)
+  - [Область видимости ассоциаций](#область-видимости-ассоциаций)
+  - [Полиморфные ассоциации](#полиморфные-ассоциации)
+  - [Транзакции](#транзакции)
+  - [Хуки](#хуки)
+  - [Интерфейс запросов](#интерфейс-запросов)
+  - [Стратегии именования](#стратегии-именования)
+  - [Области видимости](#области-видимости)
+  - [Подзапросы](#подзапросы)
+  - [Ограничения и циклические ссылки](#ограничения-и-циклические-ссылки)
+  - [Индексы](#индексы)
+  - [Пул соединений](#пул-соединений)
+  - [Миграции](#миграции)
 
 ## Начало работы
 
@@ -66,14 +75,15 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 
 ```js
 try {
-  await sequelize.authenticate()
-  console.log('Соединение с БД было успешно установлено')
+  await sequelize.authenticate();
+  console.log('Соединение с БД было успешно установлено');
 } catch (e) {
-  console.log('Невозможно выполнить подключение к БД: ', e)
+  console.log('Невозможно выполнить подключение к БД: ', e);
 }
 ```
 
-По умолчанию после того, как установки соединения, оно остается открытым. Для его закрытия следует вызвать метод `sequelize.close()`.
+По умолчанию после того, как установки соединения, оно остается открытым. Для его закрытия
+следует вызвать метод `sequelize.close()`.
 
 <div align="right">
   <b><a href="#">↑ Наверх</a></b>
@@ -83,9 +93,13 @@ try {
 
 Модель - это абстракция, представляющая таблицу в БД.
 
-Модель сообщает `Sequelize` несколько вещей о сущности (entity), которую она представляет: название таблицы, то, какие колонки она содержит (и их типы данных) и др.
+Модель сообщает `Sequelize` несколько вещей о сущности (entity), которую она представляет:
+название таблицы, то, какие колонки она содержит (и их типы данных) и др.
 
-У каждой модели есть название. Это название не обязательно должно совпадать с названием соответствующей таблицы. Обычно, модели именуются в единственном числе (например, `User`), а таблицы - во множественном (например, `Users`). `Sequelize` выполняет плюрализацию (перевод значения из единственного числа во множественное) автоматически.
+У каждой модели есть название. Это название не обязательно должно совпадать с названием
+соответствующей таблицы. Обычно, модели именуются в единственном числе (например, `User`),
+а таблицы - во множественном (например, `Users`). `Sequelize` выполняет плюрализацию
+(перевод значения из единственного числа во множественное) автоматически.
 
 Модели могут определяться двумя способами:
 
@@ -99,8 +113,8 @@ try {
 **`sequelize.define`**
 
 ```js
-const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = new Sequelize('sqlite::memory:')
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
 
 const User = sequelize.define(
   'User',
@@ -117,18 +131,18 @@ const User = sequelize.define(
   },
   {
     // Здесь определяются другие настройки модели
-  }
-)
+  },
+);
 
 // `sequelize.define` возвращает модель
-console.log(User === sequelize.models.User) // true
+console.log(User === sequelize.models.User); // true
 ```
 
 **Расширение `Model`**
 
 ```js
-const { Sequelize, DataTypes, Model } = require('sequelize')
-const sequelize = new Sequelize('sqlite::memory:')
+const { Sequelize, DataTypes, Model } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
 
 class User extends Model {}
 
@@ -147,17 +161,18 @@ User.init(
     // Здесь определяются другие настройки модели
     sequelize, // Экземпляр подключения (обязательно)
     modelName: 'User', // Название модели (обязательно)
-  }
-)
+  },
+);
 
-console.log(User === sequelize.models.User) // true
+console.log(User === sequelize.models.User); // true
 ```
 
 `sequelize.define` под капотом использует `Model.init`.
 
 В дальнейшем я буду использовать только _первый вариант_.
 
-Автоматическую плюрализацию названия таблицы можно отключить с помощью настройки `freezeTableName`:
+Автоматическую плюрализацию названия таблицы можно отключить с помощью настройки
+`freezeTableName`:
 
 ```js
 sequelize.define(
@@ -167,8 +182,8 @@ sequelize.define(
   },
   {
     freezeTableName: true,
-  }
-)
+  },
+);
 ```
 
 или глобально:
@@ -178,7 +193,7 @@ const sequelize = new Sequelize('sqlite::memory:', {
   define: {
     freeTableName: true,
   },
-})
+});
 ```
 
 В этом случае таблица будет называться `User`.
@@ -193,15 +208,16 @@ sequelize.define(
   },
   {
     tableName: 'Employees',
-  }
-)
+  },
+);
 ```
 
 В этом случае таблица будет называться `Employees`.
 
 Синхронизация модели с таблицей:
 
-- `User.sync()` - создает таблицу при отсутствии (существующая таблица остается неизменной)
+- `User.sync()` - создает таблицу при отсутствии (существующая таблица остается
+  неизменной)
 - `User.sync({ force: true })` - удаляет существующую таблицу и создает новую
 - `User.sync({ alter: true })` - приводит таблицу в соответствие с моделью
 
@@ -209,41 +225,43 @@ sequelize.define(
 
 ```js
 // Возвращается промис
-await User.sync({ force: true })
-console.log('Таблица для модели `User` только что была создана заново!')
+await User.sync({ force: true });
+console.log('Таблица для модели `User` только что была создана заново!');
 ```
 
 Синхронизация всех моделей:
 
 ```js
-await sequelize.sync({ force: true })
-console.log('Все модели были успешно синхронизированы.')
+await sequelize.sync({ force: true });
+console.log('Все модели были успешно синхронизированы.');
 ```
 
 Удаление таблицы:
 
 ```js
-await User.drop()
-console.log('Таблица `User` была удалена.')
+await User.drop();
+console.log('Таблица `User` была удалена.');
 ```
 
 Удаление всех таблиц:
 
 ```js
-await sequelize.drop()
-console.log('Все таблицы были удалены.')
+await sequelize.drop();
+console.log('Все таблицы были удалены.');
 ```
 
-`Sequelize` принимает настройку `match` с регулярным выражением, позволяющую определять группу синхронизируемых таблиц:
+`Sequelize` принимает настройку `match` с регулярным выражением, позволяющую определять
+группу синхронизируемых таблиц:
 
 ```js
 // Выполняем синхронизацию только тех моделей, названия которых заканчиваются на `_test`
-await sequelize.sync({ force: true, match: /_test$/ })
+await sequelize.sync({ force: true, match: /_test$/ });
 ```
 
 _Обратите внимание_: вместо синхронизации в продакшне следует использовать миграции.
 
-По умолчанию `Sequelize` автоматически добавляет в создаваемую модель поля `createAt` и `updatedAt` с типом `DataTypes.DATE`. Это можно изменить:
+По умолчанию `Sequelize` автоматически добавляет в создаваемую модель поля `createAt` и
+`updatedAt` с типом `DataTypes.DATE`. Это можно изменить:
 
 ```js
 sequelize.define(
@@ -253,8 +271,8 @@ sequelize.define(
   },
   {
     timestamps: false,
-  }
-)
+  },
+);
 ```
 
 Названные поля можно отключать по отдельности и переименовывать:
@@ -271,11 +289,12 @@ sequelize.define(
     createdAt: false,
     // Изменяем название `updatedAt`
     updatedAt: 'updateTimestamp',
-  }
-)
+  },
+);
 ```
 
-Если для колонки определяется только тип данных, синтаксис определения атрибута может быть сокращен следующим образом:
+Если для колонки определяется только тип данных, синтаксис определения атрибута может быть
+сокращен следующим образом:
 
 ```js
 // до
@@ -283,15 +302,16 @@ sequelize.define('User', {
   name: {
     type: DataTypes.STRING,
   },
-})
+});
 
 // после
 sequelize.define('User', {
   name: DataTypes.STRING,
-})
+});
 ```
 
-По умолчанию значением колонки является `NULL`. Это можно изменить с помощью настройки `defaultValue` (определив "дефолтное" значение):
+По умолчанию значением колонки является `NULL`. Это можно изменить с помощью настройки
+`defaultValue` (определив "дефолтное" значение):
 
 ```js
 sequelize.define('User', {
@@ -299,7 +319,7 @@ sequelize.define('User', {
     type: DataTypes.STRING,
     defaultValue: 'John Smith',
   },
-})
+});
 ```
 
 В качестве дефолтных могут использоваться специальные значения:
@@ -311,7 +331,7 @@ sequelize.define('Foo', {
     // Текущие дата и время, определяемые в момент создания
     defaultValue: Sequelize.NOW,
   },
-})
+});
 ```
 
 **Типы данных**
@@ -320,51 +340,51 @@ sequelize.define('Foo', {
 
 ```js
 // Импорт встроенных типов данных
-const { DataTypes } = require('sequelize')
+const { DataTypes } = require('sequelize');
 
 // Строки
-DataTypes.STRING // VARCHAR(255)
-DataTypes.STRING(1234) // VARCHAR(1234)
-DataTypes.STRING.BINARY // VARCHAR BINARY
-DataTypes.TEXT // TEXT
-DataTypes.TEXT('tiny') // TINYTEXT
-DataTypes.CITEXT // CITEXT - только для `PostgreSQL` и `SQLite`
+DataTypes.STRING; // VARCHAR(255)
+DataTypes.STRING(1234); // VARCHAR(1234)
+DataTypes.STRING.BINARY; // VARCHAR BINARY
+DataTypes.TEXT; // TEXT
+DataTypes.TEXT('tiny'); // TINYTEXT
+DataTypes.CITEXT; // CITEXT - только для `PostgreSQL` и `SQLite`
 
 // Логические значения
-DataTypes.BOOLEAN // BOOLEAN
+DataTypes.BOOLEAN; // BOOLEAN
 
 // Числа
-DataTypes.INTEGER // INTEGER
-DataTypes.BIGINT // BIGINT
-DataTypes.BIGINT(11) // BIGINT(11)
+DataTypes.INTEGER; // INTEGER
+DataTypes.BIGINT; // BIGINT
+DataTypes.BIGINT(11); // BIGINT(11)
 
-DataTypes.FLOAT // FLOAT
-DataTypes.FLOAT(11) // FLOAT(11)
-DataTypes.FLOAT(11, 10) // FLOAT(11, 10)
+DataTypes.FLOAT; // FLOAT
+DataTypes.FLOAT(11); // FLOAT(11)
+DataTypes.FLOAT(11, 10); // FLOAT(11, 10)
 
-DataTypes.REAL // REAL - только для `PostgreSQL`
-DataTypes.REAL(11) // REAL(11) - только для `PostgreSQL`
-DataTypes.REAL(11, 12) // REAL(11,12) - только для `PostgreSQL`
+DataTypes.REAL; // REAL - только для `PostgreSQL`
+DataTypes.REAL(11); // REAL(11) - только для `PostgreSQL`
+DataTypes.REAL(11, 12); // REAL(11,12) - только для `PostgreSQL`
 
-DataTypes.DOUBLE // DOUBLE
-DataTypes.DOUBLE(11) // DOUBLE(11)
-DataTypes.DOUBLE(11, 10) // DOUBLE(11, 10)
+DataTypes.DOUBLE; // DOUBLE
+DataTypes.DOUBLE(11); // DOUBLE(11)
+DataTypes.DOUBLE(11, 10); // DOUBLE(11, 10)
 
-DataTypes.DECIMAL // DECIMAL
-DataTypes.DECIMAL(10, 2) // DECIMAL(10, 2)
+DataTypes.DECIMAL; // DECIMAL
+DataTypes.DECIMAL(10, 2); // DECIMAL(10, 2)
 
 // только для `MySQL`/`MariaDB`
-DataTypes.INTEGER.UNSIGNED
-DataTypes.INTEGER.ZEROFILL
-DataTypes.INTEGER.UNSIGNED.ZEROFILL
+DataTypes.INTEGER.UNSIGNED;
+DataTypes.INTEGER.ZEROFILL;
+DataTypes.INTEGER.UNSIGNED.ZEROFILL;
 
 // Даты
-DataTypes.DATE // DATETIME для `mysql`/`sqlite`, TIMESTAMP с временной зоной для `postgres`
-DataTypes.DATE(6) // DATETIME(6) для `mysql` 5.6.4+
-DataTypes.DATEONLY // DATE без времени
+DataTypes.DATE; // DATETIME для `mysql`/`sqlite`, TIMESTAMP с временной зоной для `postgres`
+DataTypes.DATE(6); // DATETIME(6) для `mysql` 5.6.4+
+DataTypes.DATEONLY; // DATE без времени
 
 // UUID
-DataTypes.UUID
+DataTypes.UUID;
 ```
 
 `UUID` может генерироваться автоматически:
@@ -380,37 +400,37 @@ DataTypes.UUID
 
 ```js
 // Диапазоны (только для `postgres`)
-DataTypes.RANGE(DataTypes.INTEGER) // int4range
-DataTypes.RANGE(DataTypes.BIGINT) // int8range
-DataTypes.RANGE(DataTypes.DATE) // tstzrange
-DataTypes.RANGE(DataTypes.DATEONLY) // daterange
-DataTypes.RANGE(DataTypes.DECIMAL) // numrange
+DataTypes.RANGE(DataTypes.INTEGER); // int4range
+DataTypes.RANGE(DataTypes.BIGINT); // int8range
+DataTypes.RANGE(DataTypes.DATE); // tstzrange
+DataTypes.RANGE(DataTypes.DATEONLY); // daterange
+DataTypes.RANGE(DataTypes.DECIMAL); // numrange
 
 // Буферы
-DataTypes.BLOB // BLOB
-DataTypes.BLOB('tiny') // TINYBLOB
-DataTypes.BLOB('medium') // MEDIUMBLOB
-DataTypes.BLOB('long') // LONGBLOB
+DataTypes.BLOB; // BLOB
+DataTypes.BLOB('tiny'); // TINYBLOB
+DataTypes.BLOB('medium'); // MEDIUMBLOB
+DataTypes.BLOB('long'); // LONGBLOB
 
 // Перечисления - могут определяться по-другому (см. ниже)
-DataTypes.ENUM('foo', 'bar')
+DataTypes.ENUM('foo', 'bar');
 
 // JSON (только для `sqlite`/`mysql`/`mariadb`/`postres`)
-DataTypes.JSON
+DataTypes.JSON;
 
 // JSONB (только для `postgres`)
-DataTypes.JSONB
+DataTypes.JSONB;
 
 // другие
-DataTypes.ARRAY(/* DataTypes.SOMETHING */) // массив DataTypes.SOMETHING. Только для `PostgreSQL`
+DataTypes.ARRAY(/* DataTypes.SOMETHING */); // массив DataTypes.SOMETHING. Только для `PostgreSQL`
 
-DataTypes.CIDR // CIDR - только для `PostgreSQL`
-DataTypes.INET // INET - только для `PostgreSQL`
-DataTypes.MACADDR // MACADDR - только для `PostgreSQL`
+DataTypes.CIDR; // CIDR - только для `PostgreSQL`
+DataTypes.INET; // INET - только для `PostgreSQL`
+DataTypes.MACADDR; // MACADDR - только для `PostgreSQL`
 
-DataTypes.GEOMETRY // Пространственная колонка. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
-DataTypes.GEOMETRY('POINT') // Пространственная колонка с геометрическим типом. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
-DataTypes.GEOMETRY('POINT', 4326) // Пространственная колонка с геометрическим типом и `SRID`. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
+DataTypes.GEOMETRY; // Пространственная колонка. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
+DataTypes.GEOMETRY('POINT'); // Пространственная колонка с геометрическим типом. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
+DataTypes.GEOMETRY('POINT', 4326); // Пространственная колонка с геометрическим типом и `SRID`. Только для `PostgreSQL` (с `PostGIS`) или `MySQL`
 ```
 
 **Настройки колонки**
@@ -489,8 +509,8 @@ sequelize.define('Foo', {
 Наш начальный код будет выглядеть следующим образом:
 
 ```js
-const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = new Sequelize('sqlite::memory:')
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
 
 // Создаем модель для пользователя со следующими атрибутами
 const User = sequelize.define('User', {
@@ -505,77 +525,77 @@ const User = sequelize.define('User', {
   age: DataTypes.INTEGER,
   // деньги
   cash: DataTypes.INTEGER,
-})
+});
 
-;(async () => {
+(async () => {
   // Пересоздаем таблицу в БД
-  await sequelize.sync({ force: true })
+  await sequelize.sync({ force: true });
   // дальнейший код
-})()
+})();
 ```
 
 Создание экземпляра:
 
 ```js
 // Создаем объект
-const jane = User.build({ name: 'Jane' })
+const jane = User.build({ name: 'Jane' });
 // и сохраняем его в БД
-await jane.save()
+await jane.save();
 
 // Сокращенный вариант
-const jane = await User.create({ name: 'Jane' })
-console.log(jane.toJSON())
-console.log(JSON.stringify(jane, null, 2))
+const jane = await User.create({ name: 'Jane' });
+console.log(jane.toJSON());
+console.log(JSON.stringify(jane, null, 2));
 ```
 
 Обновление экземпляра:
 
 ```js
-const john = await User.create({ name: 'John' })
+const john = await User.create({ name: 'John' });
 // Вносим изменение
-john.name = 'Bob'
+john.name = 'Bob';
 // и обновляем соответствующую запись в БД
-await john.save()
+await john.save();
 ```
 
 Удаление экземпляра:
 
 ```js
-await john.destroy()
+await john.destroy();
 ```
 
 "Перезагрузка" экземпляра:
 
 ```js
-const john = await User.create({ name: 'John' })
-john.name = 'Bob'
+const john = await User.create({ name: 'John' });
+john.name = 'Bob';
 
 // Перезагрузка экземпляра приводит к сбросу всех полей к дефолтным значениям
-await john.reload()
-console.log(john.name) // John
+await john.reload();
+console.log(john.name); // John
 ```
 
 Сохранение отдельных полей:
 
 ```js
-const john = await User.create({ name: 'John' })
-john.name = 'Bob'
-john.favouriteColor = 'blue'
+const john = await User.create({ name: 'John' });
+john.name = 'Bob';
+john.favouriteColor = 'blue';
 // Сохраняем только изменение имени
-await john.save({ fields: ['name'] })
+await john.save({ fields: ['name'] });
 
-await john.reload()
-console.log(john.name) // Bob
+await john.reload();
+console.log(john.name); // Bob
 // Изменение цвета не было зафиксировано
-console.log(john.favouriteColor) // green
+console.log(john.favouriteColor); // green
 ```
 
 Автоматическое увеличение значения поля:
 
 ```js
-const john = await User.create({ name: 'John', age: 98 })
+const john = await User.create({ name: 'John', age: 98 });
 
-const incrementResult = await john.increment('age', { by: 2 })
+const incrementResult = await john.increment('age', { by: 2 });
 // При увеличении значение на 1, настройку `by` можно опустить - increment('age')
 
 // Обновленный пользователь будет возвращен только в `postres`, в других БД он будет иметь значение `undefined`
@@ -584,12 +604,12 @@ const incrementResult = await john.increment('age', { by: 2 })
 Автоматическое увеличения значений нескольких полей:
 
 ```js
-const john = await User.create({ name: 'John', age: 98, cash: 1000 })
+const john = await User.create({ name: 'John', age: 98, cash: 1000 });
 
 await john.increment({
   age: 2,
   cash: 500,
-})
+});
 ```
 
 Также имеется возможность автоматического уменьшения значений полей (`decrement()`).
@@ -606,7 +626,7 @@ await john.increment({
 const john = await User.create({
   firstName: 'John',
   lastName: 'Smith',
-})
+});
 ```
 
 Создание экземпляра с определенными полями:
@@ -619,21 +639,21 @@ const user = await User.create(
   },
   {
     fields: ['username'],
-  }
-)
+  },
+);
 
-console.log(user.username) // John
-console.log(user.isAdmin) // false
+console.log(user.username); // John
+console.log(user.isAdmin); // false
 ```
 
 Получение экземпляра:
 
 ```js
 // Получение одного (первого) пользователя
-const firstUser = await User.find()
+const firstUser = await User.find();
 
 // Получение всех пользователей
-const allUsers = await User.findAll() // SELECT * FROM ...;
+const allUsers = await User.findAll(); // SELECT * FROM ...;
 ```
 
 Выборка полей:
@@ -642,22 +662,18 @@ const allUsers = await User.findAll() // SELECT * FROM ...;
 // Получение полей `foo` и `bar`
 Model.findAll({
   attributes: ['foo', 'bar'],
-}) // SELECT foo, bar FROM ...;
+}); // SELECT foo, bar FROM ...;
 
 // Изменение имени поля `bar` на `baz`
 Model.findAll({
   attributes: ['foo', ['bar', 'baz'], 'qux'],
-}) // SELECT foo, bar AS baz, qux FROM ...;
+}); // SELECT foo, bar AS baz, qux FROM ...;
 
 // Выполнение агрегации
 // Синоним `n_hats` является обязательным
 Model.findAll({
-  attributes: [
-    'foo',
-    [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats'],
-    'bar',
-  ],
-}) // SELECT foo, COUNT(hats) AS n_hats, bar FROM ...;
+  attributes: ['foo', [sequelize.fn('COUNT', sequelize.col('hats')), 'n_hats'], 'bar'],
+}); // SELECT foo, COUNT(hats) AS n_hats, bar FROM ...;
 // instance.n_hats
 
 // Сокращение - чтобы не перечислять все атрибуты при агрегации
@@ -665,17 +681,19 @@ Model.findAll({
   attributes: {
     include: [[sequelize.fn('COUNT', sequelize.col('hats')), 'n_hast']],
   },
-})
+});
 
 // Исключение поля из выборки
 Model.findAll({
   attributes: {
     exclude: ['baz'],
   },
-})
+});
 ```
 
-Настройка `where` позволяет выполнять фильтрацию возвращаемых данных. Существует большое количество операторов, которые могут использоваться совместно с `where` через `Op` (см. ниже).
+Настройка `where` позволяет выполнять фильтрацию возвращаемых данных. Существует большое
+количество операторов, которые могут использоваться совместно с `where` через `Op` (см.
+ниже).
 
 ```js
 // Выполняем поиск поста по идентификатору его автора
@@ -684,17 +702,17 @@ Post.findAll({
   where: {
     authorId: 2,
   },
-}) // SELECT * FROM post WHERE authorId = 2;
+}); // SELECT * FROM post WHERE authorId = 2;
 
 // Полный вариант
-const { Op } = require('sequelize')
+const { Op } = require('sequelize');
 Post.findAll({
   where: {
     authorId: {
       [Op.eq]: 2,
     },
   },
-})
+});
 
 // Фильтрация по нескольким полям
 // предполагается `Op.and`
@@ -703,21 +721,21 @@ Post.findAll({
     authorId: 2,
     status: 'active',
   },
-}) // SELECT * FROM post WHERE authorId = 2 AND status = 'active';
+}); // SELECT * FROM post WHERE authorId = 2 AND status = 'active';
 
 // Полный вариант
 Post.findAll({
   where: {
     [Op.and]: [{ authorId: 2 }, { status: 'active' }],
   },
-})
+});
 
 // ИЛИ
 Post.findAll({
   where: {
     [Op.or]: [{ authorId: 2 }, { authorId: 3 }],
   },
-}) // SELECT * FROM post WHERE authorId = 12 OR authorId = 13;
+}); // SELECT * FROM post WHERE authorId = 12 OR authorId = 13;
 
 // Одинаковые названия полей можно опускать
 Post.destroy({
@@ -726,7 +744,7 @@ Post.destroy({
       [Op.or]: [2, 3],
     },
   },
-}) // DELETE FROM post WHERE authorId = 2 OR authorId = 3;
+}); // DELETE FROM post WHERE authorId = 2 OR authorId = 3;
 ```
 
 **Операторы**
@@ -792,10 +810,11 @@ Post.findAll({
   where: {
     id: [1, 2, 3], // id: { [Op.in]: [1, 2, 3] }
   },
-}) // ... WHERE 'post'.'id' IN (1, 2, 3)
+}); // ... WHERE 'post'.'id' IN (1, 2, 3)
 ```
 
-Операторы `Op.and`, `Op.or` и `Op.not` могут использоваться для создания сложных операций, связанных с логическими сравнениями:
+Операторы `Op.and`, `Op.or` и `Op.not` могут использоваться для создания сложных операций,
+связанных с логическими сравнениями:
 
 ```js
 const { Op } = require('sequelize')
@@ -863,11 +882,8 @@ Project.findAll({
 
 ```js
 Post.findAll({
-  where: sequelize.where(
-    sequelize.fn('char_length', sequelize.col('content')),
-    7
-  ),
-}) // WHERE char_length('content') = 7
+  where: sequelize.where(sequelize.fn('char_length', sequelize.col('content')), 7),
+}); // WHERE char_length('content') = 7
 
 Post.findAll({
   where: {
@@ -881,17 +897,14 @@ Post.findAll({
       {
         [Op.and]: [
           { status: 'draft' },
-          sequelize.where(
-            sequelize.fn('char_length', sequelize.col('content')),
-            {
-              [Op.gt]: 8,
-            }
-          ),
+          sequelize.where(sequelize.fn('char_length', sequelize.col('content')), {
+            [Op.gt]: 8,
+          }),
         ],
       },
     ],
   },
-})
+});
 
 /*
   ...
@@ -922,8 +935,8 @@ await User.update(
     where: {
       userId: 2,
     },
-  }
-)
+  },
+);
 ```
 
 Удаление экземпляра:
@@ -934,18 +947,18 @@ await User.destroy({
   where: {
     userId: 2,
   },
-})
+});
 
 // Удаление всех пользователей
 await User.destroy({
   truncate: true,
-})
+});
 ```
 
 Создание нескольких экземпляров одновременно:
 
 ```js
-const users = await User.bulkCreate([{ name: 'John' }, { name: 'Jane' }])
+const users = await User.bulkCreate([{ name: 'John' }, { name: 'Jane' }]);
 
 // Настройка `validate` со значением `true` заставляет `Sequelize` выполнять валидацию каждого объекта, создаваемого с помощью `bulkCreate()`
 // По умолчанию валидация таких объектов не проводится
@@ -956,14 +969,14 @@ const User = sequelize.define('User', {
       len: [2, 10],
     },
   },
-})
+});
 
-await User.bulkCreate([{ name: 'John' }, { name: 'J' }], { validate: true }) // Ошибка!
+await User.bulkCreate([{ name: 'John' }, { name: 'J' }], { validate: true }); // Ошибка!
 
 // Настройка `fields` позволяет определять поля для сохранения
 await User.bulkCreate([{ name: 'John' }, { name: 'Jane', age: 30 }], {
   fields: ['name'],
-}) // Сохраняем только имена пользователей
+}); // Сохраняем только имена пользователей
 ```
 
 **Сортировка и группировка**
@@ -1002,7 +1015,7 @@ Submodel.findAll({
 
   // Случайная сортировка
   order: sequelize.random(),
-})
+});
 
 Model.findOne({
   order: [
@@ -1017,35 +1030,36 @@ Model.findOne({
 
     // и т.д.
   ],
-})
+});
 ```
 
-Синтаксис группировки идентичен синтаксису сортировки, за исключением того, что при группировке не указывается направление. Кроме того, синтаксис группировки может быть сокращен до строки:
+Синтаксис группировки идентичен синтаксису сортировки, за исключением того, что при
+группировке не указывается направление. Кроме того, синтаксис группировки может быть
+сокращен до строки:
 
 ```js
-Project.findAll({ group: 'name' }) // GROUP BY name
+Project.findAll({ group: 'name' }); // GROUP BY name
 ```
 
-Настройки `limit` и `offset` позволяют ограничивать и/или пропускать определенное количество возвращаемых объектов:
+Настройки `limit` и `offset` позволяют ограничивать и/или пропускать определенное
+количество возвращаемых объектов:
 
 ```js
 // Получаем 10 проектов
-Project.findAll({ limit: 10 })
+Project.findAll({ limit: 10 });
 
 // Пропускаем 5 первых объектов
-Project.findAll({ offset: 5 })
+Project.findAll({ offset: 5 });
 
 // Пропускаем 5 первых объектов и возвращаем 10
-Project.findAll({ offset: 5, limit: 10 })
+Project.findAll({ offset: 5, limit: 10 });
 ```
 
 `Sequelize` предоставляет несколько полезных утилит:
 
 ```js
 // Определяем число вхождений
-console.log(
-  `В настоящий момент в БД находится ${await Project.count()} проектов.`
-)
+console.log(`В настоящий момент в БД находится ${await Project.count()} проектов.`);
 
 const amount = await Project.count({
   where: {
@@ -1053,19 +1067,19 @@ const amount = await Project.count({
       [Op.gt]: 25,
     },
   },
-})
+});
 console.log(
-  `В настоящий момент в БД находится ${amount} проектов с идентификатором больше 25.`
-)
+  `В настоящий момент в БД находится ${amount} проектов с идентификатором больше 25.`,
+);
 
 // max, min, sum
 // Предположим, что у нас имеется 3 пользователя 20, 30 и 40 лет
-await User.max('age') // 40
-await User.max('age', { where: { age: { [Op.lt]: 31 } } }) // 30
-await User.min('age') // 20
-await User.min('age', { where: { age: { [Op.gt]: 21 } } }) // 30
-await User.sum('age') // 90
-await User.sum('age', { where: { age: { [op.gt]: 21 } } }) // 70
+await User.max('age'); // 40
+await User.max('age', { where: { age: { [Op.lt]: 31 } } }); // 30
+await User.min('age'); // 20
+await User.min('age', { where: { age: { [Op.gt]: 21 } } }); // 30
+await User.sum('age'); // 90
+await User.sum('age', { where: { age: { [op.gt]: 21 } } }); // 70
 ```
 
 <div align="right">
@@ -1074,22 +1088,27 @@ await User.sum('age', { where: { age: { [op.gt]: 21 } } }) // 70
 
 ## Поисковые запросы
 
-Настройка `raw` со значением `true` отключает "оборачивание" ответа, возвращаемого `SELECT`, в экземпляр модели.
+Настройка `raw` со значением `true` отключает "оборачивание" ответа, возвращаемого
+`SELECT`, в экземпляр модели.
 
 - `findAll()` - возвращает все экземпляры модели
 - `findByPk()` - возвращает один экземпляр по первичному ключу
 
 ```js
-const project = await Project.findByPk(123)
+const project = await Project.findByPk(123);
 ```
 
-- `findOne()` - возвращает первый или один экземпляр модели (это зависит от того, указано ли условие для поиска)
+- `findOne()` - возвращает первый или один экземпляр модели (это зависит от того, указано
+  ли условие для поиска)
 
 ```js
-const project = await Project.findOne({ where: { projectId: 123 } })
+const project = await Project.findOne({ where: { projectId: 123 } });
 ```
 
-- `findOrCreate()` - возвращает или создает и возвращает экземпляр, а также логическое значение - индикатор создания экземпляра. Настройка `defaults` используется для определения значений по умолчанию. При ее отсутствии, для заполнения полей используется значение, указанное в условии
+- `findOrCreate()` - возвращает или создает и возвращает экземпляр, а также логическое
+  значение - индикатор создания экземпляра. Настройка `defaults` используется для
+  определения значений по умолчанию. При ее отсутствии, для заполнения полей используется
+  значение, указанное в условии
 
 ```js
 // Предположим, что у нас имеется пустая БД с моделью `User`, у которой имеются поля `username` и `job`
@@ -1098,10 +1117,12 @@ const [user, created] = await User.findOrCreate({
   defaults: {
     job: 'JavaScript Developer',
   },
-})
+});
 ```
 
-- `findAndCountAll()` - комбинация `findAll()` и `count`. Может быть полезным при использовании настроек `limit` и `offset`, когда мы хотим знать точное число записей, совпадающих с запросом. Возвращает объект с двумя свойствами:
+- `findAndCountAll()` - комбинация `findAll()` и `count`. Может быть полезным при
+  использовании настроек `limit` и `offset`, когда мы хотим знать точное число записей,
+  совпадающих с запросом. Возвращает объект с двумя свойствами:
   - `count` - количество записей, совпадающих с запросом (целое число)
   - `rows` - массив объектов
 
@@ -1114,7 +1135,7 @@ const { count, rows } = await Project.findAndCountAll({
   },
   offset: 10,
   limit: 5,
-})
+});
 ```
 
 <div align="right">
@@ -1123,7 +1144,10 @@ const { count, rows } = await Project.findAndCountAll({
 
 ## Геттеры, сеттеры и виртуальные атрибуты
 
-`Sequelize` позволяет определять геттеры и сеттеры для атрибутов моделей, а также _виртуальные атрибуты_ - атрибуты, которых не существует в таблице и которые заполняются или наполняются (имеется ввиду популяция) `Serquelize` автоматически. Последние могут использоваться, например, для упрощения кода.
+`Sequelize` позволяет определять геттеры и сеттеры для атрибутов моделей, а также
+_виртуальные атрибуты_ - атрибуты, которых не существует в таблице и которые заполняются
+или наполняются (имеется ввиду популяция) `Serquelize` автоматически. Последние могут
+использоваться, например, для упрощения кода.
 
 Геттер - это функция `get()`, определенная для колонки:
 
@@ -1132,18 +1156,21 @@ const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING,
     get() {
-      const rawValue = this.getDataValue(username)
-      return rawValue ? rawValue.toUpperCase() : null
+      const rawValue = this.getDataValue(username);
+      return rawValue ? rawValue.toUpperCase() : null;
     },
   },
-})
+});
 ```
 
 Геттер вызывается автоматически при чтении поля.
 
-_Обратите внимание_: для получения значения поля в геттере мы использовали метод `getDataValue()`. Если вместо этого указать `this.username`, то мы попадем в бесконечный цикл.
+_Обратите внимание_: для получения значения поля в геттере мы использовали метод
+`getDataValue()`. Если вместо этого указать `this.username`, то мы попадем в бесконечный
+цикл.
 
-Сеттер - это функция `set()`, определенная для колонки. Она принимает значение для установки:
+Сеттер - это функция `set()`, определенная для колонки. Она принимает значение для
+установки:
 
 ```js
 const User = sequelize.define('user', {
@@ -1152,10 +1179,10 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     set(value) {
       // Перед записью в БД пароли следует "хэшировать" с помощью криптографической функции
-      this.setDataValue('password', hash(value))
+      this.setDataValue('password', hash(value));
     },
   },
-})
+});
 ```
 
 Сеттер вызывается автоматически при создании экземпляра.
@@ -1169,35 +1196,40 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     set(value) {
       // Используем значение поля `username`
-      this.setDataValue('password', hash(this.username + value))
+      this.setDataValue('password', hash(this.username + value));
     },
   },
-})
+});
 ```
 
-Геттеры и сеттеры можно использовать совместно. Допустим, что у нас имеется модель `Post` с полем `content` неограниченной длины, и в целях экономии памяти мы решили хранить в БД содержимое поста в сжатом виде. _Обратите внимание_: многие современные БД выполняют сжатие (компрессию) данных автоматически.
+Геттеры и сеттеры можно использовать совместно. Допустим, что у нас имеется модель `Post`
+с полем `content` неограниченной длины, и в целях экономии памяти мы решили хранить в БД
+содержимое поста в сжатом виде. _Обратите внимание_: многие современные БД выполняют
+сжатие (компрессию) данных автоматически.
 
 ```js
-const { gzipSync, gunzipSync } = require('zlib')
+const { gzipSync, gunzipSync } = require('zlib');
 
 const Post = sequelize.define('post', {
   content: {
     type: DataTypes.TEXT,
     get() {
-      const storedValue = this.getDataValue('content')
-      const gzippedBuffer = Buffer.from(storedValue, 'base64')
-      const unzippedBuffer = gunzipSync(gzippedBuffer)
-      return unzippedBuffer.toString()
+      const storedValue = this.getDataValue('content');
+      const gzippedBuffer = Buffer.from(storedValue, 'base64');
+      const unzippedBuffer = gunzipSync(gzippedBuffer);
+      return unzippedBuffer.toString();
     },
     set(value) {
-      const gzippedBuffer = gzipSync(value)
-      this.setDataValue('content', gzippedBuffer.toString('base64'))
+      const gzippedBuffer = gzipSync(value);
+      this.setDataValue('content', gzippedBuffer.toString('base64'));
     },
   },
-})
+});
 ```
 
-Представим, что у нас имеется модель `User` с полями `firstName` и `lastName`, и мы хотим получать полное имя пользователя. Для этого мы можем создать виртуальный атрибут со специальным типом `DataTypes.VIRTUAL`:
+Представим, что у нас имеется модель `User` с полями `firstName` и `lastName`, и мы хотим
+получать полное имя пользователя. Для этого мы можем создать виртуальный атрибут со
+специальным типом `DataTypes.VIRTUAL`:
 
 ```js
 const User = sequelize.define('user', {
@@ -1206,16 +1238,17 @@ const User = sequelize.define('user', {
   fullName: {
     type: DataTypes.VIRTUAL,
     get() {
-      return `${this.firstName} ${this.lastName}`
+      return `${this.firstName} ${this.lastName}`;
     },
     set(value) {
-      throw new Error('Нельзя этого делать!')
+      throw new Error('Нельзя этого делать!');
     },
   },
-})
+});
 ```
 
-В таблице не будет колонки `fullName`, однако мы сможем получать значение этого поля, как если бы оно существовало на самом деле.
+В таблице не будет колонки `fullName`, однако мы сможем получать значение этого поля, как
+если бы оно существовало на самом деле.
 
 <div align="right">
   <b><a href="#">↑ Наверх</a></b>
@@ -1226,8 +1259,8 @@ const User = sequelize.define('user', {
 Наша моделька будет выглядеть так:
 
 ```js
-const { Sequelize, Op, DataTypes } = require('sequelize')
-const sequelize = new Sequelize('sqlite::memory:')
+const { Sequelize, Op, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
 
 const User = sequelize.define('user', {
   username: {
@@ -1239,21 +1272,33 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING(64),
     is: /^[0-9a-f]{64}$/i,
   },
-})
+});
 ```
 
-Отличие между выполнением валидации и применением или наложением органичение на значение поля состоит в следующем:
+Отличие между выполнением валидации и применением или наложением органичение на значение
+поля состоит в следующем:
 
-- валидация выполняется на уровне `Sequelize`; для ее выполнения можно использовать любую функцию, как встроенную, так и кастомную; при провале валидации, SQL-запрос в БД не отправляется;
-- ограничение определяется на уровне `SQL`; примером ограничения является настройка `unique`; при провале ограничения, запрос в БД все равно отправляется
+- валидация выполняется на уровне `Sequelize`; для ее выполнения можно использовать любую
+  функцию, как встроенную, так и кастомную; при провале валидации, SQL-запрос в БД не
+  отправляется;
+- ограничение определяется на уровне `SQL`; примером ограничения является настройка
+  `unique`; при провале ограничения, запрос в БД все равно отправляется
 
-В приведенном примере мы ограничили уникальность имени пользователя с помощью настройки `unique`. При попытке записать имя пользователя, которое уже существует в БД, возникнет ошибка `SequelizeUniqueConstraintError`.
+В приведенном примере мы ограничили уникальность имени пользователя с помощью настройки
+`unique`. При попытке записать имя пользователя, которое уже существует в БД, возникнет
+ошибка `SequelizeUniqueConstraintError`.
 
-По умолчанию колонки таблицы могут быть пустыми (нулевыми). Настройка `allowNull` со значением `false` позволяет это запретить. _Обратите внимание_: без установки данной настройки хотя бы для одного поля, можно будет выполнить такой запрос: `User.create({})`.
+По умолчанию колонки таблицы могут быть пустыми (нулевыми). Настройка `allowNull` со
+значением `false` позволяет это запретить. _Обратите внимание_: без установки данной
+настройки хотя бы для одного поля, можно будет выполнить такой запрос: `User.create({})`.
 
-Валидаторы позволяют проводить проверку в отношении каждого атрибута модели. Валидация автоматически выполняется при запуске методов `create()`, `update()` и `save()`. Ее также можно запустить вручную с помощью `validate()`.
+Валидаторы позволяют проводить проверку в отношении каждого атрибута модели. Валидация
+автоматически выполняется при запуске методов `create()`, `update()` и `save()`. Ее также
+можно запустить вручную с помощью `validate()`.
 
-Как было отмечено ранее, мы можем определять собственные валидаторы или использовать встроенные (предоставляемые библиотекой <a href="https://github.com/validatorjs/validator.js">`validator.js`</a>).
+Как было отмечено ранее, мы можем определять собственные валидаторы или использовать
+встроенные (предоставляемые библиотекой
+<a href="https://github.com/validatorjs/validator.js">`validator.js`</a>).
 
 ```js
 sequelize.define('foo', {
@@ -1295,26 +1340,26 @@ sequelize.define('foo', {
       // Примеры кастомных валидаторов
       isEven(value) {
         if (parseInt(value) % 2 !== 0) {
-          throw new Error('Разрешены только четные числа!')
+          throw new Error('Разрешены только четные числа!');
         }
       },
       isGreaterThanOtherField(value) {
         if (parseInt(value) < parseInt(this.otherField)) {
           throw new Error(
-            `Значение данного поля должно быть больше значения ${otherField}!`
-          )
+            `Значение данного поля должно быть больше значения ${otherField}!`,
+          );
         }
       },
     },
   },
-})
+});
 ```
 
 Для кастомизации сообщения об ошибке можно использовать объект со свойством `msg`:
 
 ```js
 isInt: {
-  msg: 'Значение должно быть целым числом!'
+  msg: 'Значение должно быть целым числом!';
 }
 ```
 
@@ -1327,7 +1372,9 @@ isIn: {
 }
 ```
 
-Для поля, которое может иметь значение `null`, встроенные валидаторы пропускаются. Это означает, что мы, например, можем определить поле, которое либо должно содержать строку длиной 5-10 символов, либо должно быть пустым:
+Для поля, которое может иметь значение `null`, встроенные валидаторы пропускаются. Это
+означает, что мы, например, можем определить поле, которое либо должно содержать строку
+длиной 5-10 символов, либо должно быть пустым:
 
 ```js
 const User = sequelize.define('user', {
@@ -1338,7 +1385,7 @@ const User = sequelize.define('user', {
       len: [5, 10],
     },
   },
-})
+});
 ```
 
 _Обратите внимание_, что для нулевых полей кастомные валидаторы выполняются:
@@ -1352,15 +1399,17 @@ const User = sequelize.define('user', {
     validate: {
       customValidator(value) {
         if (value === null && this.age < 18) {
-          throw new Error('Нулевые значения разрешены только совершеннолетним!')
+          throw new Error('Нулевые значения разрешены только совершеннолетним!');
         }
       },
     },
   },
-})
+});
 ```
 
-Мы можем выполнять валидацию не только отдельных полей, но и модели в целом. В следующем примере мы проверяем наличие или отсутствии как поля `latitude`, так и поля `longitude` (либо должны быть указаны оба поля, либо не должно быть указано ни одного):
+Мы можем выполнять валидацию не только отдельных полей, но и модели в целом. В следующем
+примере мы проверяем наличие или отсутствии как поля `latitude`, так и поля `longitude`
+(либо должны быть указаны оба поля, либо не должно быть указано ни одного):
 
 ```js
 const Place = sequelize.define(
@@ -1387,14 +1436,12 @@ const Place = sequelize.define(
     validate: {
       bothCoordsOrNone() {
         if (!this.latitude !== !this.longitude) {
-          throw new Error(
-            'Либо укажите и долготу, и широту, либо ничего не указывайте!'
-          )
+          throw new Error('Либо укажите и долготу, и широту, либо ничего не указывайте!');
         }
       },
     },
-  }
-)
+  },
+);
 ```
 
 <div align="right">
@@ -1403,32 +1450,36 @@ const Place = sequelize.define(
 
 ## Необработанные запросы
 
-`sequelize.query()` позволяет выполнять необработанные `SQL-запросы` (raw queries). По умолчанию данная функция возвращает массив с результатами и объект с метаданными, при этом, содержание последнего зависит от используемого диалекта.
+`sequelize.query()` позволяет выполнять необработанные `SQL-запросы` (raw queries). По
+умолчанию данная функция возвращает массив с результатами и объект с метаданными, при
+этом, содержание последнего зависит от используемого диалекта.
 
 ```js
 const [results, metadata] = await sequelize.query(
-  "UPDATE users SET username = 'John' WHERE userId = 123"
-)
+  "UPDATE users SET username = 'John' WHERE userId = 123",
+);
 ```
 
-Если нам не нужны метаданные, для правильного форматирования результата можно воспользоваться специальными типами запроса (query types):
+Если нам не нужны метаданные, для правильного форматирования результата можно
+воспользоваться специальными типами запроса (query types):
 
 ```js
-const { QueryTypes } = require('sequelize')
+const { QueryTypes } = require('sequelize');
 
 const users = await sequelize.query('SELECT * FROM users', {
   // тип запроса - выборка
   type: QueryTypes.SELECT,
-})
+});
 ```
 
-Для привязки результатов необработанного запроса к модели используются настройки `model` и, опционально, `mapToModel`:
+Для привязки результатов необработанного запроса к модели используются настройки `model`
+и, опционально, `mapToModel`:
 
 ```js
 const projects = await sequelize.query('SELECT * FROM projects', {
   model: Project,
   mapToModel: true,
-})
+});
 ```
 
 Пример использования других настроек:
@@ -1446,18 +1497,19 @@ sequelize.query('SELECT 1', {
 
   // тип выполняемого запроса
   type: QueryTypes.SELECT,
-})
+});
 ```
 
-Если название атрибута в таблице содержит точки, то результирующий объект может быть преобразован во вложенные объекты с помощью настройки `nest`.
+Если название атрибута в таблице содержит точки, то результирующий объект может быть
+преобразован во вложенные объекты с помощью настройки `nest`.
 
 Без `nest: true`:
 
 ```js
 const records = await sequelize.query('SELECT 1 AS `foo.bar.baz`', {
   type: QueryTypes.SELECT,
-})
-console.log(JSON.stringify(records[0], null, 2))
+});
+console.log(JSON.stringify(records[0], null, 2));
 // { 'foo.bar.baz': 1 }
 ```
 
@@ -1467,8 +1519,8 @@ console.log(JSON.stringify(records[0], null, 2))
 const records = await sequelize.query('SELECT 1 AS `foo.bar.baz`', {
   type: QueryTypes.SELECT,
   nest: true,
-})
-console.log(JSON.stringify(records[0], null, 2))
+});
+console.log(JSON.stringify(records[0], null, 2));
 /*
 {
   'foo': {
@@ -1485,21 +1537,24 @@ console.log(JSON.stringify(records[0], null, 2))
 - с помощью именованных параметров (начинающихся с `:`)
 - с помощью неименованных параметров (представленных `?`)
 
-Заменители (placeholders) передаются в настройку `replacements` в виде массива (для неименованных параметров) или в виде объекта (для именованных параметров):
+Заменители (placeholders) передаются в настройку `replacements` в виде массива (для
+неименованных параметров) или в виде объекта (для именованных параметров):
 
 - если передан массив, `?` заменяется элементами массива в порядке их следования
-- если передан объект, `:key` заменяются ключами объекта. При отсутствии в объекте ключей для заменяемых значений, а также в случае, когда ключей в объекте больше, чем заменяемых значений, выбрасывается исключение
+- если передан объект, `:key` заменяются ключами объекта. При отсутствии в объекте ключей
+  для заменяемых значений, а также в случае, когда ключей в объекте больше, чем заменяемых
+  значений, выбрасывается исключение
 
 ```js
 sequelize.query('SELECT * FROM projects WHERE status = ?', {
   replacements: ['active'],
   type: QueryTypes.SELECT,
-})
+});
 
 sequelize.query('SELECT * FROM projects WHERE status = :status', {
   replacements: { status: 'active' },
   type: QueryTypes.SELECT,
-})
+});
 ```
 
 Продвинутые примеры замены:
@@ -1509,22 +1564,30 @@ sequelize.query('SELECT * FROM projects WHERE status = :status', {
 sequelize.query('SELECT * FROM projects WHERE status IN(:status)', {
   replacements: { status: ['active', 'inactive'] },
   type: QueryTypes.SELECT,
-})
+});
 
 // Замена выполняется для всех пользователей, имена которых начинаются с `J`
 sequelize.query('SELECT * FROM users WHERE name LIKE :search_name', {
   replacements: { search_name: 'J%' },
   type: QueryTypes.SELECT,
-})
+});
 ```
 
-Кроме замены, можно выполнять привязку (bind) параметров. Привязка похожа на замену, но заменители обезвреживаются (escaped) и вставляются в запрос, отправляемый в БД, а связанные параметры отправляются в БД по отдельности. Связанные параметры обозначаются с помощью `$число` или `$строка`:
+Кроме замены, можно выполнять привязку (bind) параметров. Привязка похожа на замену, но
+заменители обезвреживаются (escaped) и вставляются в запрос, отправляемый в БД, а
+связанные параметры отправляются в БД по отдельности. Связанные параметры обозначаются с
+помощью `$число` или `$строка`:
 
 - если передан массив, `$1` будет указывать на его первый элемент (`bind[0]`)
-- если передан объект, `$key` будет указывать на `object['key']`. Каждый ключ объекта должен начинаться с буквы. `$1` является невалидным ключом, даже если существует `object['1']`
+- если передан объект, `$key` будет указывать на `object['key']`. Каждый ключ объекта
+  должен начинаться с буквы. `$1` является невалидным ключом, даже если существует
+  `object['1']`
 - в обоих случаях для сохранения знака `$` может использоваться `$$`
 
-Связанные параметры не могут быть ключевыми словами `SQL`, названиями таблиц или колонок. Они игнорируются внутри текста, заключенного в кавычки. Кроме того, в `postgres` может потребоваться указывать тип связываемого параметра в случае, когда он не может быть выведен на основании контекста - `$1::varchar`.
+Связанные параметры не могут быть ключевыми словами `SQL`, названиями таблиц или колонок.
+Они игнорируются внутри текста, заключенного в кавычки. Кроме того, в `postgres` может
+потребоваться указывать тип связываемого параметра в случае, когда он не может быть
+выведен на основании контекста - `$1::varchar`.
 
 ```js
 sequelize.query(
@@ -1532,16 +1595,16 @@ sequelize.query(
   {
     bind: ['active'],
     type: QueryTypes.SELECT,
-  }
-)
+  },
+);
 
 sequelize.query(
   'SELECT *, "текст с литеральным $$1 и литеральным $$status" AS t FROM projects WHERE status = $status',
   {
     bind: { status: 'active' },
     type: QueryTypes.SELECT,
-  }
-)
+  },
+);
 ```
 
 <div align="right">
@@ -1550,7 +1613,8 @@ sequelize.query(
 
 ## Ассоциации
 
-`Sequelize` поддерживает стандартные ассоциации или отношения между моделями: один-к-одному (One-To-One), один-ко-многим (One-To-Many), многие-ко-многим (Many-To-Many).
+`Sequelize` поддерживает стандартные ассоциации или отношения между моделями:
+один-к-одному (One-To-One), один-ко-многим (One-To-Many), многие-ко-многим (Many-To-Many).
 
 Существует 4 типа ассоциаций:
 
@@ -1561,44 +1625,54 @@ sequelize.query(
 
 **Определение ассоциации**
 
-Предположим, что у нас имеется 2 модели, `A` и `B`. Вот как можно определить между ними связь:
+Предположим, что у нас имеется 2 модели, `A` и `B`. Вот как можно определить между ними
+связь:
 
 ```js
-const A = sequelize.define('A' /* ... */)
-const B = sequelize.define('B' /* ... */)
+const A = sequelize.define('A' /* ... */);
+const B = sequelize.define('B' /* ... */);
 
-A.hasOne(B)
-A.belongsTo(B)
-A.hasMany(B)
-A.belongsToMany(B)
+A.hasOne(B);
+A.belongsTo(B);
+A.hasMany(B);
+A.belongsToMany(B);
 ```
 
-Все эти функции принимают объект с настройками (для первых трех он является опциональным, для последнего - обязательным). В настройках должно быть определено как минимум свойство `through`:
+Все эти функции принимают объект с настройками (для первых трех он является опциональным,
+для последнего - обязательным). В настройках должно быть определено как минимум свойство
+`through`:
 
 ```js
 A.hasOne(B, {
   /* настройки */
-})
+});
 A.belongsTo(B, {
   /* настройки */
-})
+});
 A.hasMany(B, {
   /* настройки */
-})
-A.belongsToMany(B, { through: 'C' /* другие настройки */ })
+});
+A.belongsToMany(B, { through: 'C' /* другие настройки */ });
 ```
 
-Порядок определения ассоциаций имеет принципиальное значение. В приведенных примерах `A` - это модель-источник (source), а `B` - это целевая модель (target). Запомните эти термины.
+Порядок определения ассоциаций имеет принципиальное значение. В приведенных примерах `A` -
+это модель-источник (source), а `B` - это целевая модель (target). Запомните эти термины.
 
-`A.hasOne(B)` означает, что между `A` и `B` существуют отношения один-к-одному, при этом, внешний ключ (foreign key) определяется в целевой модели (`B`).
+`A.hasOne(B)` означает, что между `A` и `B` существуют отношения один-к-одному, при этом,
+внешний ключ (foreign key) определяется в целевой модели (`B`).
 
 `A.belongsTo(B)` - отношения один-к-одному, внешний ключ определяется в источнике (`A`).
 
-`A.hasMany(B)` - отношения один-ко-многим, внешний ключ определяется в целевой модели (`B`).
+`A.hasMany(B)` - отношения один-ко-многим, внешний ключ определяется в целевой модели
+(`B`).
 
-В этих случаях `Sequelize` автоматически добавляет внешние ключи (при их отсутствии) в соответствующие модели (таблицы).
+В этих случаях `Sequelize` автоматически добавляет внешние ключи (при их отсутствии) в
+соответствующие модели (таблицы).
 
-`A.belongsToMany(B, { through: 'C' })` означает, что между `A` и `B` существуют отношения многие-ко-многим, таблица `C` выступает в роли связующего звена между ними через внешние ключи (например, `aId` и `bId`). `Sequelize` автоматически создает модель `C` при ее отсутствии, определяя в ней соответствующие ключи.
+`A.belongsToMany(B, { through: 'C' })` означает, что между `A` и `B` существуют отношения
+многие-ко-многим, таблица `C` выступает в роли связующего звена между ними через внешние
+ключи (например, `aId` и `bId`). `Sequelize` автоматически создает модель `C` при ее
+отсутствии, определяя в ней соответствующие ключи.
 
 **Определение стандартных отношений**
 
@@ -1606,17 +1680,22 @@ A.belongsToMany(B, { through: 'C' /* другие настройки */ })
 
 - для создания отношений один-к-одному используются `hasOne()` и `belongsTo()`
 - для один-ко-многим - `hasMany()` и `belongsTo()`
-- для многие-ко-многим - два `belongsToMany()`. _Обратите внимание_, что существуют также отношения "супер многие-ко-многим", где одновременно используется `6` ассоциаций
+- для многие-ко-многим - два `belongsToMany()`. _Обратите внимание_, что существуют также
+  отношения "супер многие-ко-многим", где одновременно используется `6` ассоциаций
 
 **Один-к-одному**
 
-_Обратите внимание_: для того, чтобы решить, в какой из двух таблиц должен быть определен внешний ключ, следует ответить на вопрос о том, какая из таблиц может существовать без другой.
+_Обратите внимание_: для того, чтобы решить, в какой из двух таблиц должен быть определен
+внешний ключ, следует ответить на вопрос о том, какая из таблиц может существовать без
+другой.
 
-Предположим, что у нас имеется две модели, `Foo` и `Bar`. Мы хотим установить между ними отношения один-к-одному таким образом, чтобы `Bar` содержала атрибут `fooId`. Это можно реализовать так:
+Предположим, что у нас имеется две модели, `Foo` и `Bar`. Мы хотим установить между ними
+отношения один-к-одному таким образом, чтобы `Bar` содержала атрибут `fooId`. Это можно
+реализовать так:
 
 ```js
-Foo.hasOne(Bar)
-Bar.belongsTo(Foo)
+Foo.hasOne(Bar);
+Bar.belongsTo(Foo);
 ```
 
 Дальнейший вызов `Bar.sync()` приведет к отправке в БД следующего запроса:
@@ -1639,75 +1718,86 @@ CREATE TABLE IF NOT EXISTS "bars" (
 ```js
 Foo.hasOne(Bar, {
   onDelete: 'RESTRICT',
-  onUpdate: 'RESTRICT'
-})
-Bar.belongsTo(Foo)
+  onUpdate: 'RESTRICT',
+});
+Bar.belongsTo(Foo);
 ```
 
-Возможными вариантами здесь являются: `RESTRICT`, `CASCADE`, `NO ACTION`, `SET DEFAULT` и `SET NULL`.
+Возможными вариантами здесь являются: `RESTRICT`, `CASCADE`, `NO ACTION`, `SET DEFAULT` и
+`SET NULL`.
 
-Название внешнего ключа, которое в приведенном примере по умолчанию имеет значение `fooId`, можно кастомизировать. Причем, это можно делать как в `hasOne()`, так и в `belongsTo()`:
+Название внешнего ключа, которое в приведенном примере по умолчанию имеет значение
+`fooId`, можно кастомизировать. Причем, это можно делать как в `hasOne()`, так и в
+`belongsTo()`:
 
 ```js
 // 1
 Foo.hasOne(Bar, {
-  foreignKey: 'myFooId'
-})
-Bar.belongsTo(Foo)
+  foreignKey: 'myFooId',
+});
+Bar.belongsTo(Foo);
 
 // 2
 Foo.hasOne(Bar, {
   foreignKey: {
-    name: 'myFooId'
-  }
-})
-Bar.belongsTo(Foo)
+    name: 'myFooId',
+  },
+});
+Bar.belongsTo(Foo);
 
 // 3
-Foo.hasOne(Bar)
+Foo.hasOne(Bar);
 Bar.belongsTo(Foo, {
-  foreignKey: 'myFooId'
-})
+  foreignKey: 'myFooId',
+});
 
 // 4
-Foo.hasOne(Bar)
+Foo.hasOne(Bar);
 Bar.belongsTo(Foo, {
   foreignKey: {
-    name: 'myFooId'
-  }
-})
+    name: 'myFooId',
+  },
+});
 ```
 
-В случае кастомизации внешнего ключа с помощью объекта, можно определять его тип, значение по умолчанию, ограничения и т.д. Например, в качестве типа внешнего ключа можно использовать `DataTypes.UUID` вместо дефолтного `INTEGER`:
+В случае кастомизации внешнего ключа с помощью объекта, можно определять его тип, значение
+по умолчанию, ограничения и т.д. Например, в качестве типа внешнего ключа можно
+использовать `DataTypes.UUID` вместо дефолтного `INTEGER`:
 
 ```js
 Foo.hasOne(Bar, {
   foreignKey: {
-    type: DataTypes.UUID
-  }
-})
-Bar.belongsTo(Foo)
+    type: DataTypes.UUID,
+  },
+});
+Bar.belongsTo(Foo);
 ```
 
-По умолчанию ассоциация является опциональной, т.е. `fooId` может иметь значение `null` - `Bar` может существовать без `Foo`. Для того, чтобы это изменить, можно установить такое ограничение:
+По умолчанию ассоциация является опциональной, т.е. `fooId` может иметь значение `null` -
+`Bar` может существовать без `Foo`. Для того, чтобы это изменить, можно установить такое
+ограничение:
 
 ```js
 Foo.hasOne(Bar, {
   foreignKey: {
-    allowNull: false
-  }
-})
+    allowNull: false,
+  },
+});
 ```
 
 **Один-ко-многим**
 
-_Обратите внимание_: в данном случае вопрос о том, в какой из двух таблиц должен быть определен внешний ключ не является актуальным, поскольку такой ключ может быть определен только в целевой модели.
+_Обратите внимание_: в данном случае вопрос о том, в какой из двух таблиц должен быть
+определен внешний ключ не является актуальным, поскольку такой ключ может быть определен
+только в целевой модели.
 
-Предположим, что у нас имеется две модели, `Team` и `Player`, и мы хотим определить между ними отношения один-ко-многим: в одной команде может быть несколько игроков, но каждый игрок может принадлежат только к одной команде.
+Предположим, что у нас имеется две модели, `Team` и `Player`, и мы хотим определить между
+ними отношения один-ко-многим: в одной команде может быть несколько игроков, но каждый
+игрок может принадлежат только к одной команде.
 
 ```js
-Team.hasMany(Player)
-Player.belongsTo(Team)
+Team.hasMany(Player);
+Player.belongsTo(Team);
 ```
 
 В данном случае в БД будет отправлен такой запрос:
@@ -1723,26 +1813,32 @@ CREATE TABLE IF NOT EXISTS "Players" (
 );
 ```
 
-Как и в случае с отношениями один-к-одному, рассматриваемую ассоциацию можно настраивать различными способами.
+Как и в случае с отношениями один-к-одному, рассматриваемую ассоциацию можно настраивать
+различными способами.
 
 ```js
 Team.hasMany(Player, {
-  foreignKey: 'clubId'
-})
-Player.belongsTo(Team)
+  foreignKey: 'clubId',
+});
+Player.belongsTo(Team);
 ```
 
 **Многие-ко-многим**
 
-_Обратите внимание_: в отличие от первых двух ассоциаций, внешний ключ не может быть определен ни в одной из связанных таблиц. Для этого используется так называемая "соединительная таблица" (junction, join, through table).
+_Обратите внимание_: в отличие от первых двух ассоциаций, внешний ключ не может быть
+определен ни в одной из связанных таблиц. Для этого используется так называемая
+"соединительная таблица" (junction, join, through table).
 
-Предположим, что у нас имеется две модели, `Movie` (фильм) и `Actor` (актер), и мы хотим определить между ними отношения многие-ко-многим: актер может принимать участие в съемках нескольких фильмов, а в фильме может сниматься несколько актеров. Соединительная таблица будет называться `ActorMovies` и содержать внешние ключи `actorId` и `movieId`.
+Предположим, что у нас имеется две модели, `Movie` (фильм) и `Actor` (актер), и мы хотим
+определить между ними отношения многие-ко-многим: актер может принимать участие в съемках
+нескольких фильмов, а в фильме может сниматься несколько актеров. Соединительная таблица
+будет называться `ActorMovies` и содержать внешние ключи `actorId` и `movieId`.
 
 ```js
-const Movie = sequelize.define('Movie', { name: DataTypes.STRING })
-const Actor = sequelize.define('Actor', { name: DataTypes.STRING })
-Movie.belongsToMany(Actor, { through: 'ActorMovies' })
-Actor.belongsToMany(Movie, { through: 'ActorMovies' })
+const Movie = sequelize.define('Movie', { name: DataTypes.STRING });
+const Actor = sequelize.define('Actor', { name: DataTypes.STRING });
+Movie.belongsToMany(Actor, { through: 'ActorMovies' });
+Actor.belongsToMany(Movie, { through: 'ActorMovies' });
 ```
 
 В данном случае в `postgres`, например, будет отправлен такой запрос:
@@ -1757,29 +1853,30 @@ CREATE TABLE IF NOT EXISTS "ActorMovies" (
 );
 ```
 
-Как упоминалось ранее, `Sequelize` создает соединительную таблицу автоматически. Но мы вполне можем сделать это самостоятельно:
+Как упоминалось ранее, `Sequelize` создает соединительную таблицу автоматически. Но мы
+вполне можем сделать это самостоятельно:
 
 ```js
-const Movie = sequelize.define('Movie', { name: DataTypes.STRING })
-const Actor = sequelize.define('Actor', { name: DataTypes.STRING })
+const Movie = sequelize.define('Movie', { name: DataTypes.STRING });
+const Actor = sequelize.define('Actor', { name: DataTypes.STRING });
 const ActorMovies = sequelize.define('ActorMovies', {
   MovieId: {
     type: DataTypes.INTEGER,
     references: {
       model: Movie, // или 'Movies'
-      key: 'id'
-    }
+      key: 'id',
+    },
   },
   ActorId: {
     type: DataTypes.INTEGER,
     references: {
       model: Actor, // или 'Actors'
-      key: 'id'
-    }
-  }
-})
-Movie.belongsToMany(Actor, { through: ActorMovies })
-Actor.belongsToMany(Movie, { through: ActorMovies })
+      key: 'id',
+    },
+  },
+});
+Movie.belongsToMany(Actor, { through: ActorMovies });
+Actor.belongsToMany(Movie, { through: ActorMovies });
 ```
 
 В этом случае в БД будет отправлен такой запрос:
@@ -1797,7 +1894,9 @@ CREATE TABLE IF NOT EXISTS "ActorMovies" (
 
 **Выполнение запросов, включающих ассоциации**
 
-Предположим, что у нас имеется две модели, `Ship` (корабль) и `Captain` (капитан). Между этими моделями существуют отношения один-к-одному. Внешние ключи могут иметь значение `null`. Это означает, что корабль может существовать без капитана, и наоборот.
+Предположим, что у нас имеется две модели, `Ship` (корабль) и `Captain` (капитан). Между
+этими моделями существуют отношения один-к-одному. Внешние ключи могут иметь значение
+`null`. Это означает, что корабль может существовать без капитана, и наоборот.
 
 ```js
 const Ship = sequelize.define(
@@ -1805,55 +1904,59 @@ const Ship = sequelize.define(
   {
     name: DataTypes.STRING,
     crewCapacity: DataTypes.INTEGER,
-    amountOfSails: DataTypes.INTEGER
+    amountOfSails: DataTypes.INTEGER,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 const Captain = sequelize.define(
   'Captain',
   {
     name: DataTypes.STRING,
     skillLevel: {
       type: DataTypes.INTEGER,
-      validate: { min: 1, max: 10 }
-    }
+      validate: { min: 1, max: 10 },
+    },
   },
-  { timestamps: false }
-)
-Captain.hasOne(Ship)
-Ship.belongsTo(Captain)
+  { timestamps: false },
+);
+Captain.hasOne(Ship);
+Ship.belongsTo(Captain);
 ```
 
 **Немедленная загрузка и отложенная загрузка**
 
-"Ленивая" (lazy) или отложенная загрузка позволяет получать ассоциации (т.е. связанные экземпляры) по мере необходимости, а "нетерпеливая" (eager) или немедленная загрузка предполагает получение всех ассоциаций сразу при выполнении запроса.
+"Ленивая" (lazy) или отложенная загрузка позволяет получать ассоциации (т.е. связанные
+экземпляры) по мере необходимости, а "нетерпеливая" (eager) или немедленная загрузка
+предполагает получение всех ассоциаций сразу при выполнении запроса.
 
 **Пример ленивой загрузки**
 
 ```js
 const awesomeCaptain = await Captain.findOne({
   where: {
-    name: 'Jack Sparrow'
-  }
-})
+    name: 'Jack Sparrow',
+  },
+});
 // выполняем какие-то операции с капитаном
 // получаем его корабль
-const hisShip = await awesomeCaptain.getShip()
+const hisShip = await awesomeCaptain.getShip();
 // выполняем операции с кораблем
 ```
 
-В данном случае мы выполняем два запроса - корабль запрашивается при необходимости. Это позволяет сэкономить время и память. _Обратите внимание_: метод `getShip()` был создан автоматически, автоматически создаются и другие методы (см. ниже).
+В данном случае мы выполняем два запроса - корабль запрашивается при необходимости. Это
+позволяет сэкономить время и память. _Обратите внимание_: метод `getShip()` был создан
+автоматически, автоматически создаются и другие методы (см. ниже).
 
 **Пример нетерпеливой загрузки**
 
 ```js
 const awesomeCaptaint = await Captain.findOne({
   where: {
-    name: 'Jack Sparrow'
+    name: 'Jack Sparrow',
   },
   // сразу получаем корабль, которым управляет данный капитан
-  include: Ship
-})
+  include: Ship,
+});
 ```
 
 **Создание, обновление и удаление ассоциаций**
@@ -1863,8 +1966,8 @@ const awesomeCaptaint = await Captain.findOne({
 ```js
 Bar.create({
   name: 'Bar',
-  fooId: 3
-})
+  fooId: 3,
+});
 // создаем `Bar`, принадлежащую `Foo` c `id` = 3
 ```
 
@@ -1875,61 +1978,68 @@ Bar.create({
 Немного упростим пример с кораблями и капитанами:
 
 ```js
-const Ship = sequelize.define(
-  'Ship',
-  { name: DataTypes.STRING },
-  { timestamps: false }
-)
+const Ship = sequelize.define('Ship', { name: DataTypes.STRING }, { timestamps: false });
 const Captain = sequelize.define(
   'Captain',
   { name: DataTypes.STRING },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 ```
 
-Вызов `Ship.belongsTo(Captain)` приводит к автоматическому созданию внешнего ключа и "геттеров":
+Вызов `Ship.belongsTo(Captain)` приводит к автоматическому созданию внешнего ключа и
+"геттеров":
 
 ```js
-Ship.belongsTo(Captain)
+Ship.belongsTo(Captain);
 
-console.log((await Ship.findAll({ include: Captain })).toJSON())
+console.log((await Ship.findAll({ include: Captain })).toJSON());
 // или
-console.log((await Ship.findAll({ include: 'Captain' })).toJSON())
+console.log((await Ship.findAll({ include: 'Captain' })).toJSON());
 
-const ship = await Ship.findOne()
-console.log((await ship.getCaptain()).toJSON())
+const ship = await Ship.findOne();
+console.log((await ship.getCaptain()).toJSON());
 ```
 
 Название внешнего ключа может быть указано при определении ассоциации:
 
 ```js
-Ship.belongsTo(Captain, { foreignKey: 'bossId' })
+Ship.belongsTo(Captain, { foreignKey: 'bossId' });
 ```
 
 Внешний ключ также может быть определен в виде синонима:
 
 ```js
-Ship.belongsTo(Captain, { as: 'leader' })
+Ship.belongsTo(Captain, { as: 'leader' });
 
 // будет выброшено исключение
-console.log((await Ship.findAll({ include: Captain })).toJSON())
+console.log((await Ship.findAll({ include: Captain })).toJSON());
 // следует использовать синоним
-console.log((await Ship.findAll({ include: 'leader' })).toJSON())
+console.log((await Ship.findAll({ include: 'leader' })).toJSON());
 ```
 
-Синонимы могут использоваться, например, для определения двух разных ассоциаций между одними и теми же моделями. Например, если у нас имеются модели `Mail` и `Person`, может потребоваться связать их дважды для представления `sender` (отправителя) и `receiver` (получателя) электронной почты. Если мы этого не сделаем, то вызов `mail.getPerson()` будет двусмысленным. Благодаря синонимам мы получим два метода: `mail.getSender()` и `mail.getReceiver()`.
+Синонимы могут использоваться, например, для определения двух разных ассоциаций между
+одними и теми же моделями. Например, если у нас имеются модели `Mail` и `Person`, может
+потребоваться связать их дважды для представления `sender` (отправителя) и `receiver`
+(получателя) электронной почты. Если мы этого не сделаем, то вызов `mail.getPerson()`
+будет двусмысленным. Благодаря синонимам мы получим два метода: `mail.getSender()` и
+`mail.getReceiver()`.
 
-При определении синонимов для ассоциаций `hasOne()` или `belongsTo()`, следует использовать сингулярную форму (единственное число), а для ассоциаций `hasMany()` или `belongsToMany()` - плюральную (множественное число).
+При определении синонимов для ассоциаций `hasOne()` или `belongsTo()`, следует
+использовать сингулярную форму (единственное число), а для ассоциаций `hasMany()` или
+`belongsToMany()` - плюральную (множественное число).
 
 Ничто не мешает нам использовать оба способа определения внешних ключей одновременно:
 
 ```js
-Ship.belongsTo(Captain, { as: 'leader', foreignKey: 'bossId' })
+Ship.belongsTo(Captain, { as: 'leader', foreignKey: 'bossId' });
 ```
 
 **Специальные методы/миксины**
 
-При определении ассоциации между двумя моделями, экземпляры этих моделей получают специальные методы для взаимодействия с другой частью ассоциации. Конкретные методы зависят от типа ассоциации. Предположим, что у нас имеется две связанные модели, `Foo` и `Bar`.
+При определении ассоциации между двумя моделями, экземпляры этих моделей получают
+специальные методы для взаимодействия с другой частью ассоциации. Конкретные методы
+зависят от типа ассоциации. Предположим, что у нас имеется две связанные модели, `Foo` и
+`Bar`.
 
 **`Foo.hasOne(Bar)`**
 
@@ -1938,20 +2048,20 @@ Ship.belongsTo(Captain, { as: 'leader', foreignKey: 'bossId' })
 - `foo.createBar()`
 
 ```js
-const foo = await Foo.create({ name: 'foo' })
-const bar = await Bar.create({ name: 'bar' })
-const bar2 = await Bar.create({ name: 'another bar' })
+const foo = await Foo.create({ name: 'foo' });
+const bar = await Bar.create({ name: 'bar' });
+const bar2 = await Bar.create({ name: 'another bar' });
 
-console.log(await foo.getBar()) // null
+console.log(await foo.getBar()); // null
 
-await foo.setBar(bar)
-console.log(await foo.getBar().name) // bar
+await foo.setBar(bar);
+console.log(await foo.getBar().name); // bar
 
-await foo.createBar({ name: 'and another bar' })
-console.log(await foo.getBar().name) // and another bar
+await foo.createBar({ name: 'and another bar' });
+console.log(await foo.getBar().name); // and another bar
 
-await foo.setBar(null) // удаляем ассоциацию
-console.log(await foo.getBar()) // null
+await foo.setBar(null); // удаляем ассоциацию
+console.log(await foo.getBar()); // null
 ```
 
 **`Foo.belongsTo(Bar)`**
@@ -1974,48 +2084,49 @@ console.log(await foo.getBar()) // null
 - `foo.createBar()`
 
 ```js
-const foo = await Foo.create({ name: 'foo' })
-const bar = await Bar.create({ name: 'bar' })
-const bar2 = await Bar.create({ name: 'another bar' })
+const foo = await Foo.create({ name: 'foo' });
+const bar = await Bar.create({ name: 'bar' });
+const bar2 = await Bar.create({ name: 'another bar' });
 
-console.log(await foo.getBars()) // []
-console.log(await foo.countBars()) // 0
-console.log(await foo.hasBar(bar)) // false
+console.log(await foo.getBars()); // []
+console.log(await foo.countBars()); // 0
+console.log(await foo.hasBar(bar)); // false
 
-await foo.addBars([bar, bar2])
-console.log(await foo.countBars) // 2
+await foo.addBars([bar, bar2]);
+console.log(await foo.countBars); // 2
 
-await foo.addBar(bar)
-console.log(await foo.countBars()) // 2
-console.log(await foo.hasBar(bar)) // true
+await foo.addBar(bar);
+console.log(await foo.countBars()); // 2
+console.log(await foo.hasBar(bar)); // true
 
-await foo.removeBar(bar2)
-console.log(await foo.countBars()) // 1
+await foo.removeBar(bar2);
+console.log(await foo.countBars()); // 1
 
-await foo.createBar({ name: 'and another bar' })
-console.log(await foo.countBars()) // 2
+await foo.createBar({ name: 'and another bar' });
+console.log(await foo.countBars()); // 2
 
-await foo.setBars([])
-console.log(await foo.countBars()) // 0
+await foo.setBars([]);
+console.log(await foo.countBars()); // 0
 ```
 
-Геттеры принимают такие же настройки, что и обычные поисковые методы (такие как `findAll()`):
+Геттеры принимают такие же настройки, что и обычные поисковые методы (такие как
+`findAll()`):
 
 ```js
 const easyTasks = await project.getTasks({
   where: {
     difficulty: {
-      [Op.lte]: 5
-    }
-  }
-})
+      [Op.lte]: 5,
+    },
+  },
+});
 
 const taskTitles = (
   await project.getTasks({
     attributes: ['title'],
-    raw: true
+    raw: true,
   })
-).map((task) => task.title)
+).map((task) => task.title);
 ```
 
 **`Foo.belongsToMany(Bar, { through: Baz })`**
@@ -2031,51 +2142,55 @@ const taskTitles = (
 - `foo.removeBars()`
 - `foo.createBar()`
 
-Для формирования названий методов вместо названия модели может использоваться синоним, например:
+Для формирования названий методов вместо названия модели может использоваться синоним,
+например:
 
 ```js
-Task.hasOne(User, { as: 'Author' })
+Task.hasOne(User, { as: 'Author' });
 ```
 
 - `task.getAuthor()`
 - `task.setAuthor()`
 - `task.createAuthor()`
 
-_Обратите внимание_: как было отмечено ранее, ассоциации определяются в паре. Это объясняется тем, что обе модели должны знать о существовании ассоциации между ними.
+_Обратите внимание_: как было отмечено ранее, ассоциации определяются в паре. Это
+объясняется тем, что обе модели должны знать о существовании ассоциации между ними.
 
 - допустим, что мы определили только ассоциацию `Foo.hasOne(Bar)`
 
 ```js
 // это будет работать
-await Foo.findOne({ include: Bar })
+await Foo.findOne({ include: Bar });
 
 // а здесь будет выброшено исключение
-await Bar.findOne({ include: Foo })
+await Bar.findOne({ include: Foo });
 ```
 
 - если мы определим пару ассоциаций, то все будет в порядке
 
 ```js
-Bar.belongsTo(Foo)
+Bar.belongsTo(Foo);
 
 // работает
-await Foo.findOne({ include: Bar })
+await Foo.findOne({ include: Bar });
 
 // и это тоже
-await Bar.findOne({ include: Foo })
+await Bar.findOne({ include: Foo });
 ```
 
 Синонимы позволяют определять несколько ассоциаций между одними и теми же моделями:
 
 ```js
-Team.hasOne(Game, { as: 'HomeTeam', foreignKey: 'homeTeamId' })
-Team.hasOne(Game, { as: 'AwayTeam', foreignKey: 'awayTeamId' })
-Game.belongsTo(Team)
+Team.hasOne(Game, { as: 'HomeTeam', foreignKey: 'homeTeamId' });
+Team.hasOne(Game, { as: 'AwayTeam', foreignKey: 'awayTeamId' });
+Game.belongsTo(Team);
 ```
 
 **Создание ассоциаций с помощью полей, которые не являются первичными ключами**
 
-В качестве внешних ключей могут использоваться не только основные ключи, но и другие поля. Единственным требованием к полю, используемому в качестве внешнего ключа, является то, что его значение должно быть уникальным, в противном случае, это не будет иметь смысла.
+В качестве внешних ключей могут использоваться не только основные ключи, но и другие поля.
+Единственным требованием к полю, используемому в качестве внешнего ключа, является то, что
+его значение должно быть уникальным, в противном случае, это не будет иметь смысла.
 
 **`belongsTo()`**
 
@@ -2084,32 +2199,29 @@ Game.belongsTo(Team)
 Снова вернемся к примеру с кораблями и ограничим уникальность имен капитанов:
 
 ```js
-const Ship = sequelize.define(
-  'Ship',
-  { name: DataTypes.STRING },
-  { timestamps: false }
-)
+const Ship = sequelize.define('Ship', { name: DataTypes.STRING }, { timestamps: false });
 const Captain = sequelize.define(
   'Captain',
   {
-    name: { type: DataTypes.STRING, unique: true }
+    name: { type: DataTypes.STRING, unique: true },
   },
-  { timestamp: false }
-)
+  { timestamp: false },
+);
 ```
 
-Теперь в качестве внешнего ключа вместо `captainId` можно использовать `captainName`. Для этого в ассоциации необходимо определить настройки `targetKey` и `foreignKey`:
+Теперь в качестве внешнего ключа вместо `captainId` можно использовать `captainName`. Для
+этого в ассоциации необходимо определить настройки `targetKey` и `foreignKey`:
 
 ```js
-Ship.belongsTo(Captain, { targetKey: 'name', foreignKey: 'captainName' })
+Ship.belongsTo(Captain, { targetKey: 'name', foreignKey: 'captainName' });
 ```
 
 После этого мы можем делать так:
 
 ```js
-await Captain.create({ name: 'Jack Sparrow' })
-const ship = Ship.create({ name: 'Black Pearl', captainName: 'Jack Sparrow' })
-console.log((await ship.getCaptain()).name) // Jack Sparrow
+await Captain.create({ name: 'Jack Sparrow' });
+const ship = Ship.create({ name: 'Black Pearl', captainName: 'Jack Sparrow' });
+console.log((await ship.getCaptain()).name); // Jack Sparrow
 ```
 
 **`hasOne()` и `hasMany()`**
@@ -2122,39 +2234,39 @@ const Foo = sequelize.define(
   {
     name: {
       type: DataTypes.STRING,
-      unique: true
-    }
+      unique: true,
+    },
   },
   {
-    timestamps: false
-  }
-)
+    timestamps: false,
+  },
+);
 const Bar = sequelize.define(
   'bar',
   {
     title: {
       type: DataTypes.STRING,
-      unique: true
-    }
+      unique: true,
+    },
   },
   {
-    timestamps: false
-  }
-)
+    timestamps: false,
+  },
+);
 const Baz = sequelize.define(
   'baz',
   {
-    summary: DataTypes.STRING
+    summary: DataTypes.STRING,
   },
   {
-    timestamps: false
-  }
-)
-Foo.hasOne(Bar, { sourceKey: 'name', foreignKey: 'fooName' })
-Bar.hasMany(Baz, { sourceKey: 'title', foreignKey: 'barTitle' })
+    timestamps: false,
+  },
+);
+Foo.hasOne(Bar, { sourceKey: 'name', foreignKey: 'fooName' });
+Bar.hasMany(Baz, { sourceKey: 'title', foreignKey: 'barTitle' });
 
-await Bar.setFoo('Название для `Foo`')
-await Bar.addBar('Название для `Bar`')
+await Bar.setFoo('Название для `Foo`');
+await Bar.addBar('Название для `Bar`');
 ```
 
 **`belongsToMany()`**
@@ -2165,37 +2277,38 @@ await Bar.addBar('Название для `Bar`')
 const Foo = sequelize.define(
   'foo',
   {
-    name: { type: DataTypes.STRING, unique: true }
+    name: { type: DataTypes.STRING, unique: true },
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 const Bar = sequelize.define(
   'bar',
   {
-    title: { type: DataTypes.STRING, unique: true }
+    title: { type: DataTypes.STRING, unique: true },
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 ```
 
 Далее выполняется один из следующих 4 шагов:
 
-- между `Foo` и `Bar` определяются отношения многие-ко-многим с помощью дефолтных первичных ключей
+- между `Foo` и `Bar` определяются отношения многие-ко-многим с помощью дефолтных
+  первичных ключей
 
 ```js
-Foo.belongsToMany(Bar, { through: 'foo_bar' })
+Foo.belongsToMany(Bar, { through: 'foo_bar' });
 ```
 
 - отношения определяются с помощью основного ключа для `Foo` и кастомного ключа для `Bar`
 
 ```js
-Foo.belongsToMany(Bar, { through: 'foo_bar', targetKey: 'title' })
+Foo.belongsToMany(Bar, { through: 'foo_bar', targetKey: 'title' });
 ```
 
 - отношения определяются с помощью кастомного ключа для `Foo` и первичного ключа для `Bar`
 
 ```js
-Foo.belongsToMany(Bar, { through: 'foo_bar', sourceKey: 'name' })
+Foo.belongsToMany(Bar, { through: 'foo_bar', sourceKey: 'name' });
 ```
 
 - отношения определяются с помощью кастомных ключей для обеих моделей
@@ -2204,15 +2317,19 @@ Foo.belongsToMany(Bar, { through: 'foo_bar', sourceKey: 'name' })
 Foo.belongsToMany(Bar, {
   through: 'foo_bar',
   sourceKey: 'name',
-  targetKey: 'title'
-})
+  targetKey: 'title',
+});
 ```
 
 Еще раз в качестве напоминания:
 
-- `A.belongsTo(B)` - внешний ключ хранится в модели-источнике (`A`), ссылка (`targetKey`) - в целевой модели (`B`)
-- `A.hasOne(B)` и `A.hasMany(B)` - внешний ключ хранится в целевой модели (`B`), а ссылка (`sourceKey`) - в источнике (`A`)
-- `A.belongsToMany(B)` - используется соединительная таблица, в которой хранятся ключи для `sourceKey` и `targetKey`, `sourceKey` соответствует некоторому полю в источнике (`A`), `targetKey` - некоторому полю в целевой модели (`B`)
+- `A.belongsTo(B)` - внешний ключ хранится в модели-источнике (`A`), ссылка
+  (`targetKey`) - в целевой модели (`B`)
+- `A.hasOne(B)` и `A.hasMany(B)` - внешний ключ хранится в целевой модели (`B`), а ссылка
+  (`sourceKey`) - в источнике (`A`)
+- `A.belongsToMany(B)` - используется соединительная таблица, в которой хранятся ключи для
+  `sourceKey` и `targetKey`, `sourceKey` соответствует некоторому полю в источнике (`A`),
+  `targetKey` - некоторому полю в целевой модели (`B`)
 
 <div align="right">
   <b><a href="#">↥ Наверх</a></b>
@@ -2220,9 +2337,15 @@ Foo.belongsToMany(Bar, {
 
 ## "Параноик"
 
-`Sequelize` поддерживает создание так называемых "параноидальных" (paranoid) таблиц. Из таких таблиц данные по-настоящему не удаляются. Вместо этого, в них добавляется колонка `deletedAt` в момент выполнения запроса на удаление. Это означает, что в таких таблицах выполняется мягкое удаление (soft-deletion).
+`Sequelize` поддерживает создание так называемых "параноидальных" (paranoid) таблиц. Из
+таких таблиц данные по-настоящему не удаляются. Вместо этого, в них добавляется колонка
+`deletedAt` в момент выполнения запроса на удаление. Это означает, что в таких таблицах
+выполняется мягкое удаление (soft-deletion).
 
-Для создания параноика используется настройка `paranoid: true`. _Обратите внимание_: для работы такой таблицы требуется фиксация времени создания и обновления таблицы. Поэтому для них нельзя устанавливать `timestamps: false`. Название поля `deletedAt` можно кастомизировать.
+Для создания параноика используется настройка `paranoid: true`. _Обратите внимание_: для
+работы такой таблицы требуется фиксация времени создания и обновления таблицы. Поэтому для
+них нельзя устанавливать `timestamps: false`. Название поля `deletedAt` можно
+кастомизировать.
 
 ```js
 const Post = sequelize.define(
@@ -2232,9 +2355,9 @@ const Post = sequelize.define(
   },
   {
     paranoid: true,
-    deletedAt: 'destroyTime'
-  }
-)
+    deletedAt: 'destroyTime',
+  },
+);
 ```
 
 При вызове метода `destroy()` производится мягкое удаление:
@@ -2242,9 +2365,9 @@ const Post = sequelize.define(
 ```js
 await Post.destroy({
   where: {
-    id: 1
-  }
-}) // UPDATE "posts" SET "deletedAt"=[timestamp] WHERE "deletedAt" IS NULL AND "id" = 1;
+    id: 1,
+  },
+}); // UPDATE "posts" SET "deletedAt"=[timestamp] WHERE "deletedAt" IS NULL AND "id" = 1;
 ```
 
 Для окончательного удаления параноика следует использовать настройку `force: true`:
@@ -2252,48 +2375,51 @@ await Post.destroy({
 ```js
 await Post.destroy({
   where: {
-    id: 1
+    id: 1,
   },
-  force: true
-})
+  force: true,
+});
 ```
 
 Для восстановления "удаленного" значения используется метод `restore()`:
 
 ```js
-const post = await Post.create({ title: 'test' })
-await post.destroy()
-console.log('Пост удален мягко!')
-await post.restore()
-console.log('Пост восстановлен!')
+const post = await Post.create({ title: 'test' });
+await post.destroy();
+console.log('Пост удален мягко!');
+await post.restore();
+console.log('Пост восстановлен!');
 
 // восстанавливаем "удаленные" посты, набравшие больше 100 лайков, с помощью статического метода `restore()`
 await Post.restore({
   where: {
     likes: {
-      [Op.gt]: 100
-    }
-  }
-})
+      [Op.gt]: 100,
+    },
+  },
+});
 ```
 
-По умолчанию запросы, выполняемые `Sequelize`, будут игнорировать "удаленные" записи. Это означает, что метод `findAll()`, например, вернет только "неудаленные" записи, а метод `findByPk()` при передаче ему первичного ключа "удаленной" записи, вернет `null`.
+По умолчанию запросы, выполняемые `Sequelize`, будут игнорировать "удаленные" записи. Это
+означает, что метод `findAll()`, например, вернет только "неудаленные" записи, а метод
+`findByPk()` при передаче ему первичного ключа "удаленной" записи, вернет `null`.
 
-Для учета "удаленных" записей при выполнении запроса используется настройка `paranoid: false`:
+Для учета "удаленных" записей при выполнении запроса используется настройка
+`paranoid: false`:
 
 ```js
-await Post.findByPk(123) // null
-await Post.findByPk(123, { paranoid: false }) // post
+await Post.findByPk(123); // null
+await Post.findByPk(123, { paranoid: false }); // post
 
 await Post.findAll({
-  where: { foo: 'bar' }
-}) // []
+  where: { foo: 'bar' },
+}); // []
 await Post.findAll(
   {
-    where: { foo: 'bar' }
+    where: { foo: 'bar' },
   },
-  { paranoid: false }
-) // [post]
+  { paranoid: false },
+); // [post]
 ```
 
 <div align="right">
@@ -2302,33 +2428,34 @@ await Post.findAll(
 
 ## Нетерпеливая загрузка
 
-Нетерпеливая загрузка - это одновременная загрузка основной и связанных с ней моделей. На уровне `SQL` это означает одно или более соединение (join).
+Нетерпеливая загрузка - это одновременная загрузка основной и связанных с ней моделей. На
+уровне `SQL` это означает одно или более соединение (join).
 
 В `Sequelize` нетерпеливая загрузка, обычно, выполняется с помощью настройки `include`.
 
 В дальнейших примерах будут использоваться следующие модели:
 
 ```js
-const User = sequelize.define('User', { name: DataTypes.STRING })
-const Task = sequelize.define('Task', { name: DataTypes.STRING })
+const User = sequelize.define('User', { name: DataTypes.STRING });
+const Task = sequelize.define('Task', { name: DataTypes.STRING });
 const Tool = sequelize.define(
   'Tool',
   {
     name: DataTypes.STRING,
-    size: DataTypes.STRING
+    size: DataTypes.STRING,
   },
-  { timestamps: false }
-)
-User.hasMany(Task)
-Task.belongsTo(User)
-User.hasMany(Tool, { as: 'Instruments' })
+  { timestamps: false },
+);
+User.hasMany(Task);
+Task.belongsTo(User);
+User.hasMany(Tool, { as: 'Instruments' });
 ```
 
 **Получение одного связанного экземпляра**
 
 ```js
-const tasks = await Task.findAll({ include: User })
-console.log(JSON.stringify(tasks, null, 2))
+const tasks = await Task.findAll({ include: User });
+console.log(JSON.stringify(tasks, null, 2));
 /*
 [{
   "name": "A Task",
@@ -2345,8 +2472,8 @@ console.log(JSON.stringify(tasks, null, 2))
 **Получение всех связанных экземпляров**
 
 ```js
-const users = await User.findAll({ include: Task })
-console.log(JSON.stringify(users, null, 2))
+const users = await User.findAll({ include: Task });
+console.log(JSON.stringify(users, null, 2));
 /*
 [{
   "name": "John Smith",
@@ -2366,9 +2493,9 @@ console.log(JSON.stringify(users, null, 2))
 
 ```js
 const users = await User.findAll({
-  include: { model: Tool, as: 'Instruments' }
-})
-console.log(JSON.stringify(users, null, 2))
+  include: { model: Tool, as: 'Instruments' },
+});
+console.log(JSON.stringify(users, null, 2));
 /*
 [{
   "name": "John Doe",
@@ -2385,26 +2512,30 @@ console.log(JSON.stringify(users, null, 2))
 Существуют и другие способы получения ассоциаций через синонимы:
 
 ```js
-User.findAll({ include: 'Instruments' })
-User.findAll({ include: { assosiation: 'Instruments' } })
+User.findAll({ include: 'Instruments' });
+User.findAll({ include: { assosiation: 'Instruments' } });
 ```
 
 **Фильтрация с помощью нетерпеливой загрузки**
 
-Настройка `required` позволяет фильтровать результат выполняемого запроса - конвертировать `OUTER JOIN` в `INNER JOIN`. В следующем примере возвращаются только те пользователи, у которых есть задачи:
+Настройка `required` позволяет фильтровать результат выполняемого запроса - конвертировать
+`OUTER JOIN` в `INNER JOIN`. В следующем примере возвращаются только те пользователи, у
+которых есть задачи:
 
 ```js
 User.findAll({
   include: {
     model: Task,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 ```
 
 **Фильтрация на уровне связанной модели**
 
-Фильтрацию на уровне связанной модели можно выполнять с помощью настройки `where`. В следующем примере возвращаются только пользователи, у которых имеется хотя бы один инструмент НЕ маленького размера:
+Фильтрацию на уровне связанной модели можно выполнять с помощью настройки `where`. В
+следующем примере возвращаются только пользователи, у которых имеется хотя бы один
+инструмент НЕ маленького размера:
 
 ```js
 User.findAll({
@@ -2413,11 +2544,11 @@ User.findAll({
     as: 'Instruments',
     where: {
       size: {
-        [Op.ne]: 'small'
-      }
-    }
-  }
-})
+        [Op.ne]: 'small',
+      },
+    },
+  },
+});
 ```
 
 Генерируемый `SQL-запрос` выглядит так:
@@ -2436,35 +2567,37 @@ INNER JOIN `tools` AS `Instruments` ON
   `Instruments`.`size` != 'small';
 ```
 
-В следующем примере настройка `where` применяется для фильтрации значений связанной модели с помощью функции `Sequelize.col()`:
+В следующем примере настройка `where` применяется для фильтрации значений связанной модели
+с помощью функции `Sequelize.col()`:
 
 ```js
 Project.findAll({
   include: {
     model: Task,
     where: {
-      state: Sequelize.col('project.state')
-    }
-  }
-})
+      state: Sequelize.col('project.state'),
+    },
+  },
+});
 ```
 
 **Сложная фильтрация с помощью `where` на верхнем уровне**
 
-`Sequelize` предоставляет специальный синтаксис `$nested.column$` для реализации фильтрации значений вложенных колонок с помощью `where`:
+`Sequelize` предоставляет специальный синтаксис `$nested.column$` для реализации
+фильтрации значений вложенных колонок с помощью `where`:
 
 ```js
 User.findAll({
   where: {
-    '$Instruments.size$': { [Op.ne]: 'small' }
+    '$Instruments.size$': { [Op.ne]: 'small' },
   },
   include: [
     {
       model: Tool,
-      as: 'Instruments'
-    }
-  ]
-})
+      as: 'Instruments',
+    },
+  ],
+});
 ```
 
 Генерируемый `SQL-запрос` выглядит так:
@@ -2485,7 +2618,9 @@ WHERE `Instruments`.`size` != 'small';
 
 При этом, уровень вложенности фильтруемых колонок значения не имеет.
 
-Для лучшего понимания разницы между использование внутреннего `where` (в `include`) с настройкой `required` и без нее, а также использованием `where` на верхнем уровне с помощью синтаксиса `$nested.column$`, рассмотрим 4 примера:
+Для лучшего понимания разницы между использование внутреннего `where` (в `include`) с
+настройкой `required` и без нее, а также использованием `where` на верхнем уровне с
+помощью синтаксиса `$nested.column$`, рассмотрим 4 примера:
 
 ```js
 // внутренний `where` с `required: true` по умолчанию
@@ -2495,11 +2630,11 @@ await User.findAll({
     as: 'Instruments',
     where: {
       size: {
-        [Op.ne]: 'small'
-      }
-    }
-  }
-})
+        [Op.ne]: 'small',
+      },
+    },
+  },
+});
 
 // внутренний `where` с `required: false`
 await User.findAll({
@@ -2508,39 +2643,39 @@ await User.findAll({
     as: 'Instruments',
     where: {
       size: {
-        [Op.ne]: 'small'
+        [Op.ne]: 'small',
       },
-      required: false
-    }
-  }
-})
+      required: false,
+    },
+  },
+});
 
 // использование `where` на верхнем уровне с `required: false`
 await User.findAll({
   where: {
     '$Instruments.size$': {
-      [Op.ne]: 'small'
-    }
+      [Op.ne]: 'small',
+    },
   },
   include: {
     model: Tool,
-    as: 'Instruments'
-  }
-})
+    as: 'Instruments',
+  },
+});
 
 // использование `where` на верхнем уровне с `required: true`
 await User.findAll({
   where: {
     '$Instruments.size$': {
-      [Op.ne]: 'small'
-    }
+      [Op.ne]: 'small',
+    },
   },
   include: {
     model: Tool,
     as: 'Instruments',
-    required: true
-  }
-})
+    required: true,
+  },
+});
 ```
 
 Генерируемые `SQL-запросы`:
@@ -2578,17 +2713,17 @@ Foo.findAll({
   include: [
     {
       model: Bar,
-      required: true
+      required: true,
     },
     {
       model: Baz,
       where: {
         /* ... */
-      }
+      },
     },
-    Qux // сокращение для `{ model: Qux }`
-  ]
-})
+    Qux, // сокращение для `{ model: Qux }`
+  ],
+});
 ```
 
 **Нетерпеливая загрузка в случае с отношениями многие-ко-многим**
@@ -2596,17 +2731,17 @@ Foo.findAll({
 В данном случае `Sequelize` автоматически добавляет соединительную таблицу:
 
 ```js
-const Foo = sequelize.define('Foo', { name: DataTypes.STRING })
-const Bar = sequelize.define('Bar', { name: DataTypes.STRING })
-Foo.belongsToMany(Bar, { through: 'Foo_Bar' })
-Bar.belongsToMany(Foo, { through: 'Foo_Bar' })
+const Foo = sequelize.define('Foo', { name: DataTypes.STRING });
+const Bar = sequelize.define('Bar', { name: DataTypes.STRING });
+Foo.belongsToMany(Bar, { through: 'Foo_Bar' });
+Bar.belongsToMany(Foo, { through: 'Foo_Bar' });
 
-await sequelize.sync()
-const foo = await Foo.create({ name: 'foo' })
-const bar = await Bar.create({ name: 'bar' })
-await foo.addBar(bar)
-const fetchedFoo = Foo.findOne({ include: Bar })
-copnsole.log(JSON.stringify(fetchedFoo, null, 2))
+await sequelize.sync();
+const foo = await Foo.create({ name: 'foo' });
+const bar = await Bar.create({ name: 'bar' });
+await foo.addBar(bar);
+const fetchedFoo = Foo.findOne({ include: Bar });
+copnsole.log(JSON.stringify(fetchedFoo, null, 2));
 /*
 {
   "id": 1,
@@ -2625,7 +2760,8 @@ copnsole.log(JSON.stringify(fetchedFoo, null, 2))
 */
 ```
 
-Настройка `attributes` позволяет определять включаемые в ответ поля соединительной таблицы:
+Настройка `attributes` позволяет определять включаемые в ответ поля соединительной
+таблицы:
 
 ```js
 Foo.findAll({
@@ -2635,11 +2771,11 @@ Foo.findAll({
       through: {
         attributes: [
           /* атрибуты соединительной таблицы */
-        ]
-      }
-    }
-  ]
-})
+        ],
+      },
+    },
+  ],
+});
 ```
 
 В случае, когда нам не нужны такие поля, в `attributes` передается пустой массив:
@@ -2648,9 +2784,9 @@ Foo.findAll({
 Foo.findOne({
   include: {
     model: Bar,
-    attributes: []
-  }
-})
+    attributes: [],
+  },
+});
 /*
 {
   "id": 1,
@@ -2674,12 +2810,12 @@ User.findAll({
       model: Project,
       through: {
         where: {
-          completed: true
-        }
-      }
-    }
-  ]
-})
+          completed: true,
+        },
+      },
+    },
+  ],
+});
 ```
 
 Генерируемый `SQL-запрос` (`sqlite`):
@@ -2705,10 +2841,10 @@ LEFT OUTER JOIN `Projects` AS `Projects` ON
 
 ```js
 // получаем все модели, связанные с `User`
-User.findAll({ include: { all: true } })
+User.findAll({ include: { all: true } });
 
 // получаем все модели, связанные с `User`, вместе со связанными с ними моделями
-User.findAll({ include: { all: true, nested: true } })
+User.findAll({ include: { all: true, nested: true } });
 ```
 
 **Сортировка связанных экземпляров при нетерпеливой загрузке**
@@ -2721,46 +2857,50 @@ Company.findAll({
   order: [
     // массив для сортировки начинается с модели
     // затем следует название поля и порядок сортировки
-    [Division, 'name', 'ASC']
-  ]
-})
+    [Division, 'name', 'ASC'],
+  ],
+});
 
 Company.findAll({
   include: Division,
-  order: [[Division, 'name', 'DESC']]
-})
+  order: [[Division, 'name', 'DESC']],
+});
 
 Company.findAll({
   // с помощью синонима
   include: { model: Division, as: 'Div' },
-  order: [[{ model: Division, as: 'Div' }, 'name', 'DESC']]
-})
+  order: [[{ model: Division, as: 'Div' }, 'name', 'DESC']],
+});
 
 Company.findAll({
   // несколько уровней вложенности
   include: {
     model: Division,
-    include: Department
+    include: Department,
   },
-  order: [[Division, Department, 'name', 'DESC']]
-})
+  order: [[Division, Department, 'name', 'DESC']],
+});
 ```
 
-В случае с отношениями многие-ко-многим, у нас имеется возможность выполнять сортировку по атрибутам соединительной таблицы. Предположим, что между моделями `Division` и `Department` существуют такие отношения, а соединительная таблица между ними называется `DepartmentDivision`:
+В случае с отношениями многие-ко-многим, у нас имеется возможность выполнять сортировку по
+атрибутам соединительной таблицы. Предположим, что между моделями `Division` и
+`Department` существуют такие отношения, а соединительная таблица между ними называется
+`DepartmentDivision`:
 
 ```js
 Company.findAll({
   include: {
     model: Division,
-    include: Department
+    include: Department,
   },
-  order: [[Division, DepartmentDivision, 'name', 'ASC']]
-})
+  order: [[Division, DepartmentDivision, 'name', 'ASC']],
+});
 ```
 
 **Вложенная нетерпеливая загрузка**
 
-Вложенная нетерпеливая загрузка может использоваться для загрузки всех связанных экземпляров связанного экземпляра:
+Вложенная нетерпеливая загрузка может использоваться для загрузки всех связанных
+экземпляров связанного экземпляра:
 
 ```js
 const users = await User.findAll({
@@ -2771,11 +2911,11 @@ const users = await User.findAll({
       model: Teacher,
       include: [
         /* и т.д. */
-      ]
-    }
-  }
-})
-console.log(JSON.stringify(users, null, 2))
+      ],
+    },
+  },
+});
+console.log(JSON.stringify(users, null, 2));
 /*
 [{
   "name": "John Smith",
@@ -2792,7 +2932,10 @@ console.log(JSON.stringify(users, null, 2))
 */
 ```
 
-Данный запрос выполняет внешнее соединение (`OUTER JOIN`). Применение настройки `where` к связанной модели произведет внутреннее соединение (`INNER JOIN`) - будут возвращены только экземпляры, которые имеют совпадающие подмодели. Для получения всех родительских экземпляров используется настройка `required: false`:
+Данный запрос выполняет внешнее соединение (`OUTER JOIN`). Применение настройки `where` к
+связанной модели произведет внутреннее соединение (`INNER JOIN`) - будут возвращены только
+экземпляры, которые имеют совпадающие подмодели. Для получения всех родительских
+экземпляров используется настройка `required: false`:
 
 ```js
 User.findAll({
@@ -2804,34 +2947,38 @@ User.findAll({
         {
           model: Teacher,
           where: {
-            school: 'Woodstock Music School'
+            school: 'Woodstock Music School',
           },
-          required: false
-        }
-      ]
-    }
-  ]
-})
+          required: false,
+        },
+      ],
+    },
+  ],
+});
 ```
 
-Данный запрос вернет всех пользователей и их инструменты, но только тех учителей, которые связаны с `Woodstock Music School`.
+Данный запрос вернет всех пользователей и их инструменты, но только тех учителей, которые
+связаны с `Woodstock Music School`.
 
-Утилита `findAndCountAll()` поддерживает `include`. При этом, только модели, помеченные как `required`, будут учитываться `count`.
+Утилита `findAndCountAll()` поддерживает `include`. При этом, только модели, помеченные
+как `required`, будут учитываться `count`.
 
 ```js
 User.findAndCountAll({
   include: [{ model: Profile, required: true }],
-  limit: 3
-})
+  limit: 3,
+});
 ```
 
-В данном случае мы получим 3 пользователей, у которых есть профили. Если мы опустим `required`, то получим 3 пользователей, независимо от того, имеется у них профиль или нет. Включение `where` в `include` автоматически делает его обязательным.
+В данном случае мы получим 3 пользователей, у которых есть профили. Если мы опустим
+`required`, то получим 3 пользователей, независимо от того, имеется у них профиль или нет.
+Включение `where` в `include` автоматически делает его обязательным.
 
 ```js
 User.findAndCountAll({
   include: [{ model: Profile, where: { active: true } }],
-  limit: 3
-})
+  limit: 3,
+});
 ```
 
 <div align="right">
@@ -2840,7 +2987,8 @@ User.findAndCountAll({
 
 ## Создание экземпляров с ассоциациями
 
-Экземпляр может быть создан сразу с вложенной ассоциацией. Однако, выполнение обновлений и удалений вложенных объектов в настоящее время не поддерживается.
+Экземпляр может быть создан сразу с вложенной ассоциацией. Однако, выполнение обновлений и
+удалений вложенных объектов в настоящее время не поддерживается.
 
 **`belongsTo()`, `hasMany()`, `hasOne()`**
 
@@ -2848,23 +2996,23 @@ User.findAndCountAll({
 
 ```js
 const Product = sequelize.define('product', {
-  title: DataTypes.STRING
-})
+  title: DataTypes.STRING,
+});
 const User = sequelize.define('user', {
   firstName: DataTypes.STRING,
-  lastName: DataTypes.STRING
-})
+  lastName: DataTypes.STRING,
+});
 const Address = sequelize.define('address', {
   type: DataTypes.STRING,
   line1: DataTypes.STRING,
   line2: DataTypes.STRING,
   city: DataTypes.STRING,
   state: DataTypes.STRING,
-  zip: DataTypes.STRING
-})
+  zip: DataTypes.STRING,
+});
 // сохраняем значения, возвращаемые при создании ассоциации для дальнейшего использования
-Product.User = Product.belongsTo(User)
-User.Address = User.hasMany(Address)
+Product.User = Product.belongsTo(User);
+User.Address = User.hasMany(Address);
 ```
 
 Новый `Product`, `User` и один или более `Address` могут быть созданы одновременно:
@@ -2882,50 +3030,54 @@ const product = await Product.create(
           line1: 'street',
           city: 'city',
           state: 'state',
-          zip: '12345'
-        }
-      ]
-    }
+          zip: '12345',
+        },
+      ],
+    },
   },
   {
     include: [
       {
         assosiation: Product.User,
-        include: [User.Addresses]
-      }
-    ]
-  }
-)
+        include: [User.Addresses],
+      },
+    ],
+  },
+);
 ```
 
-_Обратите внимание_: наша модель называется `user` с маленькой буквы `u`. Это означает, что свойство объекта также должно называться `user`. Если бы мы определили модель как `User`, то для соответствующего свойства нужно было бы использовать `User`. Тоже самое касается `addresses`, учитывая плюрализацию (перевод во множетвенное число).
+_Обратите внимание_: наша модель называется `user` с маленькой буквы `u`. Это означает,
+что свойство объекта также должно называться `user`. Если бы мы определили модель как
+`User`, то для соответствующего свойства нужно было бы использовать `User`. Тоже самое
+касается `addresses`, учитывая плюрализацию (перевод во множетвенное число).
 
 Последний пример может быть расширен для поддержки ассоциаций:
 
 ```js
-const Creator = Product.belongsTo(User, { as: 'creator' })
+const Creator = Product.belongsTo(User, { as: 'creator' });
 
 const product = await Product.create(
   {
     title: 'Chair',
     creator: {
       firstName: 'John',
-      lastName: 'Smith'
-    }
+      lastName: 'Smith',
+    },
   },
   {
-    include: [Creator]
-  }
-)
+    include: [Creator],
+  },
+);
 ```
 
-Имеется возможность связать продукт с несколькими тегами. Соответствующая настройка может выглядеть так:
+Имеется возможность связать продукт с несколькими тегами. Соответствующая настройка может
+выглядеть так:
 
 ```js
 const Tag = sequelize.define('tag', {
-  name: DataTypes.STRING
-})
-Product.hasMany(Tag)
+  name: DataTypes.STRING,
+});
+Product.hasMany(Tag);
 // или `belongsToMany()`
 ```
 
@@ -2936,12 +3088,12 @@ const product = await Product.create(
   {
     id: 1,
     title: 'Chair',
-    tags: [{ name: 'Alpha' }, { name: 'Beta' }]
+    tags: [{ name: 'Alpha' }, { name: 'Beta' }],
   },
   {
-    include: [Tag]
-  }
-)
+    include: [Tag],
+  },
+);
 ```
 
 И с поддержкой синонимов:
@@ -2977,42 +3129,48 @@ const User = sequelize.define(
   'user',
   {
     username: DataTypes.STRING,
-    points: DataTypes.INTEGER
+    points: DataTypes.INTEGER,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 const Profile = sequelize.define(
   'profile',
   {
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
   },
-  { timastamps: false }
-)
+  { timastamps: false },
+);
 
-User.belongsToMany(Profile, { through: 'User_Profiles' })
-Profile.belongsToMany(User, { through: 'User_Profiles' })
+User.belongsToMany(Profile, { through: 'User_Profiles' });
+Profile.belongsToMany(User, { through: 'User_Profiles' });
 ```
 
-Передавая строку в `through`, мы просим `Sequelize` автоматически создать модель - соединительную таблицу `User_Profiles`, содержащую 2 колонки: `userId` и `profileId`. В эти колонки будут записываться уникальные композиционные (unique composite) ключи.
+Передавая строку в `through`, мы просим `Sequelize` автоматически создать модель -
+соединительную таблицу `User_Profiles`, содержащую 2 колонки: `userId` и `profileId`. В
+эти колонки будут записываться уникальные композиционные (unique composite) ключи.
 
-Определение соединительной таблицы самостоятельно имеет некоторые преимущества по сравнению с ее автоматической генерацией. Мы, например, можем определять дополнительные атрибуты в такой таблице:
+Определение соединительной таблицы самостоятельно имеет некоторые преимущества по
+сравнению с ее автоматической генерацией. Мы, например, можем определять дополнительные
+атрибуты в такой таблице:
 
 ```js
 const User_Profile = sequelize.define(
   'User_Profile',
   {
-    selfGranted: DataTypes.BOOLEAN
+    selfGranted: DataTypes.BOOLEAN,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 ```
 
-После этого мы можем получать дооплнительную информацию из соединительной таблицы. Например, при вызове `user.addProfile()` мы можем передавать значения для дополнительной колонки с помощью настройки `through`:
+После этого мы можем получать дооплнительную информацию из соединительной таблицы.
+Например, при вызове `user.addProfile()` мы можем передавать значения для дополнительной
+колонки с помощью настройки `through`:
 
 ```js
-const amidala = await User.create({ username: 'p4dm3', points: 1000 })
-const queen = await Profile.create({ name: 'Queen' })
-await amidala.addProfile(queen, { through: { selfGranted: false } })
+const amidala = await User.create({ username: 'p4dm3', points: 1000 });
+const queen = await Profile.create({ name: 'Queen' });
+await amidala.addProfile(queen, { through: { selfGranted: false } });
 ```
 
 Как отмечалось, все отношения могут быть определены в одном вызове `create()`.
@@ -3026,24 +3184,26 @@ const amidala = await User.create(
       {
         name: 'Queen',
         User_Profile: {
-          selfGranted: true
-        }
-      }
-    ]
+          selfGranted: true,
+        },
+      },
+    ],
   },
   {
-    include: Profile
-  }
-)
+    include: Profile,
+  },
+);
 ```
 
-Вероятно, вы заметили, что в таблице `User_Profiles` отсутствует поле `id`. Дело в том, что такая таблица содержит уникальный композиционный ключ, название которого генерируется автоматически, но это можно изменить с помощью настройки `uniqueKey`:
+Вероятно, вы заметили, что в таблице `User_Profiles` отсутствует поле `id`. Дело в том,
+что такая таблица содержит уникальный композиционный ключ, название которого генерируется
+автоматически, но это можно изменить с помощью настройки `uniqueKey`:
 
 ```js
 User.belongsToMany(Profile, {
   through: User_Profile,
-  uniqueKey: 'customUnique'
-})
+  uniqueKey: 'customUnique',
+});
 ```
 
 Также вместо уникального, в соединительной таблице можно определить первичный ключ:
@@ -3056,12 +3216,12 @@ const User_Profile = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false
+      allowNull: false,
     },
-    selfGranted: DataTypes.BOOLEAN
+    selfGranted: DataTypes.BOOLEAN,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 ```
 
 **Ассоциация "супер многие-ко-многим"**
@@ -3073,18 +3233,18 @@ const User = sequelize.define(
   'user',
   {
     username: DataTypes.STRING,
-    points: DataTypes.INTEGER
+    points: DataTypes.INTEGER,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 
 const Profile = sequelize.define(
   'profile',
   {
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 
 // соединительная таблица
 const Grant = sequelize.define(
@@ -3094,63 +3254,67 @@ const Grant = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false
+      allowNull: false,
     },
-    selfGranted: DataTypes.BOOLEAN
+    selfGranted: DataTypes.BOOLEAN,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 ```
 
-Определяем отношения многие-ко-многим между моделями `User` и `Profile` через модель `Grant`:
+Определяем отношения многие-ко-многим между моделями `User` и `Profile` через модель
+`Grant`:
 
 ```js
-User.belongsToMany(Profile, { through: Grant })
-Profile.belongsToMany(User, { through: Grant })
+User.belongsToMany(Profile, { through: Grant });
+Profile.belongsToMany(User, { through: Grant });
 ```
 
 Что если вместо определения отношения многие-ко-многим мы сделаем так?
 
 ```js
 // определяем отношение один-ко-многим между `User` и `Grant`
-User.hasMany(Grant)
-Grant.belongsTo(User)
+User.hasMany(Grant);
+Grant.belongsTo(User);
 
 // определяем отношение один-ко-многим между `Profile` и `Grant`
-Profile.hasMany(Grant)
-Grant.belongsTo(Profile)
+Profile.hasMany(Grant);
+Grant.belongsTo(Profile);
 ```
 
-Результат будет таким же! Это объясняется тем, что `User.hasMany(Grant)` и `Profile.hasMany(Grant)` запишут `userId` и `profileId` в `Grant`.
+Результат будет таким же! Это объясняется тем, что `User.hasMany(Grant)` и
+`Profile.hasMany(Grant)` запишут `userId` и `profileId` в `Grant`.
 
-Это показывает, что отношения многие-ко-многим не сильно отличаются от двух ассоциаций один-ко-многим. Единственным отличием между ними является то, как будет работать нетерпеливая загрузка:
+Это показывает, что отношения многие-ко-многим не сильно отличаются от двух ассоциаций
+один-ко-многим. Единственным отличием между ними является то, как будет работать
+нетерпеливая загрузка:
 
 ```js
 // многие-ко-многим позволяет делать так
-User.findAll({ include: Profile })
-Profile.findAll({ include: User })
+User.findAll({ include: Profile });
+Profile.findAll({ include: User });
 // но не так
-User.findAll({ include: Grant })
-Profile.findAll({ include: Grant })
-Grant.findAll({ include: User })
-Grant.findAll({ include: Profile })
+User.findAll({ include: Grant });
+Profile.findAll({ include: Grant });
+Grant.findAll({ include: User });
+Grant.findAll({ include: Profile });
 
 // с другой стороны, пара ассоциаций один-ко-многим позволяет делать следующее
-User.findAll({ include: Grant })
-Profile.findAll({ include: Grant })
-Grant.findAll({ include: User })
-Grant.findAll({ include: Profile })
+User.findAll({ include: Grant });
+Profile.findAll({ include: Grant });
+Grant.findAll({ include: User });
+Grant.findAll({ include: Profile });
 // но не так
-User.findAll({ include: Profile })
-Profile.findAll({ include: User })
+User.findAll({ include: Profile });
+Profile.findAll({ include: User });
 
 // хотя мы можем имитировать нечто похожее
 User.findAll({
   include: {
     model: Grant,
-    include: Profile
-  }
-})
+    include: Profile,
+  },
+});
 /*
   Это похоже на `User.findAll({ include: Profile })`, но
   структура результирующего объекта будет немного другой.
@@ -3158,23 +3322,24 @@ User.findAll({
 */
 ```
 
-На самом деле, для успешного выполнения всех указанных выше операций достаточно скомбинировать оба подхода:
+На самом деле, для успешного выполнения всех указанных выше операций достаточно
+скомбинировать оба подхода:
 
 ```js
-User.belongsToMany(Profile, { through: Grant })
-Profile.belongsToMany(User, { through: Grant })
-User.hasMany(Grant)
-Grant.belongsTo(User)
-Profile.hasMany(Grant)
-Grant.belongsTo(Profile)
+User.belongsToMany(Profile, { through: Grant });
+Profile.belongsToMany(User, { through: Grant });
+User.hasMany(Grant);
+Grant.belongsTo(User);
+Profile.hasMany(Grant);
+Grant.belongsTo(Profile);
 
 // все работает
-User.findAll({ include: Profile })
-Profile.findAll({ include: User })
-User.findAll({ include: Grant })
-Profile.findAll({ include: Grant })
-Grant.findAll({ include: User })
-Grant.findAll({ include: Profile })
+User.findAll({ include: Profile });
+Profile.findAll({ include: User });
+User.findAll({ include: Grant });
+Profile.findAll({ include: Grant });
+Grant.findAll({ include: User });
+Grant.findAll({ include: Profile });
 ```
 
 Это позволяет выполнять все виды вложенных включений:
@@ -3184,7 +3349,7 @@ User.findAll({
   include: [
     {
       model: Grant,
-      include: [User, Profile]
+      include: [User, Profile],
     },
     {
       model: Profile,
@@ -3192,12 +3357,12 @@ User.findAll({
         model: User,
         include: {
           model: Grant,
-          include: [User, Profile]
-        }
-      }
-    }
-  ]
-})
+          include: [User, Profile],
+        },
+      },
+    },
+  ],
+});
 ```
 
 **Синонимы и кастомные названия для ключей**
@@ -3205,22 +3370,22 @@ User.findAll({
 В случае с ассоциацией многие-ко-многим синонимы определяются следующим образом:
 
 ```js
-Product.belongsToMany(Category, { as: 'groups', through: 'product_categories' })
-Category.belongsToMany(Product, { as: 'items', through: 'product_categories' })
+Product.belongsToMany(Category, { as: 'groups', through: 'product_categories' });
+Category.belongsToMany(Product, { as: 'items', through: 'product_categories' });
 
 // НЕ работает
-await Product.findAll({ include: Category })
+await Product.findAll({ include: Category });
 
 // работает
 await Product.findAll({
   include: {
     model: Category,
-    as: 'groups'
-  }
-})
+    as: 'groups',
+  },
+});
 
 // это тоже работает
-await Product.findAll({ include: 'groups' })
+await Product.findAll({ include: 'groups' });
 ```
 
 Вот как выглядит `SQL-запрос` на создание таблицы `product_categories`:
@@ -3235,19 +3400,21 @@ CREATE TABLE IF NOT EXISTS `product_categories` (
 );
 ```
 
-Как мы видим, внешними ключами являются `productId` и `categoryId`. Для изменения этих названий используются настройки `foreignKey` и `otherKey`, соответственно (`foreignKey` определяет ключ для модели-источника, а `otherKey` - для целевой модели).
+Как мы видим, внешними ключами являются `productId` и `categoryId`. Для изменения этих
+названий используются настройки `foreignKey` и `otherKey`, соответственно (`foreignKey`
+определяет ключ для модели-источника, а `otherKey` - для целевой модели).
 
 ```js
 Product.belongsToMany(Category, {
   through: 'product_categories',
   foreignKey: 'objectId', // заменяет `productId`
-  otherKey: 'typeIf' // заменяет `categoryId`
-})
+  otherKey: 'typeIf', // заменяет `categoryId`
+});
 Category.belongsToMany(Product, {
   through: 'product_categories',
   foreignKey: 'typeId', //  заменяет `categoryId`
-  otherKey: 'objectId' //  заменяет `productId`
-})
+  otherKey: 'objectId', //  заменяет `productId`
+});
 ```
 
 Соответствующий `SQL-запрос`:
@@ -3262,18 +3429,21 @@ CREATE TABLE IF NOT EXISTS `product_categories` (
 );
 ```
 
-_Обратите внимание_: настройки `foreignKey` и `otherKey` должны определяться в обоих вызовах. Если определить их только в одном вызове, поведение `Sequelize` будет непредсказуемым.
+_Обратите внимание_: настройки `foreignKey` и `otherKey` должны определяться в обоих
+вызовах. Если определить их только в одном вызове, поведение `Sequelize` будет
+непредсказуемым.
 
 `Sequelize` также поддерживает циклические отношения многие-ко-многим:
 
 ```js
-Person.belongsToMany(Person, { as: 'Children', through: 'PersonChildren' })
+Person.belongsToMany(Person, { as: 'Children', through: 'PersonChildren' });
 // это создаст таблицу `PersonChildren` с идентификаторами объектов
 ```
 
 **Определение возвращаемых атрибутов соединительной таблицы**
 
-По умолчанию при нетерпеливой загрузке в случае с ассоциацией многие-ко-многим возвращается такой объект (`User.findOne({ include: Profile })`):
+По умолчанию при нетерпеливой загрузке в случае с ассоциацией многие-ко-многим
+возвращается такой объект (`User.findOne({ include: Profile })`):
 
 ```js
 {
@@ -3294,19 +3464,21 @@ Person.belongsToMany(Person, { as: 'Children', through: 'PersonChildren' })
 }
 ```
 
-Внешний объект - это `User`, у этого объекта есть поле `profiles` - массив `Profile`, у каждого `Profile` есть дополнительное поле `grant` - экземпляр `Grant`.
+Внешний объект - это `User`, у этого объекта есть поле `profiles` - массив `Profile`, у
+каждого `Profile` есть дополнительное поле `grant` - экземпляр `Grant`.
 
-Для того, чтобы получить только некоторые поля из соединительной таблицы используется настройка `attributes`:
+Для того, чтобы получить только некоторые поля из соединительной таблицы используется
+настройка `attributes`:
 
 ```js
 User.findOne({
   include: {
     model: Profile,
     through: {
-      attributes: ['selfGranted']
-    }
-  }
-})
+      attributes: ['selfGranted'],
+    },
+  },
+});
 /*
 {
   "id": 4,
@@ -3327,10 +3499,12 @@ User.findOne({
 
 Для исключения поля `grant` из результатов запроса можно указать `attributes: []`.
 
-При использовании миксинов (например, `user.getProfiles()`), вместо методов для поиска (например, `User.findAll()`), для фильтрации полей соединительной таблицы используется настройка `joinTableAttributes`:
+При использовании миксинов (например, `user.getProfiles()`), вместо методов для поиска
+(например, `User.findAll()`), для фильтрации полей соединительной таблицы используется
+настройка `joinTableAttributes`:
 
 ```js
-user.getProfiles({ joinTableAttributes: ['selfGranted'] })
+user.getProfiles({ joinTableAttributes: ['selfGranted'] });
 /*
 [
   {
@@ -3346,14 +3520,16 @@ user.getProfiles({ joinTableAttributes: ['selfGranted'] })
 
 **Ассоциация многие-ко-многим-ко-многим и т.д.**
 
-Предположим, что мы моделируем игру. У нас есть игроки и команды. Команды играют в игры. Игроки могут менять команды в середине чемпионата (но не в середине игры). В одной игре участвует две команды, в каждой команде имеется свой набор игроков (для текущей игры).
+Предположим, что мы моделируем игру. У нас есть игроки и команды. Команды играют в игры.
+Игроки могут менять команды в середине чемпионата (но не в середине игры). В одной игре
+участвует две команды, в каждой команде имеется свой набор игроков (для текущей игры).
 
 Начнем с определения соответствующих моделей:
 
 ```js
-const Player = sequelize.define('Player', { username: DataTypes.STRING })
-const Team = sequelize.define('Team', { name: DataTypes.STRING })
-const Game = sequelize.define('Game', { name: DataTypes.INTEGER })
+const Player = sequelize.define('Player', { username: DataTypes.STRING });
+const Team = sequelize.define('Team', { name: DataTypes.STRING });
+const Game = sequelize.define('Game', { name: DataTypes.INTEGER });
 ```
 
 Вопрос: как определить ассоциацию между этими моделями?
@@ -3363,7 +3539,8 @@ const Game = sequelize.define('Game', { name: DataTypes.INTEGER })
 - одна игра имеет несколько связанных с ней команд (тех, которые играют в этой игре)
 - одна команда может принимать участие в нескольких играх
 
-Это означает, что между моделями `Game` и `Team` должны существовать отношения многие-ко-многим. Реализуем супер-вариант названной ассоциации (как в предыдущем примере):
+Это означает, что между моделями `Game` и `Team` должны существовать отношения
+многие-ко-многим. Реализуем супер-вариант названной ассоциации (как в предыдущем примере):
 
 ```js
 const GameTeam = sequelize.define('GameTeam', {
@@ -3371,18 +3548,26 @@ const GameTeam = sequelize.define('GameTeam', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
-  }
-})
-Team.belongsToMany(Game, { through: GameTeam })
-Game.belongsToMany(Team, { through: GameTeam })
-GameTeam.belongsTo(Game)
-GameTeam.belongsTo(Team)
-Game.hasMany(GameTeam)
-Team.hasMany(GameTeam)
+    allowNull: false,
+  },
+});
+Team.belongsToMany(Game, { through: GameTeam });
+Game.belongsToMany(Team, { through: GameTeam });
+GameTeam.belongsTo(Game);
+GameTeam.belongsTo(Team);
+Game.hasMany(GameTeam);
+Team.hasMany(GameTeam);
 ```
 
-С игроками все несколько сложнее. Набор игроков, формирующих команду, зависит не только от команды, но также от того, в какой игре данная команда участвует. Поэтому нам не нужна ассоциация многие-ко-многим между `Player` и `Team`. Нам также не нужна ассоциация многие-ко-многим между `Player` и `Game`. Вместо привязки `Player` к одной из указанных моделей, нам требуется ассоциация между `Player` и чем-то вроде "парного ограничения команда-игра", поскольку именно пара (команда + игра) определяет набор игроков. Внезапно, то, что мы искали, оказывается соединительной таблицей `GameTeam`! Учитывая, что конкретная пара команда-игра определяет несколько игроков и один игрок может участвовать в нескольких парах, нам требуется ассоциация многие-ко-многим между `Player` и `GameTeam`.
+С игроками все несколько сложнее. Набор игроков, формирующих команду, зависит не только от
+команды, но также от того, в какой игре данная команда участвует. Поэтому нам не нужна
+ассоциация многие-ко-многим между `Player` и `Team`. Нам также не нужна ассоциация
+многие-ко-многим между `Player` и `Game`. Вместо привязки `Player` к одной из указанных
+моделей, нам требуется ассоциация между `Player` и чем-то вроде "парного ограничения
+команда-игра", поскольку именно пара (команда + игра) определяет набор игроков. Внезапно,
+то, что мы искали, оказывается соединительной таблицей `GameTeam`! Учитывая, что
+конкретная пара команда-игра определяет несколько игроков и один игрок может участвовать в
+нескольких парах, нам требуется ассоциация многие-ко-многим между `Player` и `GameTeam`.
 
 Для обеспечения максимальной гибкости снова прибегнем к супер-версии M:N:
 
@@ -3392,15 +3577,15 @@ const PlayerGameTeam = sequelize.define('PlayerGameTeam', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
-  }
-})
-Player.belongsToMany(GameTeam, { through: PlayerGameTeam })
-GameTeam.belongsToMany(Player, { through: PlayerGameTeam })
-PlayerGameTeam.belongsTo(Player)
-PlayerGameTeam.belongsTo(GameTeam)
-Player.hasMany(PlayerGameTeam)
-GameTeam.hasMany(PlayerGameTeam)
+    allowNull: false,
+  },
+});
+Player.belongsToMany(GameTeam, { through: PlayerGameTeam });
+GameTeam.belongsToMany(Player, { through: PlayerGameTeam });
+PlayerGameTeam.belongsTo(Player);
+PlayerGameTeam.belongsTo(GameTeam);
+Player.hasMany(PlayerGameTeam);
+GameTeam.hasMany(PlayerGameTeam);
 ```
 
 Эта ассоциация делает именно то, что мы хотим.
@@ -3408,15 +3593,15 @@ GameTeam.hasMany(PlayerGameTeam)
 Полный пример выглядит так:
 
 ```js
-const { Sequelize, Op, Model, DataTypes } = require('sequelize')
+const { Sequelize, Op, Model, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize('sqlite::memory:', {
-  define: { timestamps: false } // Просто, чтобы не повторяться
-})
+  define: { timestamps: false }, // Просто, чтобы не повторяться
+});
 
-const Player = sequelize.define('Player', { username: DataTypes.STRING })
-const Team = sequelize.define('Team', { name: DataTypes.STRING })
-const Game = sequelize.define('Game', { name: DataTypes.INTEGER })
+const Player = sequelize.define('Player', { username: DataTypes.STRING });
+const Team = sequelize.define('Team', { name: DataTypes.STRING });
+const Game = sequelize.define('Game', { name: DataTypes.INTEGER });
 
 // Ассоциация супер-многие-ко-многим между `Game` и `Team`
 const GameTeam = sequelize.define('GameTeam', {
@@ -3424,15 +3609,15 @@ const GameTeam = sequelize.define('GameTeam', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
-  }
-})
-Team.belongsToMany(Game, { through: GameTeam })
-Game.belongsToMany(Team, { through: GameTeam })
-GameTeam.belongsTo(Game)
-GameTeam.belongsTo(Team)
-Game.hasMany(GameTeam)
-Team.hasMany(GameTeam)
+    allowNull: false,
+  },
+});
+Team.belongsToMany(Game, { through: GameTeam });
+Game.belongsToMany(Team, { through: GameTeam });
+GameTeam.belongsTo(Game);
+GameTeam.belongsTo(Team);
+Game.hasMany(GameTeam);
+Team.hasMany(GameTeam);
 
 // Ассоциация супер-многие-ко-многим между `Player` и `GameTeam`
 const PlayerGameTeam = sequelize.define('PlayerGameTeam', {
@@ -3440,37 +3625,37 @@ const PlayerGameTeam = sequelize.define('PlayerGameTeam', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
-  }
-})
-Player.belongsToMany(GameTeam, { through: PlayerGameTeam })
-GameTeam.belongsToMany(Player, { through: PlayerGameTeam })
-PlayerGameTeam.belongsTo(Player)
-PlayerGameTeam.belongsTo(GameTeam)
-Player.hasMany(PlayerGameTeam)
-GameTeam.hasMany(PlayerGameTeam)
-;(async () => {
-  await sequelize.sync()
+    allowNull: false,
+  },
+});
+Player.belongsToMany(GameTeam, { through: PlayerGameTeam });
+GameTeam.belongsToMany(Player, { through: PlayerGameTeam });
+PlayerGameTeam.belongsTo(Player);
+PlayerGameTeam.belongsTo(GameTeam);
+Player.hasMany(PlayerGameTeam);
+GameTeam.hasMany(PlayerGameTeam);
+(async () => {
+  await sequelize.sync();
   // Создаем игроков
   await Player.bulkCreate([
     { username: 's0me0ne' },
     { username: 'empty' },
     { username: 'greenhead' },
     { username: 'not_spock' },
-    { username: 'bowl_of_petunias' }
-  ])
+    { username: 'bowl_of_petunias' },
+  ]);
   // Создаем игры
   await Game.bulkCreate([
     { name: 'The Big Clash' },
     { name: 'Winter Showdown' },
-    { name: 'Summer Beatdown' }
-  ])
+    { name: 'Summer Beatdown' },
+  ]);
   // Создаем команды
   await Team.bulkCreate([
     { name: 'The Martians' },
     { name: 'The Earthlings' },
-    { name: 'The Plutonians' }
-  ])
+    { name: 'The Plutonians' },
+  ]);
 
   // Начнем с определения того, какая команда в какой игре участвует. Это можно сделать
   // несколькими способами, например, посредством вызова `setTeams()` для каждой игры.
@@ -3481,8 +3666,8 @@ GameTeam.hasMany(PlayerGameTeam)
     { GameId: 2, TeamId: 1 },
     { GameId: 2, TeamId: 3 },
     { GameId: 3, TeamId: 2 },
-    { GameId: 3, TeamId: 3 }
-  ])
+    { GameId: 3, TeamId: 3 },
+  ]);
 
   // Теперь определим игроков.
   // Сделаем это только для второй игры (Winter Showdown).
@@ -3490,36 +3675,36 @@ GameTeam.hasMany(PlayerGameTeam)
     { PlayerId: 1, GameTeamId: 3 }, // s0me0ne играет за The Martians
     { PlayerId: 3, GameTeamId: 3 }, // и т.д.
     { PlayerId: 4, GameTeamId: 4 },
-    { PlayerId: 5, GameTeamId: 4 }
-  ])
+    { PlayerId: 5, GameTeamId: 4 },
+  ]);
 
   // После этого мы можем выполнять запросы!
   const game = await Game.findOne({
     where: {
-      name: 'Winter Showdown'
+      name: 'Winter Showdown',
     },
     include: {
       model: GameTeam,
       include: [
         {
           model: Player,
-          through: { attributes: [] } // Скрываем нежелательные вложенные объекты `PlayerGameTeam` из результатов
+          through: { attributes: [] }, // Скрываем нежелательные вложенные объекты `PlayerGameTeam` из результатов
         },
-        Team
-      ]
-    }
-  })
+        Team,
+      ],
+    },
+  });
 
-  console.log(`Обнаружена игра: "${game.name}"`)
+  console.log(`Обнаружена игра: "${game.name}"`);
   for (let i = 0; i < game.GameTeams.length; i++) {
-    const team = game.GameTeams[i].Team
-    const players = game.GameTeams[i].Players
+    const team = game.GameTeams[i].Team;
+    const players = game.GameTeams[i].Players;
     console.log(
-      `- Команда "${team.name}" играет в игру "${game.name}" со следующими игроками:`
-    )
-    console.log(players.map((p) => `--- ${p.username}`).join('\n'))
+      `- Команда "${team.name}" играет в игру "${game.name}" со следующими игроками:`,
+    );
+    console.log(players.map((p) => `--- ${p.username}`).join('\n'));
   }
-})()
+})();
 ```
 
 Вывод:
@@ -3540,7 +3725,11 @@ GameTeam.hasMany(PlayerGameTeam)
 
 ## Область видимости ассоциаций
 
-Область видимости ассоциаций (assosiation scopes) похожа на области видимости моделей в том, что обе автоматически применяют к запросам такие вещи, как предложение `where`; разница между ними состоит в том, что область модели применяется к вызовам статических методов для поиска, а область ассоциации - к вызовам поисковых методов экземпляра (таким как миксины).
+Область видимости ассоциаций (assosiation scopes) похожа на области видимости моделей в
+том, что обе автоматически применяют к запросам такие вещи, как предложение `where`;
+разница между ними состоит в том, что область модели применяется к вызовам статических
+методов для поиска, а область ассоциации - к вызовам поисковых методов экземпляра (таким
+как миксины).
 
 Пример применения области ассоциации для отношений один-ко-многим:
 
@@ -3570,18 +3759,20 @@ FROM `bars` AS `bar`
 WHERE `bar`.`status` = 'open' AND `bar`.`fooId` = 1;
 ```
 
-Мы видим, что область ассоциации `{ status: 'open' }` была автоматически добавлена в предложение `WHERE`.
+Мы видим, что область ассоциации `{ status: 'open' }` была автоматически добавлена в
+предложение `WHERE`.
 
-На самом деле, мы можем добиться такого же поведения с помощью стандартной области видимости:
+На самом деле, мы можем добиться такого же поведения с помощью стандартной области
+видимости:
 
 ```js
 Bar.addScope('open', {
   where: {
     status: 'open',
   },
-})
-Foo.hasMany(Bar)
-Foo.hasMany(Bar.scope('open'), { as: 'openBars' })
+});
+Foo.hasMany(Bar);
+Foo.hasMany(Bar.scope('open'), { as: 'openBars' });
 ```
 
 После этого, вызов `foo.getOpenBars()` вернет аналогичный результат.
@@ -3592,75 +3783,89 @@ Foo.hasMany(Bar.scope('open'), { as: 'openBars' })
 
 ## Полиморфные ассоциации
 
-Полиморфная ассоциация (polymorphic assosiation) состоит из двух и более ассоциаций, взаимодействующих с одним внешним ключом.
+Полиморфная ассоциация (polymorphic assosiation) состоит из двух и более ассоциаций,
+взаимодействующих с одним внешним ключом.
 
-Предположим, что у нас имеется три модели: `Image`, `Video` и `Comment`. Первые две модели - это то, что может разместить пользователь. Мы хотим разрешить комментирование этих вещей. На первый вгляд, может показаться, что требуются такие ассоциации:
+Предположим, что у нас имеется три модели: `Image`, `Video` и `Comment`. Первые две
+модели - это то, что может разместить пользователь. Мы хотим разрешить комментирование
+этих вещей. На первый вгляд, может показаться, что требуются такие ассоциации:
 
 - ассоциация один-ко-многим между `Image` и `Comment`
 
 ```js
-Image.hasMany(Comment)
-Comment.belongsTo(Image)
+Image.hasMany(Comment);
+Comment.belongsTo(Image);
 ```
 
 - ассоциация один-ко-многим между `Video` и `Comment`
 
 ```js
-Video.hasMany(Comment)
-Comment.belongsTo(Video)
+Video.hasMany(Comment);
+Comment.belongsTo(Video);
 ```
 
-Однако, это может привести к тому, что `Sequelize` создаст в таблице `Comment` два внешних ключа: `imageId` и `videoId`. Такая структура означает, что комментарий добавляется одновременно к одному изображению и одному видео, что не соответствует действительности. Нам нужно, чтобы `Comment` указывал на единичный `Commentable`, абстрактную полиморфную сущность, представляющую либо `Image`, либо `Video`.
+Однако, это может привести к тому, что `Sequelize` создаст в таблице `Comment` два внешних
+ключа: `imageId` и `videoId`. Такая структура означает, что комментарий добавляется
+одновременно к одному изображению и одному видео, что не соответствует действительности.
+Нам нужно, чтобы `Comment` указывал на единичный `Commentable`, абстрактную полиморфную
+сущность, представляющую либо `Image`, либо `Video`.
 
 Перед настройкой такой ассоциации, рассмотрим пример ее использования:
 
 ```js
-const image = await Image.create({ url: 'http://example.com' })
-const comment = await image.createComment({ content: 'Круто!' })
+const image = await Image.create({ url: 'http://example.com' });
+const comment = await image.createComment({ content: 'Круто!' });
 
-copnsole.log(comment.commentableId === image.id) //  true
+copnsole.log(comment.commentableId === image.id); //  true
 
 // Мы можем получать информацию о том, с каким типом `commentable` связан комментарий
-console.log(comment.commentableType) // Image
+console.log(comment.commentableType); // Image
 
 // Мы можем использовать полиморфный метод для извлечения связанного `commentable`,
 // независимо от того, чем он является, `Image` или `Video`
-const associatedCommentable = await comment.getCommentable()
+const associatedCommentable = await comment.getCommentable();
 // Обратите внимание: `associatedCommentable` - это не тоже самое, что `image`
 ```
 
-__Создание полиассоциации один-ко-многим__
+**Создание полиассоциации один-ко-многим**
 
-Для настройки полиассоциации для приведенного выше примера (полиассоциации один-ко-многим) необходимо выполнить следующие шаги:
+Для настройки полиассоциации для приведенного выше примера (полиассоциации один-ко-многим)
+необходимо выполнить следующие шаги:
 
 - определить строковое поле `commentableType` в модели `Comment`
 - определить ассоциацию `hasMany` и `belongsTo` между `Image` / `Video` и `Comment`
-  - отключить ограничения (`{ constraints: false }`), поскольку один и тот же внешний ключ будет ссылаться на несколько таблиц
+  - отключить ограничения (`{ constraints: false }`), поскольку один и тот же внешний ключ
+    будет ссылаться на несколько таблиц
   - определить соответствущую область видимости ассоциации
-- для поддержки ленивой загрузки - определить новый метод экземпляра `getCommentable()` в модели `Comment`, который под капотом будет вызывать правильный миксин для получения соответствующего `commentable`
-- для поддержки нетерпеливой загрузки - определить хук `afterFind()` в модели `Comment`, автоматически заполняющий поле `commentable` каждого экземпляра
-- для предотвращения ошибок при нетерпеливой загрузке, можно удалять поля `image` и `video` из экземпляров комментария в хуке `afterFind()`, оставляя в них только абстрактное поле `commentable`
+- для поддержки ленивой загрузки - определить новый метод экземпляра `getCommentable()` в
+  модели `Comment`, который под капотом будет вызывать правильный миксин для получения
+  соответствующего `commentable`
+- для поддержки нетерпеливой загрузки - определить хук `afterFind()` в модели `Comment`,
+  автоматически заполняющий поле `commentable` каждого экземпляра
+- для предотвращения ошибок при нетерпеливой загрузке, можно удалять поля `image` и
+  `video` из экземпляров комментария в хуке `afterFind()`, оставляя в них только
+  абстрактное поле `commentable`
 
 ```js
 // Вспомогательная функция
 const capitilize = ([first, ...rest]) =>
-  `${first.toUpperCase()}${rest.join('').toLowerCase()}`
+  `${first.toUpperCase()}${rest.join('').toLowerCase()}`;
 
 const Image = sequelize.define('image', {
   title: DataTypes.STRING,
   url: DataTypes.STRING,
-})
+});
 const Video = sequelize.define('video', {
   title: DataTypes.STRING,
   text: DataTypes.STRING,
-})
+});
 
 // в данном случае нам необходимо создать статическое поле, поэтому мы используем расширение `Model`
 class Comment extends Model {
   getCommentable(options) {
-    if (!this.commentableType) return Promise.resolve(null)
-    const mixinMethodName = `get${capitilize(this.commentableType)}`
-    return this[mixinMethodName](options)
+    if (!this.commentableType) return Promise.resolve(null);
+    const mixinMethodName = `get${capitilize(this.commentableType)}`;
+    return this[mixinMethodName](options);
   }
 }
 Comment.init(
@@ -3669,8 +3874,8 @@ Comment.init(
     commentableId: DataTypes.INTEGER,
     commentableType: DataTypes.STRING,
   },
-  { sequelize, modelName: 'comment' }
-)
+  { sequelize, modelName: 'comment' },
+);
 
 Image.hasMany(Comment, {
   foreignKey: 'commentableId',
@@ -3678,8 +3883,8 @@ Image.hasMany(Comment, {
   scope: {
     commentableType: 'image',
   },
-})
-Comment.belongsTo(Image, { foreignKey: 'commentableId', constraints: false })
+});
+Comment.belongsTo(Image, { foreignKey: 'commentableId', constraints: false });
 
 Video.hasMany(Comment, {
   foreignKey: 'commentableId',
@@ -3687,37 +3892,37 @@ Video.hasMany(Comment, {
   scope: {
     commentableType: 'video',
   },
-})
-Comment.belongsTo(Video, { foreignKey: 'commentableId', constraints: false })
+});
+Comment.belongsTo(Video, { foreignKey: 'commentableId', constraints: false });
 
 Comment.addHook('afterFind', (findResult) => {
-  if (!Array.isArray(findResult)) findResult = [findResult]
+  if (!Array.isArray(findResult)) findResult = [findResult];
   for (const instance of findResult) {
     if (instance.commentableType === 'image' && instance.image !== undefined) {
-      instance.commentable = instance.image
-    } else if (
-      instance.commentableType === 'video' &&
-      instance.video !== undefined
-    ) {
-      instance.commentable = instance.video
+      instance.commentable = instance.image;
+    } else if (instance.commentableType === 'video' && instance.video !== undefined) {
+      instance.commentable = instance.video;
     }
     // Для предотвращения ошибок
-    delete instance.image
-    delete inctance.dataValues.image
-    delete instance.video
-    delete instance.dataValues.video
+    delete instance.image;
+    delete inctance.dataValues.image;
+    delete instance.video;
+    delete instance.dataValues.video;
   }
-})
+});
 ```
 
-Поскольку колонка `commentableId` ссылается на несколько таблиц (в данном случае две), мы не можем применить к ней ограничение `REFERENCES`. Поэтому мы указываем `constraints: false`.
+Поскольку колонка `commentableId` ссылается на несколько таблиц (в данном случае две), мы
+не можем применить к ней ограничение `REFERENCES`. Поэтому мы указываем
+`constraints: false`.
 
 Обратите внимание на следующее:
 
 - ассоциация `Image -> Comment` определяет область `{ commentableType: 'image' }`
 - ассоциация `Video -> Comment` определяет область `{ commentableType: 'video' }`
 
-Эти области автоматически применяются при использовании ассоциативных функций. Несколько примеров:
+Эти области автоматически применяются при использовании ассоциативных функций. Несколько
+примеров:
 
 - `image.getComments()`
 
@@ -3727,7 +3932,8 @@ FROM 'comments' AS 'comment'
 WHERE 'comment'.'commentableType' = 'image' AND 'comment'.'commentableId' = 1;
 ```
 
-Мы видим, что `'comment'.'commentableType' = 'image'` была автоматически добавлена в предложение `WHERE`. Это именно то, чего мы хотели добиться.
+Мы видим, что `'comment'.'commentableType' = 'image'` была автоматически добавлена в
+предложение `WHERE`. Это именно то, чего мы хотели добиться.
 
 - `image.createComment({ title: 'Круто!' })`
 
@@ -3750,39 +3956,45 @@ WHERE 'id' IN (1)
 
 **Полиморфная ленивая загрузка**
 
-Метод экземпляра `getCommentable()` предоставляет абстракцию для ленивой загрузки связанного `commentable` - комментария, принадлежащего `Image` или `Video`.
+Метод экземпляра `getCommentable()` предоставляет абстракцию для ленивой загрузки
+связанного `commentable` - комментария, принадлежащего `Image` или `Video`.
 
-Это работает благодаря преобразованию строки `commentableType` в вызов правильного миксина (`getImage()` или `getVideos()`, соответственно).
+Это работает благодаря преобразованию строки `commentableType` в вызов правильного миксина
+(`getImage()` или `getVideos()`, соответственно).
 
 Обратите внимание, что приведенная выше реализация `getCommentable()`:
 
 - возвращает `null` при отсутствии ассоциации
-- позволяет передавать объект с настройками в `getCommentable(options)`, подобно любому другому (стандартному) методу. Это может пригодиться, например, при определении условий или включений.
+- позволяет передавать объект с настройками в `getCommentable(options)`, подобно любому
+  другому (стандартному) методу. Это может пригодиться, например, при определении условий
+  или включений.
 
 **Полиморфная нетерпеливая загрузка**
 
-Теперь мы хотим выполнить полиморфную нетерпеливую загрузку связанных `commentable` для одного (или более) комментария:
+Теперь мы хотим выполнить полиморфную нетерпеливую загрузку связанных `commentable` для
+одного (или более) комментария:
 
 ```js
 const comment = await Comment.findOne({
   include: [
     /* Что сюда поместить? */
   ],
-})
-console.log(comment.commentable) // Наша цель
+});
+console.log(comment.commentable); // Наша цель
 ```
 
-Решение состоит во включении `Image` и `Video` для того, чтобы хук `afterFind()` мог автоматически добавить поле `commentable` в экземпляр.
+Решение состоит во включении `Image` и `Video` для того, чтобы хук `afterFind()` мог
+автоматически добавить поле `commentable` в экземпляр.
 
 Например:
 
 ```js
 const comments = await Comment.findAll({
   include: [Image, Video],
-})
+});
 for (const comment of comments) {
-  const message = `Найден комментарий #${comment.id} с типом '${comment.commentableType}':\n`
-  console.log(message, comment.commentable.toJSON())
+  const message = `Найден комментарий #${comment.id} с типом '${comment.commentableType}':\n`;
+  console.log(message, comment.commentable.toJSON());
 }
 ```
 
@@ -3799,18 +4011,23 @@ for (const comment of comments) {
 }
 ```
 
-__Настройка полиассоциации многие-ко-многим__
+**Настройка полиассоциации многие-ко-многим**
 
-Предположим, что вместо комментариев у нас имеются теги. Соответственно, вместо `commentables` у нас будут `taggables`. Один `taggable` может иметь несколько тегов, в то же время один тег может быть помещен в несколько `taggable`.
+Предположим, что вместо комментариев у нас имеются теги. Соответственно, вместо
+`commentables` у нас будут `taggables`. Один `taggable` может иметь несколько тегов, в то
+же время один тег может быть помещен в несколько `taggable`.
 
 Для настройки рассматриваемой полиассоциации необходимо выполнить следующие шаги:
 
-- явно создать соединительную модель, определив в ней два внешних ключа: `tagId` и `taggableId` (данная таблица будет соединять `Tag` и `taggable`)
+- явно создать соединительную модель, определив в ней два внешних ключа: `tagId` и
+  `taggableId` (данная таблица будет соединять `Tag` и `taggable`)
 - определить в соединительной таблице строковое поле `taggableType`
 - определить ассоциацию `belongsToMany()` между двумя моделями и `Tag`:
-- отключить ограничения (`{ constraints: false }`), поскольку один и тот же внешний ключ будет ссылаться на несколько таблиц
+- отключить ограничения (`{ constraints: false }`), поскольку один и тот же внешний ключ
+  будет ссылаться на несколько таблиц
 - определить соответствующие области видимости ассоциаций
-- определить новый метод экземпляра `getTaggables()` в модели `Tag`, который под капотом будет вызывать правильный миксин для получения соответствующих `taggables`
+- определить новый метод экземпляра `getTaggables()` в модели `Tag`, который под капотом
+  будет вызывать правильный миксин для получения соответствующих `taggables`
 
 ```js
 class Tag extends Model {
@@ -3938,9 +4155,12 @@ INNER JOIN `tag_taggables` AS `tag_taggable` ON
 
 **Применение области ассоциации к целевой модели**
 
-Область ассоциации может применяться не только к соединительной таблице, но и к целевой модели.
+Область ассоциации может применяться не только к соединительной таблице, но и к целевой
+модели.
 
-Добавим тегам статус. Для получения всех тегов со статусом `pending` определим еще одну ассоциацию `belongsToMany()` между `Image` и `Tag`, применив область ассоциации как к соединительной таблице, так и к целевой модели:
+Добавим тегам статус. Для получения всех тегов со статусом `pending` определим еще одну
+ассоциацию `belongsToMany()` между `Image` и `Tag`, применив область ассоциации как к
+соединительной таблице, так и к целевой модели:
 
 ```js
 Image.belongsToMany(Tag, {
@@ -3957,7 +4177,7 @@ Image.belongsToMany(Tag, {
   as: 'pendingTags',
   foreignKey: 'taggableId',
   constraints: false,
-})
+});
 ```
 
 После этого, вызов `image.getPendingTags()` приведет к генерации такого запроса:
@@ -3997,8 +4217,10 @@ WHERE (
 
 `Sequelize` поддерживает выполнение двух видов транзакций:
 
-1. Неуправляемые (unmanaged): завершение транзакции и отмена изменений выполняются вручную (путем вызова соответствующих методов)
-2. Управляемые (managed): при возникновении ошибки изменения автоматически отменяются, а при успехе транзакции автоматически выполняется фиксация (commit) изменений
+1. Неуправляемые (unmanaged): завершение транзакции и отмена изменений выполняются вручную
+   (путем вызова соответствующих методов)
+2. Управляемые (managed): при возникновении ошибки изменения автоматически отменяются, а
+   при успехе транзакции автоматически выполняется фиксация (commit) изменений
 
 **Неуправляемые транзакции**
 
@@ -4006,7 +4228,7 @@ WHERE (
 
 ```js
 // Сначала мы запускаем транзакцию и сохраняем ее в переменную
-const t = await sequelize.transaction()
+const t = await sequelize.transaction();
 
 try {
   // Затем при выполнении операций передаем транзакцию в качестве соответствующей настройки
@@ -4015,39 +4237,41 @@ try {
       firstName: 'John',
       lastName: 'Smith',
     },
-    { transaction: t }
-  )
+    { transaction: t },
+  );
 
   await user.addSibling(
     {
       firstName: 'Jane',
       lastName: 'Air',
     },
-    { transaction: t }
-  )
+    { transaction: t },
+  );
 
   // Если выполнение кода достигло этой точки,
   // значит, выполнение операций завершилось успешно -
   // фиксируем изменения
-  await t.commit()
+  await t.commit();
 } catch (err) {
   // Если выполнение кода достигло этой точки,
   // значит, во время выполнения операций возникла ошибка -
   // отменяем изменения
-  await t.rollback()
+  await t.rollback();
 }
 ```
 
 **Управляемые тразакции**
 
-Для выполнения управляемой транзакции в `sequelize.transaction()` передается функция обратного вызова. Далее происходит следующее:
+Для выполнения управляемой транзакции в `sequelize.transaction()` передается функция
+обратного вызова. Далее происходит следующее:
 
 - `Sequelize` автоматически запускает транзакцию и создает объект `t`
 - Затем выполняется переданный колбэк, которому передается `t`
 - При возникновении ошибки, изменения автоматически отменяются
 - При успехе транзакции, изменения автоматически фиксируются
 
-Таким образом, `sequelize.transaction()` либо разрешается с результатом, возвращаемым колбэком, либо отклоняется с ошибкой.
+Таким образом, `sequelize.transaction()` либо разрешается с результатом, возвращаемым
+колбэком, либо отклоняется с ошибкой.
 
 ```js
 try {
@@ -4057,19 +4281,19 @@ try {
         firstName: 'John',
         lastName: 'Smith',
       },
-      { transaction: t }
-    )
+      { transaction: t },
+    );
 
     await user.addSibling(
       {
         firstName: 'Jane',
         lastName: 'Air',
       },
-      { transaction: t }
-    )
+      { transaction: t },
+    );
 
-    return user
-  })
+    return user;
+  });
 
   // Если выполнение кода достигло этой точки,
   // значит, выполнение операций завершилось успешно -
@@ -4081,52 +4305,67 @@ try {
 }
 ```
 
-_Обратите внимание_: при выполнении управляемой транзакции, нельзя вручную вызывать методы `commit()` и `rollback()`.
+_Обратите внимание_: при выполнении управляемой транзакции, нельзя вручную вызывать методы
+`commit()` и `rollback()`.
 
 **Автоматическая передача транзакции во все запросы**
 
-В приведенных примерах транзакция передавалась вручную - `{ transaction: t }`. Для автоматической передачи транзакции во все запросы необходимо установить модуль <a href="https://github.com/Jeff-Lewis/cls-hooked">`cls-hooked`</a> (CLS - Continuation Local Storage, "длящееся" локальное хранилище) и инстанцировать пространство имен (namespace):
+В приведенных примерах транзакция передавалась вручную - `{ transaction: t }`. Для
+автоматической передачи транзакции во все запросы необходимо установить модуль
+<a href="https://github.com/Jeff-Lewis/cls-hooked">`cls-hooked`</a> (CLS - Continuation
+Local Storage, "длящееся" локальное хранилище) и инстанцировать пространство имен
+(namespace):
 
 ```js
-const cls = require('cls-hooked')
-const namespace = cls.createNamespace('my-namespace')
+const cls = require('cls-hooked');
+const namespace = cls.createNamespace('my-namespace');
 ```
 
 Затем следует использовать это пространство имен следующим образом:
 
 ```js
-const Sequelize = require('sequelize')
-Sequelize.useCLS(namespace)
+const Sequelize = require('sequelize');
+Sequelize.useCLS(namespace);
 
-new Sequelize(/* ... */)
+new Sequelize(/* ... */);
 ```
 
-_Обратите внимание_: мы вызываем метод `useCLS()` на конструкторе, а не на экземпляре. Это означает, что пространство имен будет доступно всем экземплярам, а также, что `CLS` - это "все или ничего", нельзя включить его только для некоторых экземпляров.
+_Обратите внимание_: мы вызываем метод `useCLS()` на конструкторе, а не на экземпляре. Это
+означает, что пространство имен будет доступно всем экземплярам, а также, что `CLS` - это
+"все или ничего", нельзя включить его только для некоторых экземпляров.
 
-`CLS` представляет собой что-то вроде локального хранилища в виде потока для колбэков. На практике это означает, что разные цепочки из колбэков могут использовать локальные переменные из одного пространства `CLS`. После включения `CLS`, `t` автоматически передается при создании транзакции. Поскольку переменные являются частными для цепочки колбэков, одновременно может выполняться несколько транзакций:
+`CLS` представляет собой что-то вроде локального хранилища в виде потока для колбэков. На
+практике это означает, что разные цепочки из колбэков могут использовать локальные
+переменные из одного пространства `CLS`. После включения `CLS`, `t` автоматически
+передается при создании транзакции. Поскольку переменные являются частными для цепочки
+колбэков, одновременно может выполняться несколько транзакций:
 
 ```js
 sequelize.transaction((t1) => {
-  console.log(namespace.get('transaction') === t1) // true
-})
+  console.log(namespace.get('transaction') === t1); // true
+});
 
 sequelize.transaction((t2) => {
-  console.log(namespace.get('transaction') === t2) // true
-})
+  console.log(namespace.get('transaction') === t2); // true
+});
 ```
 
-В большинстве случаев, в явном вызове `namespace.get('transaction')` нет необходимости, поскольку все запросы автоматически получают транзакцию из пространства имен:
+В большинстве случаев, в явном вызове `namespace.get('transaction')` нет необходимости,
+поскольку все запросы автоматически получают транзакцию из пространства имен:
 
 ```js
 sequelize.transaction((t1) => {
   // С включенным CLS пользователь будет создан внутри транзакции
-  return User.create({ name: 'John' })
-})
+  return User.create({ name: 'John' });
+});
 ```
 
 **Параллельные/частичные транзакции**
 
-С помощью последовательности запросов можно выполнять параллельные транзакции. Также имеется возможность исключать запросы из транзакции. Для управления тем, каким транзакциям принадлежит запрос, используется настройка `transaction` (обратите внимание: `SQLite` не поддерживает одновременное выполнение более одной транзакции).
+С помощью последовательности запросов можно выполнять параллельные транзакции. Также
+имеется возможность исключать запросы из транзакции. Для управления тем, каким транзакциям
+принадлежит запрос, используется настройка `transaction` (обратите внимание: `SQLite` не
+поддерживает одновременное выполнение более одной транзакции).
 
 С включенным `CLS`:
 
@@ -4139,9 +4378,9 @@ sequelize.transaction((t1) => {
       User.create({ name: 'John' }, { transaction: null }),
       User.create({ name: 'Jane' }, { transaction: t1 }),
       User.create({ name: 'Alice' }), // этот запрос будет использовать `t2`
-    ])
-  })
-})
+    ]);
+  });
+});
 ```
 
 **Уровни изоляции**
@@ -4149,18 +4388,19 @@ sequelize.transaction((t1) => {
 Возможные уровни изоляции при запуске транзакции:
 
 ```js
-const { Transaction } = require('sequelize')
+const { Transaction } = require('sequelize');
 
-Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED
-Transaction.ISOLATION_LEVELS.READ_COMMITTED
-Transaction.ISOLATION_LEVELS.REPEATABLE_READ
-Transaction.ISOLATION_LEVELS.SERIALIZABLE
+Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED;
+Transaction.ISOLATION_LEVELS.READ_COMMITTED;
+Transaction.ISOLATION_LEVELS.REPEATABLE_READ;
+Transaction.ISOLATION_LEVELS.SERIALIZABLE;
 ```
 
-По умолчанию `Sequelize` использует уровень изоляции БД. Для изменения уровня изоляции используется настройка `isolationLevel`:
+По умолчанию `Sequelize` использует уровень изоляции БД. Для изменения уровня изоляции
+используется настройка `isolationLevel`:
 
 ```js
-const { Transaction } = require('sequelize')
+const { Transaction } = require('sequelize');
 
 await sequelize.transaction(
   {
@@ -4168,8 +4408,8 @@ await sequelize.transaction(
   },
   async (t) => {
     // ...
-  }
-)
+  },
+);
 ```
 
 Или на уровне всего приложения:
@@ -4177,44 +4417,47 @@ await sequelize.transaction(
 ```js
 const sequelize = new Sequelize('sqlite::memory:', {
   isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
-})
+});
 ```
 
 **Использование транзакции совместно с другими методами**
 
-Обычно, `transaction` передается в метод вместе с другими настройками в качестве первого аргумента.
+Обычно, `transaction` передается в метод вместе с другими настройками в качестве первого
+аргумента.
 
-Для методов, принимающих значения, таких как `create()`, `update()` и т.п., `transaction` передается в качестве второго аргумента.
+Для методов, принимающих значения, таких как `create()`, `update()` и т.п., `transaction`
+передается в качестве второго аргумента.
 
 ```js
-await User.create({ name: 'John' }, { transaction: t })
+await User.create({ name: 'John' }, { transaction: t });
 
 await User.findAll({
   where: {
     name: 'Jane',
   },
   transaction: t,
-})
+});
 ```
 
 **Хук `afterCommit()`**
 
-Объект `transaction` позволяет регистрировать фиксацию изменений. Хук `afterCommit()` может быть добавлен как к управляемым, так и к неуправляемым объектам транзакции:
+Объект `transaction` позволяет регистрировать фиксацию изменений. Хук `afterCommit()`
+может быть добавлен как к управляемым, так и к неуправляемым объектам транзакции:
 
 ```js
 // Управляемая транзакция
 await sequelize.transaction(async (t) => {
   t.afterCommit(() => {
     // ...
-  })
-})
+  });
+});
 
 // Неуправляемая транзакция
-const t = await sequelize.transaction()
+const t = await sequelize.transaction();
 t.afterCommit(() => {
   // ...
-})
-await t.commit()
+});
+await t.commit();
 ```
 
 Колбэк, передаваемый в `afterCommit()`, является асинхронным. В данном случае:
@@ -4227,7 +4470,8 @@ _Обратите внимание_ на следующее:
 - `afterCommit()` не запускается при отмене изменений
 - он не модифицирует значение, возвращаемое транзакцией (в отличие от других хуков)
 
-Хук `afterCommit()` можно использовать в дополнение к хукам модели для определения момента сохранения экземпляра и его доступности за пределами транзакции:
+Хук `afterCommit()` можно использовать в дополнение к хукам модели для определения момента
+сохранения экземпляра и его доступности за пределами транзакции:
 
 ```js
 User.afterSave((instance, options) => {
@@ -4245,13 +4489,17 @@ User.afterSave((instance, options) => {
 
 ## Хуки
 
-Хуки или события жизненного цикла (hooks) - это функции, которые вызываются до или после вызова методов `Sequelize`. Например, для установки значения модели перед ее сохранением можно использовать хук `beforeUpdate()`.
+Хуки или события жизненного цикла (hooks) - это функции, которые вызываются до или после
+вызова методов `Sequelize`. Например, для установки значения модели перед ее сохранением
+можно использовать хук `beforeUpdate()`.
 
 _Обратите внимание_: хуки могут использоваться только на уровне моделей.
 
 **Доступные хуки**
 
-`Sequelize` предоставляет большое количество хуков. Их полный список можно найти <a href="https://github.com/sequelize/sequelize/blob/v6/lib/hooks.js#L73">здесь</a>. Порядок вызова наиболее распространенных хуков следующий:
+`Sequelize` предоставляет большое количество хуков. Их полный список можно найти
+<a href="https://github.com/sequelize/sequelize/blob/v6/lib/hooks.js#L73">здесь</a>.
+Порядок вызова наиболее распространенных хуков следующий:
 
 ```
 (1)
@@ -4289,7 +4537,9 @@ _Обратите внимание_: хуки могут использоват�
 
 **Определение хуков**
 
-Аргументы в хуки передаются по ссылкам. Это означает, что мы можем модифицировать значения и это отразится на соответствующих инструкциях. Хук может содержать асинхронные операции - в этом случае функция должна возвращать промис.
+Аргументы в хуки передаются по ссылкам. Это означает, что мы можем модифицировать значения
+и это отразится на соответствующих инструкциях. Хук может содержать асинхронные операции -
+в этом случае функция должна возвращать промис.
 
 Существует три способа программного добавления хуков:
 
@@ -4307,36 +4557,34 @@ User.init(
   {
     hooks: {
       beforeValidate: (user, options) => {
-        user.mood = 'счастливый'
+        user.mood = 'счастливый';
       },
       afterValidate: (user, options) => {
-        user.username = 'Ванька'
+        user.username = 'Ванька';
       },
     },
     sequelize,
-  }
-)
+  },
+);
 
 // 2) через метод `addHook()`
 User.addHook('beforeValidate', (user, options) => {
-  user.mood = 'счастливый'
-})
+  user.mood = 'счастливый';
+});
 
 User.addHook('afterValidate', 'someCustomName', (user, options) => {
-  return Promise.reject(
-    new Error('К сожалению, я не могу позволить вам этого сделать.')
-  )
-})
+  return Promise.reject(new Error('К сожалению, я не могу позволить вам этого сделать.'));
+});
 
 // 3) напрямую
 User.beforeCreate(async (user, options) => {
-  const hashedPassword = await hashPassword(user.password)
-  user.password = hashedPassword
-})
+  const hashedPassword = await hashPassword(user.password);
+  user.password = hashedPassword;
+});
 
 User.afterValidate('myAfterHook', (user, options) => {
-  user.username = 'Ванька'
-})
+  user.username = 'Ванька';
+});
 ```
 
 _Обратите внимание_, что удаляться могут только именованные хуки:
@@ -4344,17 +4592,18 @@ _Обратите внимание_, что удаляться могут тол
 ```js
 const Book = sequelize.define('book', {
   title: DataTypes.STRING,
-})
+});
 
 Book.addHook('afterCreate', 'notifyUsers', (book, options) => {
   // ...
-})
-Book.removeHook('afterCreate', 'notifyUsers')
+});
+Book.removeHook('afterCreate', 'notifyUsers');
 ```
 
 **Глобальные/универсальные хуки**
 
-Глобальными называются хуки, которые выполняются для всех моделей. Особенно полезными такие хуки являются в плагинах. Они определяются двумя способами:
+Глобальными называются хуки, которые выполняются для всех моделей. Особенно полезными
+такие хуки являются в плагинах. Они определяются двумя способами:
 
 - в настройках конструктора (хуки по умолчанию)
 
@@ -4388,10 +4637,10 @@ await Project.create({}) // запускается локальный хук
 ```js
 sequelize.addHook('beforeCreate', () => {
   // ...
-})
+});
 
 // Такой хук запускается независимо от наличия у модели аналогичного хука
-const User = sequelize.define('user', {})
+const User = sequelize.define('user', {});
 const Project = sequelize.define(
   'project',
   {},
@@ -4401,11 +4650,11 @@ const Project = sequelize.define(
         // ...
       },
     },
-  }
-)
+  },
+);
 
-await User.create({}) // запускается глобальный хук
-await Project.create({}) // сначала запускается локальный хук, затем глобальный
+await User.create({}); // запускается глобальный хук
+await Project.create({}); // сначала запускается локальный хук, затем глобальный
 ```
 
 **Хуки, связанные с подключением к БД**
@@ -4417,17 +4666,21 @@ await Project.create({}) // сначала запускается локальн
 - `seuqelize.beforeDisconnect(callback)` - `async (connection) => {}`
 - `sequelize.afterDisconnect(callback)` - `async (connection) => {}`
 
-Эти хуки могут использоваться для асинхронного получения полномочий (credentials) для доступа к БД или получения прямого доступа к низкоуровневому соединению с БД после его установки.
+Эти хуки могут использоваться для асинхронного получения полномочий (credentials) для
+доступа к БД или получения прямого доступа к низкоуровневому соединению с БД после его
+установки.
 
-Например, мы можем асинхронно получить пароль от БД из хранилища токенов и модифицировать объект с настройками:
+Например, мы можем асинхронно получить пароль от БД из хранилища токенов и модифицировать
+объект с настройками:
 
 ```js
 sequelize.beforeConnect(async (config) => {
-  config.password = await getAuthToken()
-})
+  config.password = await getAuthToken();
+});
 ```
 
-Рассматриваемые хуки могут быть определены только как глобальные, поскольку соединение является общим для всех моделей.
+Рассматриваемые хуки могут быть определены только как глобальные, поскольку соединение
+является общим для всех моделей.
 
 **Хуки экземпляров**
 
@@ -4442,23 +4695,23 @@ sequelize.beforeConnect(async (config) => {
 User.beforeCreate((user) => {
   if (user.accessLevel > 10 && user.username !== 'Сенсей') {
     throw new Error(
-      'Вы не можете предоставить этому пользователю уровень доступа выше 10'
-    )
+      'Вы не можете предоставить этому пользователю уровень доступа выше 10',
+    );
   }
-})
+});
 
 // Будет выброшено исключение
 try {
-  await User.create({ username: 'Гуру', accessLevel: 20 })
+  await User.create({ username: 'Гуру', accessLevel: 20 });
 } catch (err) {
-  console.error(err) // Вы не можете предоставить этому пользователю уровень доступа выше 10
+  console.error(err); // Вы не можете предоставить этому пользователю уровень доступа выше 10
 }
 
 // Ок
 const user = await User.create({
   username: 'Сенсей',
   accessLevel: 20,
-})
+});
 ```
 
 **Хуки моделей**
@@ -4472,58 +4725,71 @@ const user = await User.create({
 - `afterBulkUpdate(callback)` - `(options) => {}`
 - `afterBulkDestroy(callback)` - `(options) => {}`
 
-_Обратите внимание_: вызов методов моделей по умолчанию приводит к запуску только хуков с префиксом `bulk`. Это можно изменить с помощью настройки `{ individualHooks: true }`, но имейте ввиду, что это может крайне негативно сказаться на производительности.
+_Обратите внимание_: вызов методов моделей по умолчанию приводит к запуску только хуков с
+префиксом `bulk`. Это можно изменить с помощью настройки `{ individualHooks: true }`, но
+имейте ввиду, что это может крайне негативно сказаться на производительности.
 
 ```js
 await Model.destroy({
   where: { accessLevel: 0 },
   individualHooks: true,
-})
+});
 
 await Model.update(
   { username: 'John' },
   {
     where: { accessLevel: 0 },
     individualHooks: true,
-  }
-)
+  },
+);
 ```
 
-__Хуки и ассоциации__
+**Хуки и ассоциации**
 
 _Один-к-одному и один-ко-многим_
 
-- при использовании миксинов `add`/`set` запускаются хуки `beforeUpdate()` и `afterUpdate()`
-- хуки `beforeDestroy()` и `afterDestroy()` запускаются только при наличии у ассоциаций `onDelete: 'CASCADE'` и `hooks: true`
+- при использовании миксинов `add`/`set` запускаются хуки `beforeUpdate()` и
+  `afterUpdate()`
+- хуки `beforeDestroy()` и `afterDestroy()` запускаются только при наличии у ассоциаций
+  `onDelete: 'CASCADE'` и `hooks: true`
 
 ```js
 const Project = sequelize.define('project', {
   title: DataTypes.STRING,
-})
+});
 const Task = sequelize.define('task', {
   title: DataTypes.STRING,
-})
-Project.hasMany(Task, { onDelete: 'CASCADE', hooks: true })
-Task.belongsTo(Project)
+});
+Project.hasMany(Task, { onDelete: 'CASCADE', hooks: true });
+Task.belongsTo(Project);
 ```
 
-По умолчанию `Sequelize` пытается максимально оптимизировать запросы. Например, при вызове каскадного удаления `Sequelize` выполняет:
+По умолчанию `Sequelize` пытается максимально оптимизировать запросы. Например, при вызове
+каскадного удаления `Sequelize` выполняет:
 
 ```sql
 DELETE FROM `table` WHERE associatedIdentifier = associatedIdentifier.primaryKey;
 ```
 
-Однако, добавление `hooks: true` отключает оптимизации. В этом случае `Sequelize` сначала выполняет выборку связанных объектов с помощью `SELECT` и затем уничтожает каждый экземпляр по одному для обеспечения вызова соответствующих хуков с правильными параметрами.
+Однако, добавление `hooks: true` отключает оптимизации. В этом случае `Sequelize` сначала
+выполняет выборку связанных объектов с помощью `SELECT` и затем уничтожает каждый
+экземпляр по одному для обеспечения вызова соответствующих хуков с правильными
+параметрами.
 
 _Многие-ко-многим_
 
-- при использовании миксинов `add` для отношений `belongsToMany()` (когда в соединительной таблице создается как минимум одна запись) запускаются хуки `beforeBulkCreate()` и `afterBulkCreate()` соединительной таблицы
+- при использовании миксинов `add` для отношений `belongsToMany()` (когда в соединительной
+  таблице создается как минимум одна запись) запускаются хуки `beforeBulkCreate()` и
+  `afterBulkCreate()` соединительной таблицы
 - если указано `{ individualHooks: true }`, то также вызываются индивидуальные хуки
-- при использовании миксинов `remove` запускаются хуки `beforeBulkDestroy()` и `afterBulkDestroy()`, а также индивидуальные хуки при наличии `{ individualHooks: true }`
+- при использовании миксинов `remove` запускаются хуки `beforeBulkDestroy()` и
+  `afterBulkDestroy()`, а также индивидуальные хуки при наличии
+  `{ individualHooks: true }`
 
 **Хуки и транзакции**
 
-Если в оригинальном вызове была определена транзакция, она будет передана в хук вместе с другими настройками:
+Если в оригинальном вызове была определена транзакция, она будет передана в хук вместе с
+другими настройками:
 
 ```js
 User.addHook('afterCreate', async (user, options) => {
@@ -4536,22 +4802,26 @@ User.addHook('afterCreate', async (user, options) => {
         id: user.id,
       },
       transaction: options.transaction,
-    }
-  )
-})
+    },
+  );
+});
 
 await sequelize.transaction(async (t) => {
   await User.create({
     username: 'Ванька',
     mood: 'счастливый',
     transaction: t,
-  })
-})
+  });
+});
 ```
 
-Если мы не передадим транзакцию в вызов `User.update()`, обновления не произойдет, поскольку созданный пользователь попадет в БД только после фиксации транзакции.
+Если мы не передадим транзакцию в вызов `User.update()`, обновления не произойдет,
+поскольку созданный пользователь попадет в БД только после фиксации транзакции.
 
-Важно понимать, что `Sequelize` автоматически использует транзакции при выполнении некоторых операций, таких как `Model.findOrCreate()`. Если хуки выполняют операции чтения или записи на основе объекта из БД или модифицируют значения объекта как в приведенном выше примере, всегда следует определять `{ transaction: options.transaction }`.
+Важно понимать, что `Sequelize` автоматически использует транзакции при выполнении
+некоторых операций, таких как `Model.findOrCreate()`. Если хуки выполняют операции чтения
+или записи на основе объекта из БД или модифицируют значения объекта как в приведенном
+выше примере, всегда следует определять `{ transaction: options.transaction }`.
 
 <div align="right">
   <b><a href="#">↑ Наверх</a></b>
@@ -4559,16 +4829,20 @@ await sequelize.transaction(async (t) => {
 
 ## Интерфейс запросов
 
-Каждый экземпляр использует интерфейс запросов (query interface) для взаимодействия с БД. Методы этого интерфейса являются низкоуровневыми в сравнении с обычными методами. Но, разумеется, по сравнению с запросами SQL, они являются высокоуровневыми.
+Каждый экземпляр использует интерфейс запросов (query interface) для взаимодействия с БД.
+Методы этого интерфейса являются низкоуровневыми в сравнении с обычными методами. Но,
+разумеется, по сравнению с запросами SQL, они являются высокоуровневыми.
 
-Рассмотрим несколько примеров использования методов названного интерфейса (полный список методов можно найти <a href="https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html">здесь</a>).
+Рассмотрим несколько примеров использования методов названного интерфейса (полный список
+методов можно найти
+<a href="https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html">здесь</a>).
 
 Получение интерфейса запросов:
 
 ```js
-const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = new Sequelize(/* ... */)
-const queryInterface = sequelize.getQueryInterface()
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize(/* ... */);
+const queryInterface = sequelize.getQueryInterface();
 ```
 
 Создание таблицы:
@@ -4581,7 +4855,7 @@ queryInterface.createTable('Person', {
     defaultValue: false,
     allowNull: false,
   },
-})
+});
 ```
 
 Генерируемый `SQL`:
@@ -4596,7 +4870,7 @@ CREATE TABLE IF NOT EXISTS `Person` (
 Добавление в таблицу новой колонки:
 
 ```js
-queryInterface.addColumn('Person', 'petName', { type: DataTypes.STRING })
+queryInterface.addColumn('Person', 'petName', { type: DataTypes.STRING });
 ```
 
 `SQL`:
@@ -4612,7 +4886,7 @@ queryInterface.changeColumn('Person', 'foo', {
   type: DataTypes.FLOAT,
   defaultValue: 3.14,
   allowNull: false,
-})
+});
 ```
 
 `SQL`:
@@ -4626,7 +4900,7 @@ ALTER TABLE `Person` CHANGE `foo` `foo` FLOAT NOT NULL DEFAULT 3.14;
 ```js
 queryInterface.removeColumn('Person', 'petName', {
   /* настройки */
-})
+});
 ```
 
 `SQL`:
@@ -4641,7 +4915,10 @@ ALTER TABLE 'public'.'Person' DROP COLUMN 'petName';
 
 ## Стратегии именования
 
-`Sequelize` предоставляет настройку `underscored` для моделей. Когда эта настройка имеет значение `true`, значение настройки `field` (название поля) всех атрибутов приводится к `snake_case`. Это также справедливо по отношению к внешним ключам и другим автоматически генерируемым полям.
+`Sequelize` предоставляет настройку `underscored` для моделей. Когда эта настройка имеет
+значение `true`, значение настройки `field` (название поля) всех атрибутов приводится к
+`snake_case`. Это также справедливо по отношению к внешним ключам и другим автоматически
+генерируемым полям.
 
 ```js
 const User = sequelize.define(
@@ -4649,31 +4926,38 @@ const User = sequelize.define(
   { username: DataTypes.STRING },
   {
     underscored: true,
-  }
-)
+  },
+);
 const Task = sequelize.define(
   'task',
   { title: DataTypes.STRING },
   {
     underscored: true,
-  }
-)
-User.hasMany(Task)
-Task.belongsTo(User)
+  },
+);
+User.hasMany(Task);
+Task.belongsTo(User);
 ```
 
-У нас имеется две модели, `User` и `Task`, обе с настройками `underscored`. Между этими моделями установлена ассоциация один-ко-многим. Также, поскольку настройка `timestamps` по умолчанию имеет значение `true`, в обеих таблицах будут автоматически созданы поля `createdAt` и `updatedAt`.
+У нас имеется две модели, `User` и `Task`, обе с настройками `underscored`. Между этими
+моделями установлена ассоциация один-ко-многим. Также, поскольку настройка `timestamps` по
+умолчанию имеет значение `true`, в обеих таблицах будут автоматически созданы поля
+`createdAt` и `updatedAt`.
 
 Без настройки `underscored` произойдет автоматическое создание:
 
-- атрибута `createdAt` для каждой модели, указывающего на колонку `createdAt` каждой таблицы
-- атрибута `updatedAt` для каждой модели, указывающего на колонку `updatedAt` каждой таблицы
+- атрибута `createdAt` для каждой модели, указывающего на колонку `createdAt` каждой
+  таблицы
+- атрибута `updatedAt` для каждой модели, указывающего на колонку `updatedAt` каждой
+  таблицы
 - атрибута `userId` в модели `Task`, указыващего на колонку `userId` таблицы `task`
 
 С настройкой `underscored` будут автоматически созданы:
 
-- атрибут `createdAt` для каждой модели, указывающего на колонку `created_at` каждой таблицы
-- атрибут `updatedAt` для каждой модели, указывающего на колонку `updated_at` каждой таблицы
+- атрибут `createdAt` для каждой модели, указывающего на колонку `created_at` каждой
+  таблицы
+- атрибут `updatedAt` для каждой модели, указывающего на колонку `updated_at` каждой
+  таблицы
 - атрибут `userId` в модели `Task`, указыващего на колонку `user_id` таблицы `task`
 
 _Обратите внимание_: в обоих случаях названия полей именуются в стиле `camelCase`.
@@ -4704,7 +4988,7 @@ CREATE TABLE IF NOT EXISTS "tasks" (
 
 ```js
 // При определении модели должно использоваться единственное число
-sequelize.define('foo', { name: DataTypes.STRING })
+sequelize.define('foo', { name: DataTypes.STRING });
 ```
 
 В данном случае названием соответствующей таблицы будет `foos`.
@@ -4723,23 +5007,26 @@ sequelize.define('foo', {
     },
     onDelete: 'CASCADE',
   },
-})
+});
 ```
 
 При извлечении данных при нетерпеливой загрузке.
 
-При добавлении в запрос `include`, в возвращаемом объекте создается дополнительное поле согласно следующим правилам:
+При добавлении в запрос `include`, в возвращаемом объекте создается дополнительное поле
+согласно следующим правилам:
 
-- при включении данных из единичной ассоциации (`hasOne()` или `belongsTo()`) - название поля указывается в единственном числе
-- при включении данных из множественной ассоциации (`hasMany()` или `belongsToMany()`) - название поля указывается во множественном числе
+- при включении данных из единичной ассоциации (`hasOne()` или `belongsTo()`) - название
+  поля указывается в единственном числе
+- при включении данных из множественной ассоциации (`hasMany()` или `belongsToMany()`) -
+  название поля указывается во множественном числе
 
 ```js
 // Foo.hasMany(Bar)
-const foo = Foo.findOne({ include: Bar })
+const foo = Foo.findOne({ include: Bar });
 // foo.bars будет массивом
 
 // Foo.hasOne(Bar)
-const foo = Foo.findOne({ include: Bar })
+const foo = Foo.findOne({ include: Bar });
 // foo.bar будет объектом
 
 // и т.д.
@@ -4747,7 +5034,8 @@ const foo = Foo.findOne({ include: Bar })
 
 **Кастомизация названий при определении синонимов**
 
-При определении синонима для ассоциации вместо `{ as: 'myAlias' }` можно передать объект с единичной и множественной формами таблицы:
+При определении синонима для ассоциации вместо `{ as: 'myAlias' }` можно передать объект с
+единичной и множественной формами таблицы:
 
 ```js
 Project.belongsToMany(User, {
@@ -4755,10 +5043,11 @@ Project.belongsToMany(User, {
     singular: 'líder',
     plural: 'líderes',
   },
-})
+});
 ```
 
-Если модель будет использовать один и тот же синоним во всех ассоциациях, формы можно указать прямо в модели:
+Если модель будет использовать один и тот же синоним во всех ассоциациях, формы можно
+указать прямо в модели:
 
 ```js
 const User = sequelize.define(
@@ -4771,21 +5060,24 @@ const User = sequelize.define(
       singular: 'líder',
       plural: 'líderes',
     },
-  }
-)
-Project.belongsToMany(User)
+  },
+);
+Project.belongsToMany(User);
 ```
 
-При этом, в миксинах будут использоваться правильные формы, например, `getLíder()`, `setLíderes()` и т.д.
+При этом, в миксинах будут использоваться правильные формы, например, `getLíder()`,
+`setLíderes()` и т.д.
 
-_Обратите внимание_: при использовании `as` для изменения названия ассоциации, также будет изменено название внешнего ключа. Поэтому в данном случае также рекомендуется явно определять название внешнего ключа, причем, в обоих вызовах:
+_Обратите внимание_: при использовании `as` для изменения названия ассоциации, также будет
+изменено название внешнего ключа. Поэтому в данном случае также рекомендуется явно
+определять название внешнего ключа, причем, в обоих вызовах:
 
 ```js
 Invoice.belongsTo(Subscription, {
   as: 'TheSubscription',
   foreignKey: 'subscription_id',
-})
-Subscription.hasMany(Invoice, { foreignKey: 'subscription_id' })
+});
+Subscription.hasMany(Invoice, { foreignKey: 'subscription_id' });
 ```
 
 <div align="right">
@@ -4794,11 +5086,15 @@ Subscription.hasMany(Invoice, { foreignKey: 'subscription_id' })
 
 ## Области видимости
 
-Области видимости (scopes) (далее - области) облегчают повторное использование кода. Они позволяют определить часто используемые настройки, такие как `where`, `include`, `limit` и т.д.
+Области видимости (scopes) (далее - области) облегчают повторное использование кода. Они
+позволяют определить часто используемые настройки, такие как `where`, `include`, `limit` и
+т.д.
 
 **Определение**
 
-Области определяются при создании модели и могут быть поисковыми объектами или функциями, возвращающими такие объекты, за исключением дефолтной области, которая может быть только объектом:
+Области определяются при создании модели и могут быть поисковыми объектами или функциями,
+возвращающими такие объекты, за исключением дефолтной области, которая может быть только
+объектом:
 
 ```js
 const Project = sequelize.define(
@@ -4822,8 +5118,8 @@ const Project = sequelize.define(
         include: [
           {
             model: User,
-            where: { active: true }
-          }
+            where: { active: true },
+          },
         ],
       },
       random() {
@@ -4831,7 +5127,7 @@ const Project = sequelize.define(
           where: {
             someNum: Math.random(),
           },
-        }
+        };
       },
       accessLevel(value) {
         return {
@@ -4840,63 +5136,70 @@ const Project = sequelize.define(
               [Op.gte]: value,
             },
           },
-        }
+        };
       },
     },
-  }
-)
+  },
+);
 ```
 
-Области также могут определяться с помощью метода `Model.addScope()`. Это может быть полезным при определении областей для включений, когда связанная модель может быть не определена в момент создания основной модели.
+Области также могут определяться с помощью метода `Model.addScope()`. Это может быть
+полезным при определении областей для включений, когда связанная модель может быть не
+определена в момент создания основной модели.
 
-Дефолтная область применяется всегда. Это означает, что в приведенном примере вызов `Project.findAll()` сгенерирует такой запрос:
+Дефолтная область применяется всегда. Это означает, что в приведенном примере вызов
+`Project.findAll()` сгенерирует такой запрос:
 
 ```sql
 SELECT * FROM projects WHERE active = true;
 ```
 
-Дефолтная область может быть удалена с помощью `unscoped()`, `scope(null)` или посредством вызова другой области:
+Дефолтная область может быть удалена с помощью `unscoped()`, `scope(null)` или посредством
+вызова другой области:
 
 ```js
-await Project.scope('deleted').findAll()
+await Project.scope('deleted').findAll();
 ```
 
 ```sql
 SELECT * FROM projects WHERE deleted = true;
 ```
 
-Также имеется возможность включать модели из области в определение области. Это позволяет избежать дублирования `include`, `attributes` или `where`:
+Также имеется возможность включать модели из области в определение области. Это позволяет
+избежать дублирования `include`, `attributes` или `where`:
 
 ```js
 Project.addScope('activeUsers', {
-  include: [
-    { model: User.scope('active') }
-  ],
-})
+  include: [{ model: User.scope('active') }],
+});
 ```
 
 **Использование**
 
-Области применяются путем вызова метода `scope(scopeName)`. Этот метод возвращает полнофункциональный экземпляр модели со всеми обычными методами: `findAll()`, `update()`, `count()`, `destroy()` и т.д.
+Области применяются путем вызова метода `scope(scopeName)`. Этот метод возвращает
+полнофункциональный экземпляр модели со всеми обычными методами: `findAll()`, `update()`,
+`count()`, `destroy()` и т.д.
 
 ```js
-const DeletedProjects = Project.scope('deleted')
-await DeletedProjects.findAll()
+const DeletedProjects = Project.scope('deleted');
+await DeletedProjects.findAll();
 
 // Это эквивалентно следующему
 await Project.findAll({
   where: {
     deleted: true,
   },
-})
+});
 ```
 
-Области применяются к `find()`, `findAll()`, `count()`, `update()`, `increment()` и `destroy()`.
+Области применяются к `find()`, `findAll()`, `count()`, `update()`, `increment()` и
+`destroy()`.
 
-Области-функции могут вызываться двумя способами. Если область не принимает аргументов, она вызывается как обычно. Если область принимает аргументы, ей передается объект:
+Области-функции могут вызываться двумя способами. Если область не принимает аргументов,
+она вызывается как обычно. Если область принимает аргументы, ей передается объект:
 
 ```js
-await Project.scope('random', { method: ['accessLevel', 10] })
+await Project.scope('random', { method: ['accessLevel', 10] });
 ```
 
 `SQL`:
@@ -4910,8 +5213,8 @@ SELECT * FROM projects WHERE someNum = 42 AND accessLevel >= 10;
 Объединяемые области указываются через запятую или передаются в виде массива:
 
 ```js
-await Project.scope('deleted', 'activeUsers').findAll()
-await Project.scope(['deleted', 'activeUsers']).findAll()
+await Project.scope('deleted', 'activeUsers').findAll();
+await Project.scope(['deleted', 'activeUsers']).findAll();
 ```
 
 `SQL`:
@@ -4926,10 +5229,12 @@ AND users.active = true;
 Объединение дефолтной и кастомной областей:
 
 ```js
-await Project.scope('defaultScope', 'deleted').findAll()
+await Project.scope('defaultScope', 'deleted').findAll();
 ```
 
-При вызове нескольких областей, ключи последующих областей перезаписывают ключи предыдущих областей (по аналогии с `Object.assign()`), за исключением `where` и `include`, в которых ключи объединяются. Рассмотрим две области:
+При вызове нескольких областей, ключи последующих областей перезаписывают ключи предыдущих
+областей (по аналогии с `Object.assign()`), за исключением `where` и `include`, в которых
+ключи объединяются. Рассмотрим две области:
 
 ```js
 Model.addScope('scope1', {
@@ -4940,7 +5245,7 @@ Model.addScope('scope1', {
     },
   },
   limit: 20,
-})
+});
 Model.addScope('scope2', {
   where: {
     age: {
@@ -4948,7 +5253,7 @@ Model.addScope('scope2', {
     },
   },
   limit: 10,
-})
+});
 ```
 
 Вызов `scope('scope1', 'scope2')` приведет к генерации такого предложения `WHERE`:
@@ -4959,16 +5264,19 @@ WHERE firstName = 'John' AND age > 30 LIMIT 10;
 
 Атрибуты `limit` и `age` были перезаписаны, а `firstName` сохранен.
 
-При объединении ключей атрибутов из нескольких областей предполагается `attributes.exclude()`. Это обеспечивает учет регистра полей при объединении, т.е. сохранение чувствительных полей в финальном результате.
+При объединении ключей атрибутов из нескольких областей предполагается
+`attributes.exclude()`. Это обеспечивает учет регистра полей при объединении, т.е.
+сохранение чувствительных полей в финальном результате.
 
-Такая же логика объединения используется при прямой передаче поискового объекта в `findAll()` (и аналогичные методы):
+Такая же логика объединения используется при прямой передаче поискового объекта в
+`findAll()` (и аналогичные методы):
 
 ```js
 Project.scope('deleted').findAll({
   where: {
     firstName: 'Jane',
   },
-})
+});
 ```
 
 `SQL`:
@@ -4977,7 +5285,8 @@ Project.scope('deleted').findAll({
 WHERE deleted = true AND firstName = 'Jane';
 ```
 
-Если мы передадим `{ firstName: 'Jane', deleted: false }`, область `deleted` будет перезаписана.
+Если мы передадим `{ firstName: 'Jane', deleted: false }`, область `deleted` будет
+перезаписана.
 
 **Объединение включений**
 
@@ -4986,13 +5295,13 @@ WHERE deleted = true AND firstName = 'Jane';
 Предположим, что у нас имеются такие модели с ассоциацией один-ко-многим:
 
 ```js
-const Foo = sequelize.define('Foo', { name: DataTypes.STRING })
-const Bar = sequelize.define('Bar', { name: DataTypes.STRING })
-const Baz = sequelize.define('Baz', { name: DataTypes.STRING })
-const Qux = sequelize.define('Qux', { name: DataTypes.STRING })
-Foo.hasMany(Bar, { foreignKey: 'fooId' })
-Bar.hasMany(Baz, { foreignKey: 'barId' })
-Baz.hasMany(Qux, { foreignKey: 'bazId' })
+const Foo = sequelize.define('Foo', { name: DataTypes.STRING });
+const Bar = sequelize.define('Bar', { name: DataTypes.STRING });
+const Baz = sequelize.define('Baz', { name: DataTypes.STRING });
+const Qux = sequelize.define('Qux', { name: DataTypes.STRING });
+Foo.hasMany(Bar, { foreignKey: 'fooId' });
+Bar.hasMany(Baz, { foreignKey: 'barId' });
+Baz.hasMany(Qux, { foreignKey: 'bazId' });
 ```
 
 Далее, предположим, что мы определили для модели `Foo` такие области:
@@ -5008,7 +5317,7 @@ Foo.adScope('includeEverything', {
       },
     ],
   },
-})
+});
 
 Foo.addScope('limitedBars', {
   include: [
@@ -5017,7 +5326,7 @@ Foo.addScope('limitedBars', {
       limit: 2,
     },
   ],
-})
+});
 
 Foo.addScope('limitedBazs', {
   include: [
@@ -5031,7 +5340,7 @@ Foo.addScope('limitedBazs', {
       ],
     },
   ],
-})
+});
 
 Foo.addScope('excludedBazName', {
   include: [
@@ -5047,10 +5356,12 @@ Foo.addScope('excludedBazName', {
       ],
     },
   ],
-})
+});
 ```
 
-Эти 4 области легко (и глубоко) объединяются. Например, вызов `Foo.scope('includeEverything', 'limitedBars', 'limitedBazs', 'excludedBazName')` эквивалентен следующему:
+Эти 4 области легко (и глубоко) объединяются. Например, вызов
+`Foo.scope('includeEverything', 'limitedBars', 'limitedBazs', 'excludedBazName')`
+эквивалентен следующему:
 
 ```js
 await Foo.findAll({
@@ -5068,7 +5379,7 @@ await Foo.findAll({
       },
     ],
   },
-})
+});
 ```
 
 <div align="right">
@@ -5077,7 +5388,8 @@ await Foo.findAll({
 
 ## Подзапросы
 
-Предположим, что у нас имеется две модели, `Post` и `Reaction`, с ассоциацией один-ко-многим:
+Предположим, что у нас имеется две модели, `Post` и `Reaction`, с ассоциацией
+один-ко-многим:
 
 ```js
 const Post = sequelize.define(
@@ -5085,30 +5397,28 @@ const Post = sequelize.define(
   {
     content: DataTypes.STRING,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 const Reaction = sequelize.define(
   'Reaction',
   {
     type: DataTypes.STRING,
   },
-  { timestamps: false }
-)
+  { timestamps: false },
+);
 
-Post.hasMany(Reaction)
-Reaction.belongsTo(Post)
+Post.hasMany(Reaction);
+Reaction.belongsTo(Post);
 ```
 
 Заполним эти таблицы данными:
 
 ```js
 const createPostWithReactions = async (content, reactionTypes) => {
-  const post = await Post.create({ content })
-  await Reaction.bulkCreate(
-    reactionTypes.map((type) => ({ type, postId: post.id }))
-  )
-  return post
-}
+  const post = await Post.create({ content });
+  await Reaction.bulkCreate(reactionTypes.map((type) => ({ type, postId: post.id })));
+  return post;
+};
 
 await createPostWithReactions('My First Post', [
   'Like',
@@ -5119,16 +5429,12 @@ await createPostWithReactions('My First Post', [
   'Angry',
   'Sad',
   'Like',
-])
-await createPostWithReactions('My Second Post', [
-  'Laugh',
-  'Laugh',
-  'Like',
-  'Laugh',
-])
+]);
+await createPostWithReactions('My Second Post', ['Laugh', 'Laugh', 'Like', 'Laugh']);
 ```
 
-Допустим, что мы хотим вычислить `laughReactionsCount` для каждого поста. С помощью подзапроса `SQL` это можно сделать так:
+Допустим, что мы хотим вычислить `laughReactionsCount` для каждого поста. С помощью
+подзапроса `SQL` это можно сделать так:
 
 ```sql
 SELECT *, (
@@ -5147,19 +5453,21 @@ FROM posts AS post;
 ```js
 [
   {
-    "id": 1,
-    "content": "My First Post",
-    "laughReactionsCount": 1
+    id: 1,
+    content: 'My First Post',
+    laughReactionsCount: 1,
   },
   {
-    "id": 2,
-    "content": "My Second Post",
-    "laughReactionsCount": 3
-  }
-]
+    id: 2,
+    content: 'My Second Post',
+    laughReactionsCount: 3,
+  },
+];
 ```
 
-`Sequelize` предоставляет специальную утилиту `literal()` для работы с подзапросами. Данная утилита принимает подзапрос `SQL`. Т.е. `Sequelize` помогает с основным запросом, но подзапрос должен быть реализован вручную:
+`Sequelize` предоставляет специальную утилиту `literal()` для работы с подзапросами.
+Данная утилита принимает подзапрос `SQL`. Т.е. `Sequelize` помогает с основным запросом,
+но подзапрос должен быть реализован вручную:
 
 ```js
 Post.findAll({
@@ -5178,7 +5486,7 @@ Post.findAll({
       ],
     ],
   },
-})
+});
 ```
 
 Результат выполнения данного запроса будет таким же, как при выполнении SQL-запроса.
@@ -5202,10 +5510,8 @@ Post.findAll({
       ],
     ],
   },
-  order: [
-    [sequelize.literal('laughReactionsCount'), 'DESC']
-  ],
-})
+  order: [[sequelize.literal('laughReactionsCount'), 'DESC']],
+});
 ```
 
 Результат:
@@ -5213,16 +5519,16 @@ Post.findAll({
 ```js
 [
   {
-    "id": 2,
-    "content": "My Second Post",
-    "laughReactionsCount": 3
+    id: 2,
+    content: 'My Second Post',
+    laughReactionsCount: 3,
   },
   {
-    "id": 1,
-    "content": "My First Post",
-    "laughReactionsCount": 1
-  }
-]
+    id: 1,
+    content: 'My First Post',
+    laughReactionsCount: 1,
+  },
+];
 ```
 
 <div align="right">
@@ -5231,20 +5537,25 @@ Post.findAll({
 
 ## Ограничения и циклические ссылки
 
-Добавление ограничений между таблицами означает, что таблицы должны создаваться в правильном порядке при использовании `sequelize.sync()`. Если `Task` содержит ссылку на `User`, тогда таблица `User` должна быть создана первой. Иногда это может привести к циклическим ссылкам, когда `Sequelize` не может определить порядок синхронизации. Предположим, что у нас имеются документы и версии. Документ может иметь несколько версий. Он также может содержать ссылку на текущую версию.
+Добавление ограничений между таблицами означает, что таблицы должны создаваться в
+правильном порядке при использовании `sequelize.sync()`. Если `Task` содержит ссылку на
+`User`, тогда таблица `User` должна быть создана первой. Иногда это может привести к
+циклическим ссылкам, когда `Sequelize` не может определить порядок синхронизации.
+Предположим, что у нас имеются документы и версии. Документ может иметь несколько версий.
+Он также может содержать ссылку на текущую версию.
 
 ```js
 const Document = sequelize.define('Document', {
   author: DataTypes.STRING,
-})
+});
 const Version = sequelize.define('Version', {
   timestamp: DataTypes.STRING,
-})
-Document.hasMany(Version)
+});
+Document.hasMany(Version);
 Document.belongsTo(Version, {
   as: 'Current',
   foreignKey: 'currentVersionId',
-})
+});
 ```
 
 Однако, это приведет к возникновению ошибки:
@@ -5256,21 +5567,22 @@ Cyclic dependency found. documents is dependent of itself. Dependency chain: doc
 Для решения этой проблемы необходимо передать `constraints: false` в одну из ассоциаций:
 
 ```js
-Document.hasMany(Version)
+Document.hasMany(Version);
 Document.belongsTo(Version, {
   as: 'Current',
   foreignKey: 'currentVersionId',
   constraints: false,
-})
+});
 ```
 
-Иногда может потребоваться указать ссылку на другую таблицу без создания ограничений или ассоциаций. В этом случае ссылку и отношения между таблицами можно определить явно:
+Иногда может потребоваться указать ссылку на другую таблицу без создания ограничений или
+ассоциаций. В этом случае ссылку и отношения между таблицами можно определить явно:
 
 ```js
 const Trainer = sequelize.define('Trainer', {
   firstName: DataTypes.STRING,
   lastName: DataTypes.STRING,
-})
+});
 
 // `Series` будет содержать внешнюю ссылку `trainerId = Trainer.id`
 // после вызова `Trainer.hasMany(series)`
@@ -5286,7 +5598,7 @@ const Series = sequelize.define('Series', {
       key: 'id',
     },
   },
-})
+});
 
 // `Video` будет содержэать внешнюю ссылку `seriesId = Series.id`
 // после вызова `Series.hasOne(Video)`
@@ -5302,10 +5614,10 @@ const Video = sequelize.define('Video', {
       key: 'id',
     },
   },
-})
+});
 
-Series.hasOne(Video)
-Trainer.hasMany(Series)
+Series.hasOne(Video);
+Trainer.hasMany(Series);
 ```
 
 <div align="right">
@@ -5362,8 +5674,8 @@ const User = sequelize.define(
         ],
       },
     ],
-  }
-)
+  },
+);
 ```
 
 <div align="right">
@@ -5372,7 +5684,9 @@ const User = sequelize.define(
 
 ## Пул соединений
 
-Подключение к БД с помощью одного процесса означает создание одного экземпляра `Sequelize`. При инициализации `Sequelize` создает пул соединений (connection pool). Этот пул может быть настроен с помощью настройки `pool`:
+Подключение к БД с помощью одного процесса означает создание одного экземпляра
+`Sequelize`. При инициализации `Sequelize` создает пул соединений (connection pool). Этот
+пул может быть настроен с помощью настройки `pool`:
 
 ```js
 const sequelize = new Sequelize(/* ... */, {
@@ -5386,7 +5700,9 @@ const sequelize = new Sequelize(/* ... */, {
 })
 ```
 
-При подключении к БД с помощью нескольких процессов, для каждого процесса создается отдельный экземпляр с максимальным размером пула подключений с учетом общего максимального размера.
+При подключении к БД с помощью нескольких процессов, для каждого процесса создается
+отдельный экземпляр с максимальным размером пула подключений с учетом общего максимального
+размера.
 
 <div align="right">
   <b><a href="#">↑ Наверх</a></b>
@@ -5394,11 +5710,19 @@ const sequelize = new Sequelize(/* ... */, {
 
 ## Миграции
 
-Подобно тому, как вы используете систему контроля версий, такую как `Git`, для контроля за изменениями кодовой базы, миграции (migrations) позволяют контролировать изменения, вносимые в БД. Миграции позволяют переводить БД из одного состояния в другое и обратно: изменения состояния сохраняются в файлах миграции, описывающих, как получить новое состояние или как отменить изменения для того, чтобы вернуться к предыдущему состоянию.
+Подобно тому, как вы используете систему контроля версий, такую как `Git`, для контроля за
+изменениями кодовой базы, миграции (migrations) позволяют контролировать изменения,
+вносимые в БД. Миграции позволяют переводить БД из одного состояния в другое и обратно:
+изменения состояния сохраняются в файлах миграции, описывающих, как получить новое
+состояние или как отменить изменения для того, чтобы вернуться к предыдущему состоянию.
 
-Для работы с миграциями, а также для генерации шаблона проекта, используется <a href="https://github.com/sequelize/cli">интерфейс командной строки `Sequelize`</a>.
+Для работы с миграциями, а также для генерации шаблона проекта, используется
+<a href="https://github.com/sequelize/cli">интерфейс командной строки `Sequelize`</a>.
 
-Миграция - это JS-файл, из которого экспортируется 2 функции, `up` и `down`, описывающие выполнение миграции и ее отмену, соответственно. Эти функции определяются вручную, но вызываются с помощью `CLI`. В функциях указываются необходимые запросы с помощью `sequelize.query()` или других методов.
+Миграция - это JS-файл, из которого экспортируется 2 функции, `up` и `down`, описывающие
+выполнение миграции и ее отмену, соответственно. Эти функции определяются вручную, но
+вызываются с помощью `CLI`. В функциях указываются необходимые запросы с помощью
+`sequelize.query()` или других методов.
 
 **Установка `CLI`:**
 
@@ -5425,7 +5749,8 @@ sequelize-cli init
 
 **Настройка**
 
-Далее нам нужно сообщить `CLI`, как подключиться к БД. Для этого откроем файл `config/config.json`. Он выглядит примерно так:
+Далее нам нужно сообщить `CLI`, как подключиться к БД. Для этого откроем файл
+`config/config.json`. Он выглядит примерно так:
 
 ```js
 {
@@ -5459,7 +5784,8 @@ _Обратите внимание_: для создания БД можно в�
 
 **Создание первой модели и миграции**
 
-После настройки `CLI` можно приступать к созданию миграций. Мы создадим ее с помощью команды `model:generate`. Это команда принимает 2 настройки:
+После настройки `CLI` можно приступать к созданию миграций. Мы создадим ее с помощью
+команды `model:generate`. Это команда принимает 2 настройки:
 
 - `name`: название модели
 - `attributes`: список атрибутов модели
@@ -5483,8 +5809,10 @@ sequelize-cli db:migrate
 
 Данная команда выполняет следующее:
 
-- создает в БД таблицу `SequelizeMeta`. Это таблица используется для записи миграций, выполняемых для текущей БД
-- выполняет поиск файлов с миграциями, которые еще не запускались. В нашем случае будет запущен файл `XXXXXXXXXXXXXX-create-user.js`
+- создает в БД таблицу `SequelizeMeta`. Это таблица используется для записи миграций,
+  выполняемых для текущей БД
+- выполняет поиск файлов с миграциями, которые еще не запускались. В нашем случае будет
+  запущен файл `XXXXXXXXXXXXXX-create-user.js`
 - создается таблица `Users` с колонками, определенными в миграции
 
 **Отмена миграций**
@@ -5495,19 +5823,25 @@ sequelize-cli db:migrate
 sequelize-cli db:migrate:undo
 ```
 
-Для отмены всех миграций используется команда `db:migrate:undo:all`, а для отката к определенной миграции - `db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js`.
+Для отмены всех миграций используется команда `db:migrate:undo:all`, а для отката к
+определенной миграции - `db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js`.
 
 **Создание скрипта для наполнения БД начальными данными**
 
-Предположим, что мы хотим создать дефолтного пользователя в таблице `Users`. Для управления миграциями данных можно использовать сеятелей (seeders). Засеивание файла - это наполнение таблицы начальными или тестовыми данными.
+Предположим, что мы хотим создать дефолтного пользователя в таблице `Users`. Для
+управления миграциями данных можно использовать сеятелей (seeders). Засеивание файла - это
+наполнение таблицы начальными или тестовыми данными.
 
-Создадим файл с кодом, при выполнении которого будет выполняться создание дефолтного пользователя в таблице `Users`.
+Создадим файл с кодом, при выполнении которого будет выполняться создание дефолтного
+пользователя в таблице `Users`.
 
 ```bash
 sequelize-cli seed:generate --name demo-user
 ```
 
-После выполнения этой команды в директории `seeders` появится файл `XXXXXXXXXXXXXX-demo-user.js`. В нем используется такая же семантика `up / down`, что и в файлах миграций.
+После выполнения этой команды в директории `seeders` появится файл
+`XXXXXXXXXXXXXX-demo-user.js`. В нем используется такая же семантика `up / down`, что и в
+файлах миграций.
 
 Отредактриуем этот файл:
 
@@ -5522,11 +5856,10 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-    ])
+    ]);
   },
-  down: (queryInterface, Sequelize) =>
-    queryInterface.bulkDelete('Users', null, {}),
-}
+  down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Users', null, {}),
+};
 ```
 
 Для запуска сеятеля используется команда `db:seed:all`:
@@ -5535,9 +5868,13 @@ module.exports = {
 sequelize-cli db:seed:all
 ```
 
-Для отмены последнего сеятеля используется команда `db:seed:undo`, для отмены определенного сеятеля - `db:seed:undo --seed seedName`, для отмены всех сеятелей - `db:seed:undo:all`.
+Для отмены последнего сеятеля используется команда `db:seed:undo`, для отмены
+определенного сеятеля - `db:seed:undo --seed seedName`, для отмены всех сеятелей -
+`db:seed:undo:all`.
 
-_Обратите внимание_: отменяемыми являются только те сеятели, которые используют какое-либо хранилище (см. ниже; в отличие от миграций, информация о сеятелях не сохраняется в таблице `SequelizeMeta`).
+_Обратите внимание_: отменяемыми являются только те сеятели, которые используют какое-либо
+хранилище (см. ниже; в отличие от миграций, информация о сеятелях не сохраняется в таблице
+`SequelizeMeta`).
 
 **Шаблон миграции**
 
@@ -5551,16 +5888,19 @@ module.exports = {
   down: (queryIntarface, Sequelize) => {
     // Логика отмены изменений
   },
-}
+};
 ```
 
-Мы можем создать этот файл с помощью `migration:generate`. Эта команда создаст файл `xxx-migration-skeleton.js` в директории для миграций.
+Мы можем создать этот файл с помощью `migration:generate`. Эта команда создаст файл
+`xxx-migration-skeleton.js` в директории для миграций.
 
 ```bash
 sequelize-cli migration:generate --name migrationName
 ```
 
-Объект `queryInterface` используется для модификации БД. Объект `Sequelize` содержит доступные типы данных, такие как `STRING` или `INTEGER`. Функции `up()` и `down()` должны возвращать промис. Рассмотрим простой пример создания/удаления таблицы `User`:
+Объект `queryInterface` используется для модификации БД. Объект `Sequelize` содержит
+доступные типы данных, такие как `STRING` или `INTEGER`. Функции `up()` и `down()` должны
+возвращать промис. Рассмотрим простой пример создания/удаления таблицы `User`:
 
 ```js
 module.exports = {
@@ -5574,10 +5914,12 @@ module.exports = {
       },
     }),
   down: (queryInterface) => queryInterface.dropTable('User'),
-}
+};
 ```
 
-В следующем примере миграция производит два изменения в БД (добавляет две колонки в таблицу `User`) с помощью управляемой транзакции, обеспечивающей успешное выполнение всех операций или отмену изменений при возникновении ошибки:
+В следующем примере миграция производит два изменения в БД (добавляет две колонки в
+таблицу `User`) с помощью управляемой транзакции, обеспечивающей успешное выполнение всех
+операций или отмену изменений при возникновении ошибки:
 
 ```js
 module.exports = {
@@ -5627,10 +5969,11 @@ module.exports = {
       },
     }),
   down: (queryInterface) => queryInterface.dropTable('Person'),
-}
+};
 ```
 
-Следующий пример демонстирует использование синтаксиса `async/await`, создание уникального индекса для новой колонки и неуправляемой транзакции:
+Следующий пример демонстирует использование синтаксиса `async/await`, создание уникального
+индекса для новой колонки и неуправляемой транзакции:
 
 ```js
 module.exports = {
@@ -5671,7 +6014,9 @@ module.exports = {
 }
 ```
 
-Следующий пример демонстрирует создание уникального индекса на основе композиции из нескольких полей с условием, которое позволяет отношениям существовать много раз, но только одно будет удовлетворять условию:
+Следующий пример демонстрирует создание уникального индекса на основе композиции из
+нескольких полей с условием, которое позволяет отношениям существовать много раз, но
+только одно будет удовлетворять условию:
 
 ```js
 modulex.exports = {
@@ -5688,10 +6033,10 @@ modulex.exports = {
         queryInterface.addIndex('Person', ['name', 'bool'], {
           indicesType: 'UNIQUE',
           where: { bool: true },
-        })
+        }),
       ),
   down: (queryInterface) => queryInterface.dropTable('Person'),
-}
+};
 ```
 
 **Хранилище**
@@ -5704,7 +6049,14 @@ modulex.exports = {
 
 _Хранилище миграций_
 
-По умолчанию `CLI` создает в БД таблицу `SequelizeMeta` для хранения записей о миграциях. Для изменения этого поведения существует 3 настройки, которые можно добавить в файл конфигурации `.sequelizerc`. Тип хранилища указывается в настройке `migrationStorage`. При выборе типа `json`, путь к файлу можно указать в настройке `migrationStoragePath` (по умолчанию данные будут записываться в файл `sequelize-meta.json`). Для изменения названия таблицы для хранения информации о миграциях в БД используется настройка `migrationStorageTableName`. Свойства `migrationStorageTableSchema` позволяет изменить используемую таблицей `SequelizeMeta` схему.
+По умолчанию `CLI` создает в БД таблицу `SequelizeMeta` для хранения записей о миграциях.
+Для изменения этого поведения существует 3 настройки, которые можно добавить в файл
+конфигурации `.sequelizerc`. Тип хранилища указывается в настройке `migrationStorage`. При
+выборе типа `json`, путь к файлу можно указать в настройке `migrationStoragePath` (по
+умолчанию данные будут записываться в файл `sequelize-meta.json`). Для изменения названия
+таблицы для хранения информации о миграциях в БД используется настройка
+`migrationStorageTableName`. Свойства `migrationStorageTableSchema` позволяет изменить
+используемую таблицей `SequelizeMeta` схему.
 
 ```js
 {
@@ -5732,7 +6084,8 @@ _Хранилище миграций_
 
 _Хранилище сеятелей_
 
-По умолчанию `Sequelize` не хранит информацию о сеятелях. Настройки файла конфигурации, которые позволяют это изменить:
+По умолчанию `Sequelize` не хранит информацию о сеятелях. Настройки файла конфигурации,
+которые позволяют это изменить:
 
 - `seederStorage` - тип хранилища
 - `seederStoragePath` - путь к хранилищу (по умолчанию `sequelize-data.json`)

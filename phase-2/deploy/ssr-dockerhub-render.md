@@ -6,11 +6,12 @@
 4. В настройке шаблонизатора заменить jsx на js:
 
 ```js
-app.engine("js", jsxRender);
-app.set("view engine", "js");
+app.engine('js', jsxRender);
+app.set('view engine', 'js');
 ```
 
-5. Проверить, что переменная окружения задания порта сервера называется `PORT`, а не `SERVER_PORT` или `EXPRESS_PORT`
+5. Проверить, что переменная окружения задания порта сервера называется `PORT`, а не
+   `SERVER_PORT` или `EXPRESS_PORT`
 6. Прописать отлов ошибок (`try/catch`), обработать все ошибки
 7. Добавить два скрипта в package.json:
 
@@ -32,15 +33,16 @@ public/vendor.js
 .env
 ```
 
-9. Прописать подключение к Postgres через URL. Например, можно использовать такой файл `database.js`:
+9. Прописать подключение к Postgres через URL. Например, можно использовать такой файл
+   `database.js`:
 
 ```js
-require("dotenv").config();
+require('dotenv').config();
 
 module.exports = {
   development: {
-    use_env_variable: "DATABASE_URL",
-    dialect: "postgres",
+    use_env_variable: 'DATABASE_URL',
+    dialect: 'postgres',
     dialectOptions: {
       ssl: {
         rejectUnauthorized: false,
@@ -48,11 +50,11 @@ module.exports = {
     },
   },
   test: {
-    use_env_variable: "DATABASE_URL",
-    dialect: "postgres",
+    use_env_variable: 'DATABASE_URL',
+    dialect: 'postgres',
   },
   production: {
-    use_env_variable: "DATABASE_URL",
+    use_env_variable: 'DATABASE_URL',
     dialectOptions: {
       ssl: {
         rejectUnauthorized: false,
@@ -62,20 +64,25 @@ module.exports = {
 };
 ```
 
-10. Прописать переменную окружения `DATABASE_URL` для подключения к базе данных из режима разработки. Подключение к базе данных будет происходить через `.env`:
+10. Прописать переменную окружения `DATABASE_URL` для подключения к базе данных из режима
+    разработки. Подключение к базе данных будет происходить через `.env`:
 
 ```
 DATABASE_URL=postgres://[имя пользователя]:[пароль]@[хост]:5432/[имя базы данных]
 ```
 
-11. Перейти на [Render.com](https://render.com/) (создать учётную запись, если нет), создать базу данных PostgreSQL: указать название проекта, название базы данных, имя пользователя
-12. После создания базы данных в разделе Info -> Connections найти Internal Database URL или External Database URL и вставить его в переменные окружения проекта
+11. Перейти на [Render.com](https://render.com/) (создать учётную запись, если нет),
+    создать базу данных PostgreSQL: указать название проекта, название базы данных, имя
+    пользователя
+12. После создания базы данных в разделе Info -> Connections найти Internal Database URL
+    или External Database URL и вставить его в переменные окружения проекта
 
 ```
 DATABASE_URL=[Database URL]
 ```
 
-13. Накатить миграции и засидить БД в production. Например, можно добавить скрипт или написать в терминале:
+13. Накатить миграции и засидить БД в production. Например, можно добавить скрипт или
+    написать в терминале:
 
 ```bash
 NODE_ENV=production npx sequelize db:migrate && npx sequelize db:seed:all
@@ -104,19 +111,25 @@ RUN npm run build
 CMD ["npm", "start"]
 ```
 
-15. В корне проекта выполнить `docker build . -t [имя образа]:[версия]` и затем проверить наличие созданного образа через `docker images`
+15. В корне проекта выполнить `docker build . -t [имя образа]:[версия]` и затем проверить
+    наличие созданного образа через `docker images`
 16. Перейти на https://hub.docker.com/ (создать учётную запись, если нет)
 17. https://hub.docker.com/settings/security создать `Access Token`
 18. В терминале выполнить `docker login --username=[имя пользователя]`
 19. Вместо пароля ввести `Access Token`
 20. Создать репозиторий на Docker Hub
-21. Добавить tag к образу: `docker tag [имя образа]:[версия] [имя пользователя]/[имя репозитория]:[имя тэга]`
-22. Отправить образ в Docker Hub: `docker push [имя пользователя]/[имя репозитория]:[имя тэга]` и проверить наличие образа через `docker images`
+21. Добавить tag к образу:
+    `docker tag [имя образа]:[версия] [имя пользователя]/[имя репозитория]:[имя тэга]`
+22. Отправить образ в Docker Hub:
+    `docker push [имя пользователя]/[имя репозитория]:[имя тэга]` и проверить наличие
+    образа через `docker images`
 23. Вернуться на [Render.com](https://render.com/)
-24. Перейти в `Account settings` и включить `Early Access` для возможности использования Docker
+24. Перейти в `Account settings` и включить `Early Access` для возможности использования
+    Docker
 25. Создать новый веб-сервис и выбрать Docker, ввести имя сервиса
 26. Ввести адрес репозитория в формате `docker.io/<username>/<repository>:<tag>`
-27. В разделе Environment указать `Environment Variables` - те переменные окружения, которые указаны в `.env` -- в частности:
+27. В разделе Environment указать `Environment Variables` - те переменные окружения,
+    которые указаны в `.env` -- в частности:
 
 ```
 DATABASE_URL=[Database URL]

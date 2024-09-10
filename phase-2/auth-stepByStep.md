@@ -1,11 +1,16 @@
 ## Необходимые пакеты
+
 ```bash
 npm i bcrypt cookie-parser jsonwebtoken
 ```
+
 ### Порядок подключения модулей для авторизации
-1. jwt.config  модуль который будет использоваться глобально для всего приложения для общей настройки JWT
+
+1. jwt.config модуль который будет использоваться глобально для всего приложения для общей
+   настройки JWT
+
 ```js
-   src/cofigs/jwt.config.js
+src / cofigs / jwt.config.js;
 
 const jwtConfig = {
   access: {
@@ -18,9 +23,12 @@ const jwtConfig = {
 
 module.exports = jwtConfig;
 ```
-2. cookie.config модуль который будет использован для конфигурации cookie+jwt с одинаковыми параметрами срока жизни
+
+2. cookie.config модуль который будет использован для конфигурации cookie+jwt с
+   одинаковыми параметрами срока жизни
+
 ```js
-src/configs/cookie.config.js
+src / configs / cookie.config.js;
 
 const jwtConfig = require('./jwt.config');
 
@@ -37,7 +45,10 @@ const cookieConfig = {
 
 module.exports = cookieConfig;
 ```
-3. generateTokens модуль принимающий данные пользователя как payload и возвращающий объект с jwt токенами.
+
+3. generateTokens модуль принимающий данные пользователя как payload и возвращающий объект
+   с jwt токенами.
+
 ```bash
 //Добавляем в .env
 ACCESS_TOKEN_SECRET=
@@ -45,30 +56,24 @@ REFRESH_TOKEN_SECRET=
 ```
 
 ```js
-src/utils/generateTokens.js
+src / utils / generateTokens.js;
 
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../configs/jwt.config');
 
 const generateTokens = (payload) => ({
-  accessToken: jwt.sign(
-    payload,
-    process.env.ACCESS_TOKEN_SECRET,
-    jwtConfig.access
-  ),
-  refreshToken: jwt.sign(
-    payload,
-    process.env.REFRESH_TOKEN_SECRET,
-    jwtConfig.refresh
-  ),
+  accessToken: jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, jwtConfig.access),
+  refreshToken: jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, jwtConfig.refresh),
 });
 
 module.exports = generateTokens;
 ```
+
 4. middleware для проверки accessToken и refreshToken
+
 ```js
-src/middlewares/verifyTokens.js
+src / middlewares / verifyTokens.js;
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -101,10 +106,17 @@ const verifyRefreshToken = (req, res, next) => {
 
 module.exports = { verifyAccessToken, verifyRefreshToken };
 ```
-> res.locals в Express — это объект, который используется для передачи данных от middleware или маршрута к шаблонизатору (view engine) или другим middleware в рамках одного HTTP-запроса. Этот объект доступен только в течение жизни текущего запроса и автоматически сбрасывается после завершения обработки запроса.
-Иногда бывает необходимо передать данные из одного middleware в другое. res.locals — идеальное место для хранения таких временных данных, поскольку они доступны во всех последующих middleware и маршрутах, связанных с текущим запросом.
 
-5. Пример регистрации/авторизации/выхода  пользователя
+> res.locals в Express — это объект, который используется для передачи данных от
+> middleware или маршрута к шаблонизатору (view engine) или другим middleware в рамках
+> одного HTTP-запроса. Этот объект доступен только в течение жизни текущего запроса и
+> автоматически сбрасывается после завершения обработки запроса. Иногда бывает необходимо
+> передать данные из одного middleware в другое. res.locals — идеальное место для хранения
+> таких временных данных, поскольку они доступны во всех последующих middleware и
+> маршрутах, связанных с текущим запросом.
+
+5. Пример регистрации/авторизации/выхода пользователя
+
 ```js
 const authRouter = require('express').Router();
 
@@ -143,7 +155,9 @@ authRouter.post('/signup', async (req, res) => {
   }
 });
 ```
+
 Пример авторизации пользователя
+
 ```js
 authRouter.post('/signin', async (req, res) => {
   const { email, password } = req.body;
@@ -176,16 +190,20 @@ authRouter.post('/signin', async (req, res) => {
   }
 });
 ```
+
 Пример logout
+
 ```js
 authRouter.get('/logout', (req, res) => {
-  res.clearCookie('refreshToken')
-  .sendStatus(200);
+  res.clearCookie('refreshToken').sendStatus(200);
 });
 ```
-6. Создание отдельного endPoint для верификации refreshToken (будет применяться когда пользователь заново зашел в приложение или истек срок годности accsessToken)
+
+6. Создание отдельного endPoint для верификации refreshToken (будет применяться когда
+   пользователь заново зашел в приложение или истек срок годности accsessToken)
+
 ```js
-/src/routes/token.router.js 
+/src/routes/token.router.js
 
 const tokenRouter = require('express').Router();
 const cookieConfig = require('../configs/cookie.config');
@@ -206,10 +224,23 @@ module.exports = tokenRouter;
 ```
 
 ## Фронтенд
-> Axios Interceptors — это механизм в библиотеке Axios, который позволяет перехватывать запросы и ответы до того, как они будут обработаны или отправлены. С помощью интерсепторов вы можете изменять или обрабатывать запросы и ответы, выполнять общие операции, такие как добавление заголовков, обработка ошибок, повторные попытки запросов и т.д.
->> Request Interceptors (Интерсепторы запросов):Эти интерсепторы позволяют перехватывать запросы перед их отправкой на сервер. Это полезно для добавления стандартных заголовков (например, токенов аутентификации), логирования, модификации данных запроса и других операций.
 
->> Response Interceptors (Интерсепторы ответов) Эти интерсепторы позволяют перехватывать ответы от сервера до того, как они будут переданы в ваш код. Вы можете использовать их для обработки ошибок, анализа данных, повторных попыток запросов в случае ошибок и других операций.
+> Axios Interceptors — это механизм в библиотеке Axios, который позволяет перехватывать
+> запросы и ответы до того, как они будут обработаны или отправлены. С помощью
+> интерсепторов вы можете изменять или обрабатывать запросы и ответы, выполнять общие
+> операции, такие как добавление заголовков, обработка ошибок, повторные попытки запросов
+> и т.д.
+>
+> > Request Interceptors (Интерсепторы запросов):Эти интерсепторы позволяют перехватывать
+> > запросы перед их отправкой на сервер. Это полезно для добавления стандартных
+> > заголовков (например, токенов аутентификации), логирования, модификации данных запроса
+> > и других операций.
+
+> > Response Interceptors (Интерсепторы ответов) Эти интерсепторы позволяют перехватывать
+> > ответы от сервера до того, как они будут переданы в ваш код. Вы можете использовать их
+> > для обработки ошибок, анализа данных, повторных попыток запросов в случае ошибок и
+> > других операций.
+
 ```js
 /src/api/axiosInstance.js
 
@@ -252,25 +283,37 @@ export { setAccessToken };
 
 export default axiosInstance;
 ```
+
 # Auth
 
 ## Bcrypt
 
-**bcrypt** — это популярная и надежная библиотека для хеширования паролей, которая используется для безопасного хранения паролей в базах данных. Хеширование паролей с использованием bcrypt делает их более защищенными от атак, таких как перебор паролей (brute-force) и атаки по радужным таблицам (rainbow table attacks).
+**bcrypt** — это популярная и надежная библиотека для хеширования паролей, которая
+используется для безопасного хранения паролей в базах данных. Хеширование паролей с
+использованием bcrypt делает их более защищенными от атак, таких как перебор паролей
+(brute-force) и атаки по радужным таблицам (rainbow table attacks).
 
 ### Основные особенности bcrypt:
 
 1. **Адаптивная сложность (cost factor):**
-    - bcrypt использует параметр сложности (так называемый cost factor), который определяет количество итераций алгоритма. Чем выше значение этого параметра, тем больше времени требуется для хеширования пароля. Это замедляет атаки перебора паролей, поскольку каждый возможный пароль будет хешироваться дольше.
+   - bcrypt использует параметр сложности (так называемый cost factor), который определяет
+     количество итераций алгоритма. Чем выше значение этого параметра, тем больше времени
+     требуется для хеширования пароля. Это замедляет атаки перебора паролей, поскольку
+     каждый возможный пароль будет хешироваться дольше.
 2. **Соль (Salt):**
-    - bcrypt автоматически генерирует уникальную "соль" для каждого хеша пароля. Соль — это случайная строка, которая добавляется к паролю перед хешированием. Это делает каждый хеш уникальным даже для одинаковых паролей и защищает от атак по радужным таблицам.
+   - bcrypt автоматически генерирует уникальную "соль" для каждого хеша пароля. Соль — это
+     случайная строка, которая добавляется к паролю перед хешированием. Это делает каждый
+     хеш уникальным даже для одинаковых паролей и защищает от атак по радужным таблицам.
 3. **Хеширование и проверка:**
-    - bcrypt не только хеширует пароли, но и предоставляет метод для проверки хеша. Когда пользователь вводит пароль, bcrypt снова хеширует этот пароль с той же солью и сравнивает результат с сохраненным хешем.
-    
+   - bcrypt не только хеширует пароли, но и предоставляет метод для проверки хеша. Когда
+     пользователь вводит пароль, bcrypt снова хеширует этот пароль с той же солью и
+     сравнивает результат с сохраненным хешем.
 
 ### Пример использования:
 
-В Node.js bcrypt можно использовать с помощью библиотеки `bcrypt` или `bcryptjs` (последняя является чистой реализацией на JavaScript, что может быть полезно, если вы не хотите использовать нативные модули).
+В Node.js bcrypt можно использовать с помощью библиотеки `bcrypt` или `bcryptjs`
+(последняя является чистой реализацией на JavaScript, что может быть полезно, если вы не
+хотите использовать нативные модули).
 
 ### Установка:
 
@@ -285,39 +328,47 @@ const saltRounds = 10; // Уровень сложности
 const plainPassword = 'mySecurePassword';
 
 async function hashAndComparePassword() {
-    try {
-        // Генерация хеша пароля
-        const hash = await bcrypt.hash(plainPassword, saltRounds);
-        console.log('Хеш пароля:', hash);
+  try {
+    // Генерация хеша пароля
+    const hash = await bcrypt.hash(plainPassword, saltRounds);
+    console.log('Хеш пароля:', hash);
 
-        // Сравнение пароля и хеша
-        const result = await bcrypt.compare(plainPassword, hash);
-        console.log('Пароль верен:', result); // true
-    } catch (err) {
-        console.error('Ошибка:', err);
-    }
+    // Сравнение пароля и хеша
+    const result = await bcrypt.compare(plainPassword, hash);
+    console.log('Пароль верен:', result); // true
+  } catch (err) {
+    console.error('Ошибка:', err);
+  }
 }
 ```
 
 ## Cookies
 
-Cookies — это небольшие текстовые файлы, которые веб-сайты сохраняют на вашем устройстве (компьютере, смартфоне, планшете) через браузер. Эти файлы содержат данные, которые позволяют сайтам «запоминать» вас, когда вы посещаете их снова.
+Cookies — это небольшие текстовые файлы, которые веб-сайты сохраняют на вашем устройстве
+(компьютере, смартфоне, планшете) через браузер. Эти файлы содержат данные, которые
+позволяют сайтам «запоминать» вас, когда вы посещаете их снова.
 
 ## Express cookies
 
 ```jsx
-https://expressjs.com/en/api.html#res.cookie
+//expressjs.com/en/api.html#res.cookie
 
 //установить cookies
-res.cookie('rememberme', '1', { expires: new Date(Date.now() + 900000), httpOnly: true })
+https: res.cookie('rememberme', '1', {
+  expires: new Date(Date.now() + 900000),
+  httpOnly: true,
+});
 //удалить cookie
-res.cookie('name', 'tobi', { path: '/admin' })
-res.clearCookie('name', { path: '/admin' })
+res.cookie('name', 'tobi', { path: '/admin' });
+res.clearCookie('name', { path: '/admin' });
 ```
 
 ## Cookie-parser
 
- Это middleware  для Node.js, которое используется в Express-приложениях для работы с cookies (куки). Оно автоматически парсит (разбирает) заголовок `Cookie` в запросах, преобразуя его в объект, доступный в `req.cookies`, что упрощает работу с куки в серверных приложениях
+Это middleware для Node.js, которое используется в Express-приложениях для работы с
+cookies (куки). Оно автоматически парсит (разбирает) заголовок `Cookie` в запросах,
+преобразуя его в объект, доступный в `req.cookies`, что упрощает работу с куки в серверных
+приложениях
 
 ```jsx
 npm i cookie-parser //установка
@@ -327,16 +378,23 @@ app.use(cookieParser()); //применение
 
 # JWT
 
-**JWT (JSON Web Token)** — это стандарт для создания токенов, которые используются для передачи информации между двумя сторонами в формате JSON. Эти токены обычно используются для аутентификации и передачи информации между клиентом и сервером.
+**JWT (JSON Web Token)** — это стандарт для создания токенов, которые используются для
+передачи информации между двумя сторонами в формате JSON. Эти токены обычно используются
+для аутентификации и передачи информации между клиентом и сервером.
 
 Состоит из
 
-1. Header (Заголовок): 
-Содержит информацию о типе токена (обычно это `JWT`) и алгоритме шифрования, который используется для создания подписи токена (например, `HS256` для HMAC SHA256).
-2. **Payload (Полезная нагрузка)**:
-Содержит утверждения (claims), которые представляют собой информацию о пользователе и других данных. Эти утверждения могут быть стандартными (например, `iss` — издатель токена, `exp` — время истечения токена) или произвольными, добавленными по необходимости (например, `user_id`, `role`).
-3. **Signature (Подпись)**:
-Подпись создается путем объединения закодированного заголовка и полезной нагрузки, а затем их шифрования с использованием секретного ключа или приватного ключа (в зависимости от алгоритма). Подпись необходима для проверки целостности токена и того, что он не был изменен.
+1. Header (Заголовок): Содержит информацию о типе токена (обычно это `JWT`) и алгоритме
+   шифрования, который используется для создания подписи токена (например, `HS256` для
+   HMAC SHA256).
+2. **Payload (Полезная нагрузка)**: Содержит утверждения (claims), которые представляют
+   собой информацию о пользователе и других данных. Эти утверждения могут быть
+   стандартными (например, `iss` — издатель токена, `exp` — время истечения токена) или
+   произвольными, добавленными по необходимости (например, `user_id`, `role`).
+3. **Signature (Подпись)**: Подпись создается путем объединения закодированного заголовка
+   и полезной нагрузки, а затем их шифрования с использованием секретного ключа или
+   приватного ключа (в зависимости от алгоритма). Подпись необходима для проверки
+   целостности токена и того, что он не был изменен.
 
 ## Установка и использование
 
@@ -351,16 +409,17 @@ const token = jwt.sign(obj, "secretPhrase", { expiresIn: '15m' }); //eyJhbGciOiJ
 
 ```jsx
 try {
-    const decoded = jwt.verify(token, "secretPhrase");
-    console.log('Токен валиден:', decoded);
+  const decoded = jwt.verify(token, 'secretPhrase');
+  console.log('Токен валиден:', decoded);
 } catch (err) {
-    console.error('Ошибка проверки токена:', err.message);
+  console.error('Ошибка проверки токена:', err.message);
 }
 ```
 
 ## Порядок подключения модулей для авторизации:
 
-1. **`jwt.config`  модуль который будет использоваться глобально для всего приложения для общей настройки JWT**
+1. **`jwt.config` модуль который будет использоваться глобально для всего приложения для
+   общей настройки JWT**
 
 ```jsx
 /cofigs/jwt.config.js
@@ -377,7 +436,8 @@ const jwtConfig = {
 module.exports = jwtConfig;
 ```
 
-1. **`cookie.config` модуль который будет использован для конфигурации `cookie+jwt` с одинаковыми параметрами срока жизни**
+1. **`cookie.config` модуль который будет использован для конфигурации `cookie+jwt` с
+   одинаковыми параметрами срока жизни**
 
 ```jsx
 /configs/cookie.config.js
@@ -398,7 +458,8 @@ const cookieConfig = {
 module.exports = cookieConfig;
 ```
 
-1. **`generateTokens` модуль принимающий данные пользователя как `payload` и возвращающий объект с jwt токенами.**
+1. **`generateTokens` модуль принимающий данные пользователя как `payload` и возвращающий
+   объект с jwt токенами.**
 
 ```jsx
 //Добавляем в .env
@@ -466,11 +527,18 @@ const verifyRefreshToken = (req, res, next) => {
 module.exports = { verifyAccessToken, verifyRefreshToken };
 ```
 
-> `res.locals` в Express — это объект, который используется для передачи данных от middleware или маршрута к шаблонизатору (view engine) или другим middleware в рамках одного HTTP-запроса. Этот объект доступен только в течение жизни текущего запроса и автоматически сбрасывается после завершения обработки запроса.
+> `res.locals` в Express — это объект, который используется для передачи данных от
+> middleware или маршрута к шаблонизатору (view engine) или другим middleware в рамках
+> одного HTTP-запроса. Этот объект доступен только в течение жизни текущего запроса и
+> автоматически сбрасывается после завершения обработки запроса.
 
-Иногда бывает необходимо передать данные из одного middleware в другое. `res.locals` — идеальное место для хранения таких временных данных, поскольку они доступны во всех последующих middleware и маршрутах, связанных с текущим запросом.
-> 
-1. **Пример регистрации/авторизации/выхода  пользователя**
+Иногда бывает необходимо передать данные из одного middleware в другое. `res.locals` —
+идеальное место для хранения таких временных данных, поскольку они доступны во всех
+последующих middleware и маршрутах, связанных с текущим запросом.
+
+>
+
+1. **Пример регистрации/авторизации/выхода пользователя**
 
 ```jsx
 const authRouter = require('express').Router();
@@ -550,15 +618,15 @@ authRouter.post('/signin', async (req, res) => {
 
 ```jsx
 authRouter.get('/logout', (req, res) => {
-  res.clearCookie('refreshToken')
-  .sendStatus(200);
+  res.clearCookie('refreshToken').sendStatus(200);
 });
 ```
 
-1. Создание отдельного `endPoint` для верификации `refreshToken` (будет применяться когда пользователь заново зашел в приложение или истек срок годности `accsessToken`)
+1. Создание отдельного `endPoint` для верификации `refreshToken` (будет применяться когда
+   пользователь заново зашел в приложение или истек срок годности `accsessToken`)
 
 ```jsx
-/src/routes/token.router.js 
+/src/routes/token.router.js
 
 const tokenRouter = require('express').Router();
 const cookieConfig = require('../configs/cookie.config');
@@ -580,16 +648,23 @@ module.exports = tokenRouter;
 
 ## Конфигурация axios instance и interceptors (фронтенд):
 
-> **Axios Interceptors** — это механизм в библиотеке Axios, который позволяет перехватывать запросы и ответы до того, как они будут обработаны или отправлены. С помощью интерсепторов вы можете изменять или обрабатывать запросы и ответы, выполнять общие операции, такие как добавление заголовков, обработка ошибок, повторные попытки запросов и т.д.
-> 
+> **Axios Interceptors** — это механизм в библиотеке Axios, который позволяет
+> перехватывать запросы и ответы до того, как они будут обработаны или отправлены. С
+> помощью интерсепторов вы можете изменять или обрабатывать запросы и ответы, выполнять
+> общие операции, такие как добавление заголовков, обработка ошибок, повторные попытки
+> запросов и т.д.
 
 **Request Interceptors** (Интерсепторы запросов):
 
-- Эти интерсепторы позволяют перехватывать запросы перед их отправкой на сервер. Это полезно для добавления стандартных заголовков (например, токенов аутентификации), логирования, модификации данных запроса и других операций.
+- Эти интерсепторы позволяют перехватывать запросы перед их отправкой на сервер. Это
+  полезно для добавления стандартных заголовков (например, токенов аутентификации),
+  логирования, модификации данных запроса и других операций.
 
 **Response Interceptors** (Интерсепторы ответов):
 
-- Эти интерсепторы позволяют перехватывать ответы от сервера до того, как они будут переданы в ваш код. Вы можете использовать их для обработки ошибок, анализа данных, повторных попыток запросов в случае ошибок и других операций.
+- Эти интерсепторы позволяют перехватывать ответы от сервера до того, как они будут
+  переданы в ваш код. Вы можете использовать их для обработки ошибок, анализа данных,
+  повторных попыток запросов в случае ошибок и других операций.
 
 ```jsx
 /src/api/axiosInstance.js
@@ -634,51 +709,51 @@ export default axiosInstance;
 ```
 
 ### Пример получения пользователя при перезагрузке страницы
+
 ```js
- useEffect(() => {
-    axiosInstance("/tokens/refresh")
-      .then(({ data }) => {
-        setTimeout(() => {
-          setUser({ status: "logged", data: data.user });
-        }, 1000);
-        setAccessToken(data.accessToken);
-      })
-      .catch(() => {
-        setUser({ status: "guest", data: null });
-        setAccessToken("");
-      });
-  }, []);
+useEffect(() => {
+  axiosInstance('/tokens/refresh')
+    .then(({ data }) => {
+      setTimeout(() => {
+        setUser({ status: 'logged', data: data.user });
+      }, 1000);
+      setAccessToken(data.accessToken);
+    })
+    .catch(() => {
+      setUser({ status: 'guest', data: null });
+      setAccessToken('');
+    });
+}, []);
 ```
+
 ### Пример хендлеров авторизации/регистрации/логаут
+
 ```js
 const logoutHandler = () => {
-    axiosInstance
-      .get("/auth/logout")
-      .then(() => setUser({ status: "guest", data: null }));
-  };
+  axiosInstance.get('/auth/logout').then(() => setUser({ status: 'guest', data: null }));
+};
 
-  const signUpHandler = (e) => {
-    e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.target));
-    if (!formData.email || !formData.password || !formData.name) {
-      return alert("Missing required fields");
-    }
-    axiosInstance.post("/auth/signup", formData).then(({ data }) => {
-      setUser({ status: "logged", data: data.user });
-      setAccessToken(data.accessToken);
-    });
-  };
+const signUpHandler = (e) => {
+  e.preventDefault();
+  const formData = Object.fromEntries(new FormData(e.target));
+  if (!formData.email || !formData.password || !formData.name) {
+    return alert('Missing required fields');
+  }
+  axiosInstance.post('/auth/signup', formData).then(({ data }) => {
+    setUser({ status: 'logged', data: data.user });
+    setAccessToken(data.accessToken);
+  });
+};
 
-  const signInHandler = (e) => {
-    e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.target));
-    if (!formData.email || !formData.password) {
-      return alert("Missing required fields");
-    }
-    axiosInstance.post("/auth/signin", formData).then(({ data }) => {
-      setUser({ status: "logged", data: data.user });
-      setAccessToken(data.accessToken);
-    });
-  };
+const signInHandler = (e) => {
+  e.preventDefault();
+  const formData = Object.fromEntries(new FormData(e.target));
+  if (!formData.email || !formData.password) {
+    return alert('Missing required fields');
+  }
+  axiosInstance.post('/auth/signin', formData).then(({ data }) => {
+    setUser({ status: 'logged', data: data.user });
+    setAccessToken(data.accessToken);
+  });
+};
 ```
-
