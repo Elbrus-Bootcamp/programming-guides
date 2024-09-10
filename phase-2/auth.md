@@ -30,6 +30,16 @@
 
 ## Пошаговая имплементация
 
+### Установи пакеты
+
+```
+npm i jsonwebtoken cookie-parser bcrypt
+```
+
+- `jsonwebtoken` для работы с JWT
+- `cookie-parser` для парсинга куки
+- `bcrypt` для хэширования паролей
+
 ### Подготовка базы данных
 
 Опиши модель пользователя, задай необходимые поля. Например, используй команду для
@@ -129,7 +139,7 @@ const signupHandler = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target)
     const data = Object.fromEntries(formData);
-    const res = await axiosInstance.post('/auth/register', data);
+    const res = await axiosInstance.post('/auth/signup', data);
     // обработка ответа res (сюда допишем позже)
 }
 ```
@@ -351,7 +361,7 @@ export default axiosInstance;
 const signupHandler = (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.target));
-    const res = await axiosInstance.post('/api/auth/register', data);
+    const res = await axiosInstance.post('/auth/signup', data);
     if (res.status !== 200) alert('Ошибка регистрации');
     setUser(res.data.user);
     setAccessToken(res.data.accessToken);
