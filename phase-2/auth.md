@@ -8,17 +8,58 @@
 
 ### Подготовка базы данных
 
-Опиши модель пользователя, задай необходимые поля. Пропиши связь между пользователем и другими сущностями своего приложения. Например, создай модель `User` с полями `email, password, name`, а для модели `Post` пропиши внешний ключ `userId`.
+Опиши модель пользователя, задай необходимые поля. Например, используй команду для создания модели `User`:
+
+```
+npx sequelize-cli model:create --name User --attributes name:string,email:string,hashpass:string
+```
+
+Пропиши связь между пользователем и другими сущностями своего приложения. Например, добавь в модель `Post` поле `userId` и свяжи модель `User` с моделью `Post` в миграциях `server/db/migrations`
+
+```
+// Миграция для Posts
+userId: {
+  type: Sequelize.INTEGER,
+  references: {
+    model: {
+      tableName: 'Users',
+    },
+    key: 'id',
+  },
+  onDelete: 'CASCADE',
+  allowNull: false,
+},
+```
+
+и в моделях `server/db/models`
+
+```js
+// Файл post.js
+class Post extends Model {
+  static associate({ User }) {
+    this.belongsTo(User, { foreignKey: "userId" });
+  }
+}
+
+// Файл user.js
+class User extends Model {
+  static associate({ Post }) {
+    this.hasMany(Post, { foreignKey: "userId" });
+  }
+}
+```
+
+Пропиши сиды, учитывая новое поле `userId`
 
 ### Создание axios instance на клиенте
 
-Создай файл с описанием конфигурации сетевых запросов через `axios`. Создай экземпляр через `axios.create` и выполни его экспорт. Например:
+Создай файл с описанием конфигурации сетевых запросов через `axios`, создай экземпляр через `axios.create` и выполни его экспорт. Например файл `client/src/axiosInstance.js`:
 
 ```js
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "/api", // Если хочешь использовать переменные окружения, то пиши import.meta.env.VITE_API_BASEURL,
   withCredentials: true,
 });
 
@@ -29,7 +70,7 @@ export default axiosInstance;
 
 ### Создание страницы регистрации
 
-Создай компонент страницы, в котором будут поля ввода, кнопки и логика по созданию нового аккаунта. Например, создай компонент `SignupPage` с формочкой
+Создай компонент страницы, в котором будут поля ввода, кнопки и логика по созданию нового аккаунта. Например, создай компонент `client/src/components/SignupPage.jsx` с формочкой
 
 ```js
 import React from "react";
@@ -46,26 +87,66 @@ export default function SignupPage() {
 }
 ```
 
-Подключи слушатель события отправки формы `onSubmit`, не забудь предотвратить перезагрузку страницы через `event.preventDefault()`. Соверши запрос через `axiosInstance`:
+В компоненте `client/src/App.jsx` создай состояние на юзера
 
 ```js
-const submitHandler = (event) => {
+const [user, setUser] = useState();
+```
+
+Напиши обработчик отправки формы регистрации в компоненте `client/src/App.jsx`:
+
+```js
+const signupHandler = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target)
     const data = Object.fromEntries(formData);
-    const res = await axiosInstance.post('/api/auth/register', data);
-    // обработка ответа res
+    const res = await axiosInstance.post('/auth/register', data);
+    // обработка ответа res (сюда допишем позже)
 }
+```
 
-return (
-    <form onSubmit={submitHandler}>
-    ...
-)
+Добрось `signupHandler` из `App.jsx` в компонент странички регистрации `SignupPage.jsx` в роутере:
+
+```jsx
+<SignupPage signupHandler={signupHandler} />
+```
+
+### Создай конфигурации для куки и токенов
+
+Создай файл `server/src/configs/jwtConfig.js` и заполни его содержимое:
+
+```js
+const jwtConfig = {
+  access: {
+    expiresIn: `${1000 * 5}`, // 5 секунд
+  },
+  refresh: {
+    expiresIn: `${1000 * 60 * 60 * 12}`, // 12 часов
+  },
+};
+
+module.exports = jwtConfig;
+```
+
+а также создай файл с конфигом для куки `server/src/configs/cookieConfig.js`:
+
+```js
+const jwtConfig = require("./jwtConfig");
+
+const cookieConfig = {
+  httpOnly: true,
+  maxAge: jwtConfig.refresh.expiresIn,
+  // Поля ниже могут пригодиться, если браузер не выписывает куки
+  // secure: true,
+  // sameSite: 'strict',
+};
+
+module.exports = cookieConfig;
 ```
 
 ### Подготовь функции генерации токенов
 
-Создай файл `src/utils/generateTokens.js` и опиши логику по генерации токенов. Вот пример:
+Создай файл `server/src/utils/generateTokens.js` и опиши логику по генерации токенов. Вот пример:
 
 ```js
 function generateTokens(payload) {
