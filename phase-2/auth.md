@@ -345,8 +345,10 @@ export default axiosInstance;
 - записать полученного пользователя в состояние
 - сохранить accessToken
 
+Вот пример `signupHandler` в компоненте `client/src/App.jsx`:
+
 ```js
-const submitHandler = (event) => {
+const signupHandler = (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.target));
     const res = await axiosInstance.post('/api/auth/register', data);
