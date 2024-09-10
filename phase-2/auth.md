@@ -144,11 +144,30 @@ const cookieConfig = {
 module.exports = cookieConfig;
 ```
 
+Чтобы время жизни cookie и refreshToken были синхронизированы, лучше использовать подготовленный ранее файл с конфигурацией JWT. Поля `sameSite` и `secure` могут понадобится для некоторых версий браузеров, которые запрещают установку cookie от разных источников.
+
+### Пропиши переменные окружения с секретами
+
+В файле переменных окружения на сервере `server/.env` и `server/.env.example` пропиши две новых переменных окружения с секретами для генерации токенов:
+
+```
+DB_USER=
+DB_PASS=
+DB_NAME=
+PORT=
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+```
+
 ### Подготовь функции генерации токенов
 
 Создай файл `server/src/utils/generateTokens.js` и опиши логику по генерации токенов. Вот пример:
 
 ```js
+const jwt = require("jsonwebtoken");
+const jwtConfig = require("../configs/jwtConfig");
+require("dotenv").config();
+
 function generateTokens(payload) {
   return {
     accessToken: jwt.sign(
@@ -163,26 +182,23 @@ function generateTokens(payload) {
     ),
   };
 }
+
+module.exports = generateTokens;
 ```
 
-Не забудь прописать новые переменные окружения для генерации подписи. Все конфигурации для токенов лучше хранить в отдельном файле. Вот пример конфигурации для JWT:
+### Подготовь эндпоинт на сервере с регистрацией
+
+Создай роутер для всех эндпоинтов, связанных с auth, например `server/src/routes/authRouter.js`. Опиши логику эндпоинта по регистрации нового аккаунта. Например, при регистрации сервер должен убедиться, что создаваемый аккаунт не был создан до этого:
 
 ```js
-const jwtConfig = {
-  access: {
-    expiresIn: `${1000 * 5}`,
-  },
-  refresh: {
-    expiresIn: `${1000 * 60 * 60 * 12}`,
-  },
-};
-```
+const express = require("express");
+const bcrypt = require("bcrypt");
+const { User } = require("../../db/models");
+const generateTokens = require("../utils/generateTokens");
+const cookieConfig = require("../configs/cookieConfig");
 
-### Подготовь эндпоинт на сервере
+const authRouter = express.Router();
 
-Создай роутер для всех эндпоинтов, связанных с auth. Опиши логику эндпоинта по регистрации нового аккаунта. Например, при регистрации сервер должен убедиться, что создаваемый аккаунт не был создан до этого:
-
-```js
 authRouter.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -200,6 +216,7 @@ authRouter.post("/signup", async (req, res) => {
     delete user.password;
     const { accessToken, refreshToken } = generateTokens({ user });
 
+    // в ответе refreshToken пишем в куки, а accessToken отправляем в теле ответа
     return res
       .cookie("refreshToken", refreshToken, cookieConfig)
       .status(200)
@@ -209,24 +226,23 @@ authRouter.post("/signup", async (req, res) => {
     return res.sendStatus(500);
   }
 });
+
+module.exports = authRouter;
 ```
 
-При успешной регистрации refresh токен нужно записывать в куки, а access возвращать через json. Все конфигурации для куки лучше хранить в отдельном файле. Вот пример конфигурации для куки:
+Подключи роутер в сервере `server/src/app.js`:
 
 ```js
-const cookieConfig = {
-  httpOnly: true,
-  maxAge: jwtConfig.refresh.expiresIn,
-  // sameSite: 'none',
-  // secure: true,
-};
+//...
+const authRouter = require("./routes/authRouter");
+//...
+app.use("/api/auth", authRouter);
+//...
 ```
-
-Чтобы время жизни cookie и refreshToken были синхронизированы, лучше использовать подготовленный ранее файл с конфигурацией JWT. Поля `sameSite` и `secure` могут понадобится для некоторых версий браузеров, которые запрещают установку cookie от разных источников.
 
 ### Подключение перехватчиков
 
-В файле с описанием экземпляра axios создай переменную для access токена, подключи перехватчики запроса и ответа. Например:
+В файле `client/src/axiosInstance.js` с описанием экземпляра axios создай переменную для access токена, подключи перехватчики запроса и ответа. Например:
 
 ```js
 import axios from "axios";
@@ -238,7 +254,7 @@ const axiosInstance = axios.create({
 
 let accessToken = "";
 
-function setAccessToken(token) {
+export function setAccessToken(token) {
   accessToken = token;
 }
 
@@ -267,8 +283,6 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
-
-export { setAccessToken };
 ```
 
 Перехватчики нужны для автоматизации процесса взаимодействия с сервером через токена доступа.
@@ -292,8 +306,7 @@ export { setAccessToken };
 Во время обработки запроса на клиенте после успешной регистрации нужно:
 
 - записать полученного пользователя в состояние
-- записать accessToken в переменную
-- перенаправить на другую страницу
+- сохранить accessToken
 
 ```js
 const submitHandler = (event) => {
@@ -301,25 +314,36 @@ const submitHandler = (event) => {
     const data = Object.fromEntries(new FormData(event.target));
     const res = await axiosInstance.post('/api/auth/register', data);
     if (res.status !== 200) alert('Ошибка регистрации');
-
-    const { user, accessToken } = res.data;
-    setUser(user);
-    setAccessToken(accessToken);
-    navigate('/');
+    setUser(res.data.user);
+    setAccessToken(res.data.accessToken);
 }
+```
 
-return (
-    <form onSubmit={submitHandler}>
+### Отображение пользователя
+
+Выведи пользователя на консоль, чтобы убедиться в успешности регистрации. Теперь его можно отобразить в навигации -- передай с помощью пропсов `user` из `App.jsx` в компонент навигации, например, `Navbar.jsx`. Используй тернарный оператор для отображения имени пользователя:
+
+```jsx
+export default function NavigationBar({ user }) {
+  // ...
+  return (
     ...
-)
+    <p>{user?.id ? `Привет, ${user.name}` : 'Гостевой аккаунт'}</p>
+    ...
+  )
+}
 ```
 
 ### Вход в приложение
 
 Аналогично сделай для входа в существующую учётную запись:
 
-- подготовь страницу на клиенте
-- пропиши эндпоинт на сервере
+- На клиенте:
+  - подготовь страницу на клиенте `client/src/components/LoginPage.jsx`
+  - подключи страницу в роутинг
+  - создай обработчик `const loginHandler = async (e) => { ... }` по аналогии с `signupHandler`
+- На сервере:
+  - пропиши эндпоинт входа
 
 Ниже пример эндпоинта на сервере:
 
@@ -352,50 +376,80 @@ authRouter.post("/login", async (req, res) => {
     return res.sendStatus(500);
   }
 });
+
 ```
 
 ### Пропиши логику выхода
 
-Сервер должен очищать куки в браузере, а клиент должен очищать access токен из переменной. Для очистки используй метод `clearCookie`:
+Сервер должен очищать куки в браузере, а клиент должен очищать access токен из переменной. Для очистки используй метод `clearCookie`.
+
+- На клиенте:
+  - создай кнопку на клиенте для выхода из учётной записи в навигации
+  - создай обработчик выхода
 
 ```js
-res.clearCookie("refreshToken").sendStatus(200);
+const logoutHandler = async () => {
+  await axiosInstance.get('/auth/logout');
+  setUser(null);
+  setAccessToken('');
+};
+```
+
+  - повесь `logoutHandler` на кнопку в навигации
+- На сервере:
+  - пропиши эндпоинт выхода
+
+```js
+authRouter.get('/logout', (req, res) => {
+  res.clearCookie('refreshToken').sendStatus(200);
+});
 ```
 
 ### Пропиши мидлвары проверок токенов
 
-В файле `src/middlewares/verifyAccessToken.js` напиши логику проверки токена доступа. Например:
+В файле `server/src/middlewares/verifyAccessToken.js` напиши логику проверки токена доступа. Например:
 
 ```js
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 function verifyAccessToken(req, res, next) {
   try {
-    const accessToken = req.headers.authorization.split(" ")[1];
+    // Authorization: Bearer [token]
+    const accessToken = req.headers.authorization.split(' ')[1];
     const { user } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-
     res.locals.user = user;
     next();
   } catch (error) {
-    console.log("Invalid access token");
-    res.status(403).send("Invalid access token");
+    console.log('Access token error');
+    res.sendStatus(403);
   }
 }
+
+module.exports = verifyAccessToken;
+
 ```
 
-А в файле `src/middlewares/verifyRefreshToken.js` напиши логику проверки токена обновления. Например:
+А в файле `server/src/middlewares/verifyRefreshToken.js` напиши логику проверки токена обновления. Например:
 
 ```js
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 function verifyRefreshToken(req, res, next) {
   try {
     const { refreshToken } = req.cookies;
     const { user } = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
     res.locals.user = user;
     next();
   } catch (error) {
-    console.log("Invalid refresh token");
-    res.clearCookie("refreshToken").sendStatus(401);
+    console.log('Refresh token error');
+    res.clearCookie('refreshToken').sendStatus(401);
   }
 }
+
+module.exports = verifyRefreshToken;
+
 ```
 
 ### Добавь эндпоинт перевыпуска токенов
