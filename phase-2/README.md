@@ -17,6 +17,8 @@
 
 - [Компоненты высшего порядка](./hoc.md)
 - [Кастомные хуки](./custom-hooks.md)
+- [React Context](./react-context.md)
+- [useEffect](./useEffect.md)
 
 ## Деплой
 
