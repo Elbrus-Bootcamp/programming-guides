@@ -20,6 +20,10 @@
 - [React Context](./react-context.md)
 - [useEffect](./useEffect.md)
 
+## Websocket
+
+- [Примеры использования Websocket с теорией и кодом](https://github.com/Elbrus-Bootcamp/231-socket-examples)
+
 ## Деплой
 
 ### CSR
