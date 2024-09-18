@@ -1,49 +1,56 @@
 # Sequelize intro
 
-## Как начинали работу
+## Как начать работу
 
-1.  `npm init -y` - инициализируем проект node
-1.  `npm i sequelize pg pg-hstore` - устанавливаем зависимости postgres
-1.  `npm i -D sequelize-cli` - устанавливаем sequelize cli
-1.  создаём файл `.sequelizerc`:
+1. `npm init -y` или `npm init @elbrus/config` - инициализировать проект node
+2. `npm i sequelize pg pg-hstore` - установить зависимости
+3. `npm i -D sequelize-cli` - установить sequelize cli
+4. создать файл `.sequelizerc`:
 
-```Javascript
- const path = require('path');
- module.exports = {
- 'config': path.resolve('config', 'config.json'),
- 'models-path': path.resolve('db', 'models'),
- 'seeders-path': path.resolve('db', 'seeders'),
- 'migrations-path': path.resolve('db', 'migrations')
- };
+```js
+const path = require('path');
+module.exports = {
+  config: path.resolve('db', 'config.json'),
+  'models-path': path.resolve('db', 'models'),
+  'seeders-path': path.resolve('db', 'seeders'),
+  'migrations-path': path.resolve('db', 'migrations'),
+};
 ```
 
-1. `npx sequelize-cli init` - создаём структуру для работы с sequelize
-1. В файле `config.json` изменили данные для БД (username, password, database, dialect) на
-   свои. Обратите внимание, что мы ввели разные данные для development и test
-1. Для того, чтобы sequelize следил за сидерами (не накатывались те сидеры, которые уже
-   были добавлены в БД, аналогично миграциям),в файл `config.json` добавили строчки
+5. `npx sequelize-cli init` - создать структуру для работы с sequelize
+6. В файле `config.json` изменить данные для БД (username, password, database, dialect) на
+   свои. Можно использовать разные данные для `development` и `test`
+7. Для того, чтобы sequelize следил за `seeders` (не накатывались те сидеры, которые уже
+   были добавлены в БД, аналогично миграциям), в файл `config.json` добавить строчки
 
 ```
-    "seederStorage": "sequelize",
-    "seederStorageTableName": "SequelizeData"
+"seederStorage": "sequelize",
+"seederStorageTableName": "SequelizeData"
 ```
 
-## Что сделали
+8. Чтобы убрать из консоли логгирование каждого запроса, можно добавить в `config.json`
 
-1.  Создали модель командой
-    `npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string`
-    (изменили под себя)
-    - Одновременно с этим создалась миграция
-    - **Если поменяли что-то в модели - меняем и в миграции**
-1.  Накатили миграцию `npx sequelize-cli db:migrate`
-1.  Создали seeder командой `npx sequelize-cli seed:generate --name demo-user` (изменили
-    под себя)
+```
+"logging": false
+```
 
-## На что обратить внимание
+## Модели и миграции
 
-1.  Когда пишем seeder, поля `createdAt` и `updatedAt` нужно заполнить самому `new Date()`
+1.  Создать модель командой (изменить под свои задачи)
 
-### Связи
+```
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+```
+
+- Одновременно с этим создалась миграция
+- **Если поменяли что-то в модели - меняем и в миграции**
+
+2.  Накатить миграцию `npx sequelize-cli db:migrate`
+3.  Создать seeder командой `npx sequelize-cli seed:generate --name demo-user`
+    1.  Когда пишем seeder, поля `createdAt` и `updatedAt` нужно заполнить самому
+        `new Date()`
+
+## Связи
 
 **_Важно_**
 
@@ -60,9 +67,7 @@ _Таблица 1_. Связь One-to-Many.
 
 ```js
 static associate(models) {
-  this.belongsTo(models.User, {
-    foreignKey: 'author',
-  });
+  this.belongsTo(models.User, { foreignKey: 'author' });
 }
 ```
 
@@ -70,9 +75,7 @@ static associate(models) {
 
 ```js
 static associate(models) {
-  this.hasMany(models.Post, {
-    foreignKey: 'author',
-  });
+  this.hasMany(models.Post, { foreignKey: 'author' });
 }
 ```
 
@@ -91,74 +94,99 @@ author: {
 }
 ```
 
-## Миграции
+## Миграция добавления новой колонки
 
 Чтобы добвить новое поле в таблицу, нужно:
 
 1. Создать миграцию командой
-   `npx sequelize-cli migration:create --name new_column_in_user`
 
-1. Изменить миграцию с использованием
+```
+npx sequelize-cli migration:create --name new_column_in_user
+```
 
-   `JavaScript queryInterface.addColumn `
-
-   и
-
+2. Изменить миграцию с использованием `queryInterface.addColumn ` и
    `queryInterface.removeColumn`
 
-1. Добавить новое поле в модель `User`
-1. Запустить миграцию `npx sequelize-cli db:migrate`
+3. Добавить новое поле в модель `User`
+4. Запустить миграцию `npx sequelize-cli db:migrate`
 
-## Many to many
-
-Для этого примера создан отдельный файл `appMany.js`, и отдельная бд, которая описана в
-файле config.json в части test. Чтобы запустить этот файл, нужно воспользоваться скриптом
-`npm run many`
+## Many-to-Many (Многие ко многим)
 
 ### Идея
 
-Есть три таблицы: Dogs, Cats и DogsCats. Многие собаки могут дружить с многими кошками.
-Связь между кошками и собаками описывается в таблице `Dogscats`.
+В базе данных есть три таблицы: `Posts`, `Tags` и промежуточная таблица `PostsTags`,
+которая связывает посты с тегами. Связь между постами и тегами является отношением "многие
+ко многим", что позволяет каждому посту иметь множество тегов, а каждому тегу быть
+привязанным к множеству постов.
 
-![Many-to-Many relation](./2.png)  
-_Таблица 1_. Связь Many-to-Many.
+![Many-to-Many relation](./posts-tags-1.png)  
+_Таблица 1_. Связь "Многие ко многим".
 
 ### Модели
 
-1. В модели Dogs нужно описать связь с многими котами через промежуточную таблицу:
+1. **Модель `Post`**: Для связи с тегами используется промежуточная таблица `PostsTags`.
+   Метод `belongsToMany` указывает, что один пост может быть связан с несколькими тегами
+   через эту промежуточную таблицу.
 
-```Javascript
-this.belongsToMany(Cat, { through: 'Dogscats', foreignKey: 'dog_id' });
+```js
+class Post extends Model {
+  static associate({ Tag, PostsTag }) {
+    this.belongsToMany(Tag, {
+      through: PostsTag, // Промежуточная таблица
+      foreignKey: 'postId', // Внешний ключ для таблицы Post
+      otherKey: 'tagId', // Внешний ключ для таблицы Tag
+    });
+  }
+}
 ```
 
-1. В модели Cats нужно сделать аналогичную связь:
+2. **Модель `Tag`**: Аналогично, тег может быть связан с множеством постов через
+   промежуточную таблицу `PostsTags`.
 
-```Javascript
-  this.belongsToMany(Dog, { through: 'Dogscats', foreignKey: 'cat_id' });
+```js
+class Tag extends Model {
+  static associate({ Post, PostsTag }) {
+    this.belongsToMany(Post, {
+      through: PostsTag, // Промежуточная таблица
+      foreignKey: 'tagId', // Внешний ключ для таблицы Tag
+      otherKey: 'postId', // Внешний ключ для таблицы Post
+    });
+  }
+}
 ```
 
-1. В модели Dogscats _ничего делать не нужно_
+3. **Модель `PostsTag`**: В промежуточной модели `PostsTag` можно не добавлять методы или
+   дополнительные настройки, так как Sequelize автоматически создаёт необходимую связь
+   через метод `belongsToMany`. Однако можно использовать её для добавления дополнительных
+   полей, если потребуется.
 
 ### Миграции
 
-1. В миграции `dogscats` указываем, что столбцы `cat_id` и `dog_id` ссылаются на таблицы
-   `Cats` и `Dog` соответсвенно
+1. **Миграция `PostsTags`**: В этой миграции создаются два внешних ключа, связывающих
+   посты и теги. Оба внешних ключа указывают на таблицы `Posts` и `Tags`, и настроены на
+   удаление связанных записей при удалении поста или тега (`onDelete: 'CASCADE'`).
 
 ```js
-  dog_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'Dogs', // tableName
-      key: 'id',
-    },
+postId: {
+  type: Sequelize.INTEGER,
+  references: {
+    model: 'Posts', // Ссылка на таблицу Posts
+    key: 'id',
   },
-  cat_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'Cats', // tableName
-      key: 'id',
-    },
+  allowNull: false,
+  onDelete: 'CASCADE', // Автоматическое удаление связанных записей
+},
+tagId: {
+  type: Sequelize.INTEGER,
+  references: {
+    model: 'Tags', // Ссылка на таблицу Tags
+    key: 'id',
   },
+  allowNull: false,
+  onDelete: 'CASCADE',
+},
 ```
 
-1. В миграциях `Cats` и `Dogs` ничего делать не нужно
+2. **Миграции для `Posts` и `Tags`**: В миграциях для этих таблиц не нужно добавлять
+   дополнительных настроек для связи, так как все необходимые связи реализуются через
+   промежуточную таблицу `PostsTags`.
