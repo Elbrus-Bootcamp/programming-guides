@@ -1,98 +1,201 @@
-# Sequelize intro
+# Гайд по Sequelize
 
 ## Как начать работу
 
-1. `npm init -y` или `npm init @elbrus/config` - инициализировать проект node
-2. `npm i sequelize pg pg-hstore` - установить зависимости
-3. `npm i -D sequelize-cli` - установить sequelize cli
-4. создать файл `.sequelizerc`:
+1. **Инициализировать проект Node.js**
 
-```js
-const path = require('path');
-module.exports = {
-  config: path.resolve('db', 'config.json'),
-  'models-path': path.resolve('db', 'models'),
-  'seeders-path': path.resolve('db', 'seeders'),
-  'migrations-path': path.resolve('db', 'migrations'),
-};
-```
+   Создайте новый проект Node.js с помощью команды:
 
-5. `npx sequelize-cli init` - создать структуру для работы с sequelize
-6. В файле `config.json` изменить данные для БД (username, password, database, dialect) на
-   свои. Можно использовать разные данные для `development` и `test`
-7. Для того, чтобы sequelize следил за `seeders` (не накатывались те сидеры, которые уже
-   были добавлены в БД, аналогично миграциям), в файл `config.json` добавить строчки
+   ```bash
+   npm init -y
+   ```
 
-```
-"seederStorage": "sequelize",
-"seederStorageTableName": "SequelizeData"
-```
+   Либо используйте готовый шаблон конфигурации, если он доступен:
 
-8. Чтобы убрать из консоли логгирование каждого запроса, можно добавить в `config.json`
+   ```bash
+   npm init @elbrus/config
+   ```
 
-```
-"logging": false
-```
+2. **Установка зависимостей Sequelize и PostgreSQL**
+
+   Установите основные зависимости:
+
+   ```bash
+   npm install sequelize pg pg-hstore
+   ```
+
+3. **Установка Sequelize CLI**
+
+   Для работы с миграциями и моделями установите Sequelize CLI как dev-зависимость:
+
+   ```bash
+   npm install --save-dev sequelize-cli
+   ```
+
+4. **Настройка `.sequelizerc`**
+
+   Создайте файл `.sequelizerc` в корне проекта для указания путей к папкам конфигураций,
+   моделей, миграций и сидеров:
+
+   ```js
+   const path = require('path');
+   module.exports = {
+     config: path.resolve('db', 'database.json'),
+     'models-path': path.resolve('db', 'models'),
+     'seeders-path': path.resolve('db', 'seeders'),
+     'migrations-path': path.resolve('db', 'migrations'),
+   };
+   ```
+
+5. **Инициализация структуры проекта для Sequelize**
+
+   С помощью команды `sequelize-cli` создайте стандартную структуру каталогов для работы с
+   миграциями, моделями и сидерами:
+
+   ```bash
+   npx sequelize-cli init
+   ```
+
+   Это создаст следующие папки: `models`, `migrations`, `seeders`, а также файл
+   конфигурации `database.json`.
+
+6. **Настройка конфигурации базы данных**
+
+   Откройте файл `db/database.json` и обновите его данными для подключения к вашей базе
+   данных (имя пользователя, пароль, название базы данных и тип используемой БД):
+
+   ```json
+   {
+     "development": {
+       "username": "your_username",
+       "password": "your_password",
+       "database": "your_database",
+       "host": "127.0.0.1",
+       "dialect": "postgres"
+     },
+     "test": {
+       "username": "your_username",
+       "password": "your_password",
+       "database": "your_test_database",
+       "host": "127.0.0.1",
+       "dialect": "postgres"
+     }
+   }
+   ```
+
+7. **Настройка сидеров**
+
+   Чтобы Sequelize отслеживал, какие сидеры уже были применены, добавьте в конфигурацию
+   секцию для сидеров:
+
+   ```json
+   "seederStorage": "sequelize",
+   "seederStorageTableName": "SequelizeData"
+   ```
+
+   Это предотвратит повторное применение тех же самых сидеров.
+
+8. **Отключение логов SQL-запросов**  
+   Если вы не хотите видеть логи каждого SQL-запроса в консоли, можете добавить в
+   конфигурацию настройку `logging: false`:
+
+   ```json
+   "logging": false
+   ```
 
 ## Модели и миграции
 
-1.  Создать модель командой (изменить под свои задачи)
+1. **Создание модели и миграции**  
+   Для создания новой модели и миграции используйте команду `model:generate` с указанием
+   атрибутов:
 
-```
-npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
-```
+   ```bash
+   npx sequelize-cli model:generate --name User --attributes name:string,age:integer,email:string
+   ```
 
-- Одновременно с этим создалась миграция
-- **Если поменяли что-то в модели - меняем и в миграции**
+   Это одновременно создаст модель `User` и миграцию для неё.
 
-2.  Накатить миграцию `npx sequelize-cli db:migrate`
-3.  Создать seeder командой `npx sequelize-cli seed:generate --name demo-user`
-    1.  Когда пишем seeder, поля `createdAt` и `updatedAt` нужно заполнить самому
-        `new Date()`
+   **Важно:** Если вы изменяете модель после её создания, не забудьте также обновить
+   миграцию вручную, чтобы все изменения были отражены в базе данных.
 
-## Связи
+2. **Применение миграций**
 
-**_Важно_**
+   После создания или изменения миграций выполните команду для их применения:
 
-Если в миграции вы указываете, что какое-то поле _таблицы А_ ссылается на _Таблицу В_, то
-на момент накатывания миграции с _Таблицей А_, уже должна существовать _Таблица В_. В
-обратном случае, вы получите ошибку `Table_name is not exist`.
+   ```bash
+   npx sequelize-cli db:migrate
+   ```
 
-![One-to-Many relation](./1.png)  
+3. **Создание сидера**
+
+   Для добавления данных в базу используйте команду `seed:generate`:
+
+   ```bash
+   npx sequelize-cli seed:generate --name demo-user
+   ```
+
+   В сидере поля `createdAt` и `updatedAt` нужно заполнить вручную, например:
+
+   ```js
+   createdAt: new Date(),
+   updatedAt: new Date(),
+   ```
+
+## Настройка связей между моделями
+
+### Важно
+
+Когда вы создаёте миграции с внешними ключами, важно следить за порядком их применения.
+Если таблица A ссылается на таблицу B, то миграция для таблицы B должна быть выполнена
+первой, иначе вы получите ошибку: `Table_name does not exist`.
+
+![One-to-Many relation](./posts-users-1.png)  
 _Таблица 1_. Связь One-to-Many.
 
-1.  Чтобы создать связь (один ко многим), нужно:
+### Пример связи "Один ко многим" (One-to-Many)
 
-- в модели `Post`:
+1. **Модель `Post`**
 
-```js
-static associate(models) {
-  this.belongsTo(models.User, { foreignKey: 'author' });
-}
-```
+   В модели `Post` создайте связь с пользователем через внешний ключ `userId`:
 
-- в модели `User`:
+   ```js
+   class Post extends Model {
+     static associate(models) {
+       this.belongsTo(models.User, { foreignKey: 'userId' });
+     }
+   }
+   ```
 
-```js
-static associate(models) {
-  this.hasMany(models.Post, { foreignKey: 'author' });
-}
-```
+2. **Модель `User`**
 
-- в миграции `create-post`:
+   В модели `User` укажите, что один пользователь может иметь много постов:
 
-```js
-author: {
-  type: Sequelize.INTEGER,
-  allowNull: false,
-  references: {
-    model: {
-      tableName: 'Users',
-    },
-    key: 'id',
-  },
-}
-```
+   ```js
+   class User extends Model {
+     static associate(models) {
+       this.belongsTo(models.Post, { foreignKey: 'userId' });
+     }
+   }
+   ```
+
+3. **Миграция для `create-post`**
+
+   В миграции для создания таблицы `Posts` добавьте внешний ключ на пользователя:
+
+   ```js
+   userId: {
+     type: Sequelize.INTEGER,
+     allowNull: false,
+     references: {
+       model: 'Users', // Ссылка на таблицу Users
+       key: 'id',
+     },
+     onDelete: 'CASCADE', // Удаление всех постов пользователя при его удалении
+   },
+   ```
+
+Таким образом, связь "один ко многим" будет правильно настроена между пользователями и
+постами.
 
 ## Миграция добавления новой колонки
 
