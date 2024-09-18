@@ -13,6 +13,10 @@
 
 - [Обработка ошибок в RTK](./rtk-errors.md)
 
+## Websocket
+
+- [Примеры использования Websocket с теорией и кодом](https://github.com/Elbrus-Bootcamp/231-socket-examples)
+
 ## Деплой
 
 - [Деплой Vite+Express на Selectel через Portainer](./deploy/deploy-guide-docker-selectel-portainer.md)
