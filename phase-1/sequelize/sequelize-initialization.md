@@ -173,7 +173,7 @@ _Таблица 1_. Связь One-to-Many.
    ```js
    class User extends Model {
      static associate(models) {
-       this.belongsTo(models.Post, { foreignKey: 'userId' });
+       this.hasMany(models.Post, { foreignKey: 'userId' });
      }
    }
    ```
