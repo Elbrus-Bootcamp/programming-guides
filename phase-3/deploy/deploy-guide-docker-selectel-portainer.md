@@ -92,7 +92,7 @@ module.exports = {
 6. В корневой папке сервера создать `Dockerfile` и описать образ. Например, так:
 
 ```dockerfile
-FROM node:20-alpine3.17
+FROM node:22-alpine3.19
 WORKDIR /app
 COPY package*.json ./
 COPY . .
@@ -281,6 +281,8 @@ services:
       - DB_PASS_PROD=${DB_PASS_PROD:-mypassword123}
       - DB_USER_PROD=${DB_USER_PROD:-myuser123}
       - DB_HOST_PROD=${DB_HOST_PROD:-postgres-server}
+      - ACCESS_TOKEN_SECRET=myaccesstoken
+      - REFRESH_TOKEN_SECRET=myrefreshtoken
       - NODE_ENV=production
     ports:
       - 3000:3000
