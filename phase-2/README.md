@@ -5,8 +5,9 @@
 ## React
 
 - [Как сделать инпут управляемым](./controlled-input.md)
-- [Загрузка файла на сервер](./file-upload.md)  | [code](./examples/file_upload/)
-- [Loader/spinner (ожидание загрузки данных)](./simple-loader.md) | [code](./examples/loader/)
+- [Загрузка файла на сервер](./file-upload.md) | [code](./examples/file_upload/)
+- [Loader/spinner (ожидание загрузки данных)](./simple-loader.md) |
+  [code](./examples/loader/)
 
 ## Auth
 
@@ -25,15 +26,18 @@
 ## Websocket
 
 - [Примеры использования Websocket с теорией и кодом](https://github.com/Elbrus-Bootcamp/231-socket-examples)
+
 ## Express
 
 - [Рассылка писем](./send-mail.md) | [code](./examples/send_mail/)
-- [Универсальная middleware для проверки пустых полей](./check_empty_fields.MD) |  [code](./examples/empty_fields/)
+- [Универсальная middleware для проверки пустых полей](./check_empty_fields.MD) |
+  [code](./examples/empty_fields/)
 
 ## Деплой
 
 ### CSR
 
+- [Деплой CSR приложения на Render.com без Docker](./deploy/csr-render.md)
 - [Деплой CSR приложения с сервером на Selectel через Portainer](./deploy/csr-selectel-portainer.md)
 - [Деплой CSR Typescript приложения без сервера на Selectel через Portainer](./deploy/csr-typescript-selectel-portainer.md)
 
