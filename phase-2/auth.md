@@ -135,7 +135,7 @@ const [user, setUser] = useState();
 Напиши обработчик отправки формы регистрации в компоненте `client/src/App.jsx`:
 
 ```js
-const signupHandler = (event) => {
+const signupHandler = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target)
     const data = Object.fromEntries(formData);
