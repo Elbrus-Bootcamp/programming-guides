@@ -22,6 +22,7 @@
 - [Кастомные хуки](./custom-hooks.md)
 - [React Context](./react-context.md)
 - [useEffect](./useEffect.md)
+- [Сервисы и контроллеры](./services-controllers.md)
 
 ## Websocket
 
