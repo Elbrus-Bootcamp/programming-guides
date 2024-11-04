@@ -16,3 +16,4 @@
 
 - [Полный гайд по ORM Sequelize](./sequelize/full-sequelize-guide.md)
 - [Инициализация базы данных на Sequelize](./sequelize/sequelize-initialization.md)
+- [.env Переменные окружения](./sequelize/env.md)
