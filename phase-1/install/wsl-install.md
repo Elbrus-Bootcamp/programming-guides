@@ -76,7 +76,7 @@ sudo apt update
    `root`, вы что-то сделали не так, и нужно начинать с начала. Отмените регистрацию
    Ubuntu через Powershell и заново откройте терминал
 
-### SSH
+## SSH
 
 1. Установите ssh для подключения к gitHub
 
@@ -100,7 +100,7 @@ cat .ssh/id_rsa.pub
 
 Скопировать из терминала можно правой кнопкой мыши.
 
-### Git
+## Git
 
 1. Проверьте установку git с помощью команды
 
@@ -108,7 +108,7 @@ cat .ssh/id_rsa.pub
 sudo apt install git
 ```
 
-### NVM
+## NVM
 
 1. Установите NVM: перейдите по
    [ссылке](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script)
@@ -125,7 +125,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 ```
 
-### NodeJS
+## NodeJS
 
 1. Установите последнюю LTS-версию NodeJS:
 
@@ -140,7 +140,7 @@ node -v
 npm -v
 ```
 
-### VSCode
+## VSCode
 
 1. Если у вас ещё не установлен VSCode на Windows, установите
 2. Зайдите в расширения Extensions, найдите расширение для VSCode `WSL` и установите его
@@ -157,5 +157,6 @@ code elbrus/
 
 Ссылки на видео:
 
-[VK](https://vk.com/video300683913_456239190)
-[YouTube](https://www.youtube.com/watch?v=Hd7FOpxF9fo)
+- [VK](https://vk.com/video300683913_456239190)
+
+- [YouTube](https://www.youtube.com/watch?v=Hd7FOpxF9fo)
