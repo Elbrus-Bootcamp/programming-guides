@@ -17,7 +17,7 @@ sudo apt update
 sudo apt install postgresql
 ```
 
-## Важно
+## После установки
 
 1. По умолчанию Postgres не включается после перезагрузки компьютера. Чтобы запустить его
    после включения компьютера введите в WSL:
@@ -26,7 +26,7 @@ sudo apt install postgresql
 sudo service postgresql start
 ```
 
-Либо добавьте сервис в `systemctl`
+Либо включите сервис в `systemctl`, чтобы postgres запускался автоматически:
 
 ```sh
 sudo systemctl enable postgresql
