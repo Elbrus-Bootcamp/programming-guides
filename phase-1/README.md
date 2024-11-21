@@ -6,6 +6,7 @@
 
 - [Чек-лист](./first-day.md) на первый день, [HTML версия](./first-day.html)
 - [Настройка WSL для первого дня](./install/wsl-install.md)
+- [Настройка ESlint и Prettier для VS Code](./install/eslint-prettier-settings.md)
 
 ## Git
 
@@ -19,6 +20,7 @@
 
 ## Базы данных, Sequelize ORM
 
+- [Установка Postgres на WSL](./install/postgres-wsl-install.md)
 - [Полный гайд по ORM Sequelize](./sequelize/full-sequelize-guide.md)
 - [Инициализация базы данных на Sequelize](./sequelize/sequelize-initialization.md)
 - [.env Переменные окружения](./sequelize/env.md)
