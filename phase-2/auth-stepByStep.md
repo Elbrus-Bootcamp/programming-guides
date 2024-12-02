@@ -203,7 +203,7 @@ authRouter.get('/logout', (req, res) => {
    пользователь заново зашел в приложение или истек срок годности accsessToken)
 
 ```js
-/src/routes/token.router.js
+/src/routes/tokenRouter.js
 
 const tokenRouter = require('express').Router();
 const cookieConfig = require('../configs/cookie.config');
@@ -221,6 +221,27 @@ tokenRouter.get('/refresh', verifyRefreshToken, (req, res) => {
 });
 
 module.exports = tokenRouter;
+```
+
+7. Переходим в app.js для подключения `cookie-parser` и middlewares:
+
+```js
+const express = require('express');
+const app = express();
+const cookieParser = require('cookie-parser');
+
+const tokenRouter = require('./routers/tokenRouter')
+const authRouter = require('./routers/authRouter')
+
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+
+app.use('/api/auth', authRouter);
+app.use('/api/tokens', tokenRouter);
+
+module.exports = app;
 ```
 
 ## Фронтенд
