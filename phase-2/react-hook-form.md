@@ -347,10 +347,10 @@ export default SimpleForm;
 
 ### Пример с React Bootstrap
 
-1. Добавьте CSS Bootstrap в `index.html`:
+1. Добавьте CSS Bootstrap в `main.jsx`:
 
-   ```html
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" />
+   ```js
+   import 'bootstrap/dist/css/bootstrap.min.css';
    ```
 
 2. Используйте компоненты React Bootstrap:
