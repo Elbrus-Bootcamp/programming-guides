@@ -8,6 +8,7 @@
 - [Компоненты высшего порядка](./hoc.md)
 - [Инструменты мемоизации в React](./memoization.md)
 - [Как подключить контекст на useReducer](./)
+- [React Hook Form](../phase-2/react-hook-form.md)
 
 ## Redux
 
