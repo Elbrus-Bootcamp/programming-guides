@@ -117,6 +117,15 @@ CMD ["npm", "start"]
     `docker push [имя пользователя]/[имя репозитория]:[имя тэга]` и проверить наличие
     образа через `docker images`
 
+15. Если возникнет ошибка
+    `failed to authorize: failed to fetch oauth token: unexpected status from GET request to https://auth.docker.io/token?scope=repository%3Aalekseysidorovtar%2Fsamokat%3Apull&scope=repository%3Aalekseysidorovtar%2Fsamokat%3Apull%2Cpush&service=registry.docker.io: 401 Unauthorized` тогда может помочь очистка кэша авторизации.
+    Нужно выполнить команду `rm ~/.docker/config.json` затем `docker login`. В терминале появится сообщение с кодом и ссылкой, где этот код нужно ввести, например:
+    
+    ```
+Your one-time device confirmation code is: MMXK-KQNN
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+    ```
+
 ## Selectel
 
 1. Перейти на сайт https://selectel.ru/ и зарегистрировать новый аккаунт
