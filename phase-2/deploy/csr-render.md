@@ -1,4 +1,4 @@
-# Деплой на Selectel с использованием Portainer (для управления контейнерами), Vite (frontend) и Express (backend)
+# Деплой приложения на Render.com без Docker (Vite и Express)
 
 0. Обработать все ошибки на клиенте и сервере, везде прописать `try/catch`
 
