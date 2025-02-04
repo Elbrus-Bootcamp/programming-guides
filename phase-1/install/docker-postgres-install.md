@@ -13,7 +13,7 @@
 - **Ubuntu/Linux**:  
   [Инструкция по установке Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
 
-  [Инструкция по установке Docker Desktop Ubuntu](https://docs.docker.com/desktop/setup/install/linux/ubuntu/)
+  Для Ubuntu достаточно только Docker Engine. Если хочется Docker Desktop: [инструкция по установке Docker Desktop Ubuntu](https://docs.docker.com/desktop/setup/install/linux/ubuntu/)
 
 После установки запустите Docker Desktop и дождитесь статуса "Running" в системном трее.
 Проверьте работоспособность Docker Engine с помощью команды:
