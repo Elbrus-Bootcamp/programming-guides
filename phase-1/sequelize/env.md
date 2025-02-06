@@ -85,7 +85,7 @@ DB_USER=admin
 DB_PASS=password123
 DB_NAME=my-database
 DB_HOST=127.0.0.1
-DB_URL=postgresql://admin:password123@127.0.0.1:5432/my-database
+DB_URL=postgres://admin:password123@127.0.0.1:5432/my-database
 ```
 
 В файл `.env.example` внести только ключи:
