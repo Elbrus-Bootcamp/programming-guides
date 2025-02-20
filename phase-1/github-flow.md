@@ -24,69 +24,70 @@
    `Collaborators & teams`). Ему также необходимо произвести первичную инициализацию
    проекта (например, создать `.gitignore` и прописать зависимости в `package.json`).
    После первичной инициализации этот член группы делает `initial commit` и загружает всё
-   на основную ветку `master`:
+   на основную ветку `main`:
 
-   ```
-   $ git add -A
-   $ git commit -m "initial commit"
-   $ git push origin master
-   ```
+```bash
+git add -A
+git commit -m "initial commit"
+git push origin main
+```
 
 2. Склонируй репозиторий с сервера GitHub к себе на локальный компьютер по SSH-ссылке.
 
-   ```
-   $ git clone <project_link>
-   ```
+```bash
+git clone <project_link>
+```
 
-   Например:
+Например:
 
-   ```
-   $ git clone git@github.com:Elbrus-Bootcamp/core-algorithm-word-search.git
-   ```
+```bash
+git clone git@github.com:Elbrus-Bootcamp/core-algorithm-word-search.git
+```
 
-3. Находясь в ветке master, создай ветку по названию задачи
+3. Находясь в ветке main, создай ветку по названию задачи
 
-   ```
-   $ git checkout -b styles
-   ```
+```bash
+git checkout -b styles
+```
 
 4. Во время работы с конкретной задачей (и конкретной веткой) почаще делай `commit`
-   ```
-   $ git add -A
-   $ git commit -m "create main container"
-   ```
+
+```bash
+git add -A
+git commit -m "create main container"
+```
 
 > Следующие шаги постарайтесь не делать **одновременно** всей командой!
 
 5. Когда твоя задача будет выполнена, или группе необходимо объединить кусочки проекта,
-   вначале переключись на master и обнови его
+   вначале переключись на main и обнови его
 
-   ```
-   $ git checkout master
-   $ git pull origin master
-   ```
+```bash
+git checkout main
+git pull origin main
+```
 
-6. Вернись к себе в локальную ветку и выполни слияние в нее обновленной ветки master
+6. Вернись к себе в локальную ветку и выполни слияние в нее обновленной ветки main
 
-   ```
-   $ git checkout styles
-   $ git merge master
-   ```
+```bash
+git checkout styles
+git merge main
+```
 
 7. При наличии конфликтов мержа, устрани их в коде и сделай коммит
 
-   ```
-   $ git commit -m "merge master into styles"
-   ```
+```bash
+git commit -m "merge main into styles"
+```
 
 8. Запушь свою обновлённую ветку на сервер GitHub
 
-   ```
-   $ git push origin styles
-   ```
+```bash
+git push origin styles
+```
 
 9. Зайди на GitHub, во вкладке `branch` зайди в свою ветку и создай `pull request` в ветку
-   master
+   main
 
 10. Убедись, что нет конфликтов и возможен автоматический мерж. Если конфликты есть -
     повтори шаги 6-9.
@@ -96,12 +97,13 @@
 12. Другой человек смотрит пул реквест. Если есть вопросы-комментарии-замечания - пишет их
     в веб-интерфейсе, ты - отвечаешь, правишь. Новый пул реквест создавать при этом не
     надо - всё само обновится. Когда проверяющему всё нравится, то он нажимает на кнопку
-    `merge` и твои изменения попадают в master.
+    `merge` и твои изменения попадают в main.
 
 > Далее шаги с 5 по 11 делает каждый следующий участник команды (_при необходимости_).
 
-13. Начинай новую задачу - вернись к шагу 3, предварительно обновив локальную ветку master
-    ```
-    $ git checkout master
-    $ git pull origin master
-    ```
+13. Начинай новую задачу - вернись к шагу 3, предварительно обновив локальную ветку main
+
+```bash
+git checkout main
+git pull origin main
+```

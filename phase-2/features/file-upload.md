@@ -46,7 +46,7 @@ npm install multer
 const path = require('path');
 
 // Укажите путь до папки куда сохранять файлы
-const uploadPath = path.resolve(__dirname, '..', 'public', 'images');
+const uploadPath = path.resolve(__dirname, '..', 'public', 'images'); // замените на корректный путь
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

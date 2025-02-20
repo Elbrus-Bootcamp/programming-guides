@@ -1,5 +1,7 @@
 # useEffect
 
+[Читайте подробнее в официальной документации](https://react.dev/reference/react/useEffect)
+
 ## 1. **Бесконечный цикл**
 
 Этот пример иллюстрирует важность правильного указания зависимостей в `useEffect`. Без
@@ -95,7 +97,7 @@ const [searchedPosts, setSearchedPosts] = useState([]); // Результаты 
 useEffect(() => {
   const timeoutId = setTimeout(() => {
     if (searchedText.length > 0) {
-      axios(`/api/post/search?text=${searchedText}`).then((res) =>
+      axios('/api/post/search', { params: { text: searchedText } }).then((res) =>
         setSearchedPosts(res.data),
       ); // Выполняем поиск по введённому тексту
     }
@@ -108,3 +110,65 @@ useEffect(() => {
   количество запросов к серверу, выполняя поиск только после завершения ввода. Таймер
   сбрасывается при каждом изменении текста, предотвращая выполнение запросов при быстром
   вводе текста.
+
+## 5. **Поиск, отраженный в query-параметре**
+
+Пример показывает, как комбинировать `useEffect` и `useSearchParams` в функционале поиска
+так, чтобы текст поиска был отражён в адресной строке страницы. В роли состояния для
+текстового поля `<input />` выступает URL адресной строки.
+
+```jsx
+function SearchComponent() {
+  const [posts, setPosts] = useState([]); // Результаты поиска
+  const [queryParams, setQueryParams] = useSearchParams(); // Query-параметры адресной строки
+  const search = queryParams.get('search') || ''; // получение строки поиска из URL
+
+  useEffect(() => {
+    if (search === '') return; // при пустом поиске ничего не делать
+
+    axios.get(`/api/posts`, { params: { search } }).then((res) => setPosts(res.data));
+  }, [search]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearchParams({ search: e.target.value })}
+      />
+      {posts.map((post) => (
+        <PostItem post={post} />
+      ))}
+    </>
+  );
+}
+```
+
+## 6+. **Поиск, отраженный в query-параметре + debounce**
+
+Пример показывает, как комбинировать поиск, отраженный в URL вместе с debounce
+
+```jsx
+const [posts, setPosts] = useState([]); // Результаты поиска
+const [queryParams, setQueryParams] = useSearchParams(); // Query-параметры адресной строки
+
+const searchValue = queryParams.get('search') || ''; // получение строки поиска из URL
+const [text, setText] = useState(searchValue); // Состояние для текста поиска
+
+useEffect(() => {
+  if (value === '') return; // при пустом поиске ничего не делать
+
+  const id = setTimeout(() => {
+    setSearchParams({ search: text }); // заменить URL
+
+    axios
+      .get(`/api/posts`, {
+        params: {
+          search: text,
+        },
+      })
+      .then((res) => setPosts(res.data));
+  }, 500);
+  return () => clearTimeout(id);
+}, [text]);
+```

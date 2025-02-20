@@ -1,5 +1,7 @@
 # Управляемые компоненты React
 
+[Читайте подробнее в официальной документации](https://react.dev/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)
+
 Контролируемые (управляемые) и неконтролируемые (неуправляемые) инпуты — это два разных
 подхода к управлению состоянием формы в React.
 

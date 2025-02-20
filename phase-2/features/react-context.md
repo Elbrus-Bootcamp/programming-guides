@@ -1,5 +1,7 @@
 # React Context Guide
 
+[Читайте подробнее в официальной документации](https://react.dev/learn/passing-data-deeply-with-context)
+
 ## Подключение
 
 В данном гайде будет создан контекст с состоянием аутентификации
@@ -21,45 +23,42 @@ export default AuthContext;
 В компоненте `App.jsx` импортируй контекст и оберни приложение в провайдер
 
 ```jsx
-import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import AuthContext from './contexts/authContext';
 
-function App() {
+export default function App() {
   // Создаём/вытаскиваем все требуемые данные для аутентификации
   const { user, signupHandler, loginHandler, logoutHandler } = useAuth();
 
   const router = createBrowserRouter(/* Роутинг приложения */);
   return (
-    <AuthContext.Provider
+    <AuthContext
       // Передаем все требуемые данные в проп value
       value={{ user, signupHandler, loginHandler, logoutHandler }}
     >
       <RouterProvider router={router} />
-    </AuthContext.Provider>
+    </AuthContext>
   );
 }
-
-export default App;
 ```
 
-У компонента `<AuthContext.Provider>` задай `value` и передай туда объект со всеми полями,
+У компонента `<AuthContext>` задай `value` и передай туда объект со всеми полями,
 которые могут потребоваться дальше в приложении.
 
 ### 3. Использование контекста
 
-В любом дочернем компоненте вместо пропсов используй хук `useContext`, чтобы достать
+В любом дочернем компоненте вместо пропсов используй хук `use`, чтобы достать
 данные из контекста:
 
 ```jsx
-import React, { useContext, useState } from 'react';
+import { use, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../../contexts/authContext';
 
 export default function NavigationBar() {
   // Забираем данные из контекста через хук useContext
-  const { user, logoutHandler } = useContext(AuthContext);
+  const { user, logoutHandler } = use(AuthContext);
   return (
     <div className="my-2 navbar-expand-md" color="dark" dark>
       <a href="/">{user ? `Привет, ${user.name}` : 'Гость'}</a>

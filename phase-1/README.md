@@ -8,9 +8,10 @@
 - [Настройка WSL для первого дня](./install/wsl-install.md)
 - [Настройка ESlint и Prettier для VS Code](./install/eslint-prettier-settings.md)
 
-## Git
+## Git и работа в команде
 
 - [Github flow -- пошаговая инструкция по работе с гитом в команде](./github-flow.md)
+- [Принципы работы в команде, soft и hard skills](./teamwork.md)
 
 ## MVC
 
