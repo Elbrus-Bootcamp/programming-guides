@@ -27,7 +27,7 @@ docker -v
 Выполните в терминале команду, заменив параметры на требуемые:
 
 ```bash
-docker run -d --name postgres-container -e POSTGRES_PASSWORD=123 -e POSTGRES_USER=admin -e POSTGRES_DB=first_db -e PGDATA=/var/lib/postgresql/data/pgdata -p 5432:5432 -v /home/<USERNAME>/pgdata:/var/lib/postgresql/data postgres
+docker run -d --name postgres-container -e POSTGRES_PASSWORD=123 -e POSTGRES_USER=admin -e POSTGRES_DB=first_db -e PGDATA=/var/lib/postgresql/data/pgdata -p 5432:5432 -v /home/<USERNAME>/pgdata:/var/lib/postgresql/data --restart=unless-stopped postgres
 ```
 
 ### Замена параметров:
