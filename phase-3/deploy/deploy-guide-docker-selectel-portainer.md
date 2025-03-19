@@ -44,7 +44,7 @@ app.get('/*', (req, res) => {
 
 ```
 node_modules/
-distr/
+dist/
 .env
 ```
 
@@ -52,7 +52,7 @@ distr/
 
 ```json
 {
-  "db:setup": "NODE_ENV=production npx sequelize db:create && NODE_ENV=production npx sequelize db:migrate && NODE_ENV=production npx sequelize db:seed:all",
+  "db:setup": "NODE_ENV=production sequelize db:create && NODE_ENV=production sequelize db:migrate && NODE_ENV=production sequelize db:seed:all",
   "start": "NODE_ENV=production node src/server.js"
 }
 ```
@@ -63,6 +63,8 @@ distr/
    `production`. Например, так:
 
 ```js
+require('dotenv').config();
+
 module.exports = {
   development: {
     username: process.env.DB_USER,
@@ -70,6 +72,7 @@ module.exports = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: 'postgres',
+    use_env_variable: process.env.DB_URL ? 'DB_URL' : undefined,
   },
   test: {
     username: 'root',
@@ -84,11 +87,18 @@ module.exports = {
     database: process.env.DB_NAME_PROD,
     host: process.env.DB_HOST_PROD,
     dialect: 'postgres',
+    use_env_variable: process.env.DB_URL_PROD ? 'DB_URL_PROD' : undefined,
   },
 };
 ```
 
-5. Создать файл `.dockerignore` и прописать туда `node_modules`
+5. Создать файл `.dockerignore` и прописать туда:
+
+```
+node_modules/
+.env
+```
+
 6. В корневой папке сервера создать `Dockerfile` и описать образ. Например, так:
 
 ```dockerfile
@@ -96,7 +106,7 @@ FROM node:22-alpine3.19
 WORKDIR /app
 COPY package*.json ./
 COPY . .
-RUN npm install
+RUN npm ci --omit=dev
 CMD ["npm", "start"]
 ```
 
@@ -118,9 +128,11 @@ CMD ["npm", "start"]
     образа через `docker images`
 
 15. Если возникнет ошибка
-    `failed to authorize: failed to fetch oauth token: unexpected status from GET request to https://auth.docker.io/token?.........&service=registry.docker.io: 401 Unauthorized` тогда может помочь очистка кэша авторизации.
-    Нужно выполнить команду `rm ~/.docker/config.json` затем `docker login`. В терминале появится сообщение с кодом и ссылкой, где этот код нужно ввести, например:
-    
+    `failed to authorize: failed to fetch oauth token: unexpected status from GET request to https://auth.docker.io/token?.........&service=registry.docker.io: 401 Unauthorized`
+    тогда может помочь очистка кэша авторизации. Нужно выполнить команду
+    `rm ~/.docker/config.json` затем `docker login`. В терминале появится сообщение с
+    кодом и ссылкой, где этот код нужно ввести, например:
+
     ```bash
       Your one-time device confirmation code is: MMXK-KQNN
       Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
@@ -156,7 +168,8 @@ CMD ["npm", "start"]
 10. Выбираем `type A`
 11. Прописываем желаемый субдомен
 12. Вставляем внешний IP из Selectel
-13. Через минут 30 можно будет проверить домен через `ping`
+13. Можно пропинговать домен. Команды `ping [домен]` и `ping [твой ip]` должны работать
+    одинаково
 
 ## Настройка виртуального сервера
 
@@ -261,9 +274,8 @@ server {
       данных (их можно задать и через переменные окружения интерфейса Portainer)
 
 ```yml
-version: '1.0'
-
 name: deploy-server
+
 services:
   postgres-server:
     container_name: postgres-server
@@ -272,9 +284,9 @@ services:
     volumes:
       - postgres-server-master_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-mypassword123}
-      - POSTGRES_USER=${DATABASE_USER:-myuser123}
-      - POSTGRES_DB=${DATABASE_DEFAULT:-postgres}
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
     networks:
       - services
     ports:
@@ -288,12 +300,12 @@ services:
     volumes:
       - /home/[пользователь системы]/myapp:/app/assets
     environment:
-      - DB_NAME_PROD=${DB_NAME_PROD:-mydatabase123}
-      - DB_PASS_PROD=${DB_PASS_PROD:-mypassword123}
-      - DB_USER_PROD=${DB_USER_PROD:-myuser123}
-      - DB_HOST_PROD=${DB_HOST_PROD:-postgres-server}
-      - ACCESS_TOKEN_SECRET=myaccesstoken
-      - REFRESH_TOKEN_SECRET=myrefreshtoken
+      - DB_NAME_PROD
+      - DB_PASS_PROD
+      - DB_USER_PROD
+      - DB_HOST_PROD=postgres-server
+      - ACCESS_TOKEN_SECRET
+      - REFRESH_TOKEN_SECRET
       - NODE_ENV=production
     ports:
       - 3000:3000
@@ -321,8 +333,8 @@ services:
     hostname: postgres-pgadmin
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-mypassword123}
+      - PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD
     networks:
       - services
     volumes:
@@ -346,8 +358,24 @@ networks:
     name: ${DATABASE_NETWORK:-postgres-server}
 ```
 
-9. Стартуем стак дожидаемся когда поднимутся контейнеры
-10. Подключаемся к контейнеру `web-proxy` Nginx и выполняем в нём код
+9. Внизу после yml выбираем заполнение переменных окружений и `advanced mode`. Вставляем
+   все используемые переменные окружения:
+
+```
+POSTGRES_PASSWORD="ваш пароль для подключения к базе данных"
+POSTGRES_USER="имя вашего пользователя с правами superuser для работы с БД"
+POSTGRES_DB="ваша дефолтная база данных (лучше использовать postgres)"
+DB_NAME_PROD="ваша база данных для проекта"
+DB_PASS_PROD="ваш пароль подключения к базе данных (укажите, как в переменной POSTGRES_PASSWORD)"
+DB_USER_PROD="имя пользователя для подключения к базе данных (укажите, как в переменной POSTGRES_USER)"
+ACCESS_TOKEN_SECRET="ваш токен доступа"
+REFRESH_TOKEN_SECRET="ваш токен обновления"
+PGADMIN_DEFAULT_EMAIL="ваш email для подключения к PGAdmin (используйте нормальый email, например elbrus@mail.com)"
+PGADMIN_DEFAULT_PASSWORD="ваш пароль для подключения к PGAdmin"
+```
+
+10. Стартуем стак дожидаемся когда поднимутся контейнеры
+11. Подключаемся к контейнеру `web-proxy` Nginx и выполняем в нём код
 
 - Либо через SSH терминал: найти id docker контейнера через `docker ps`
 
@@ -378,11 +406,9 @@ VERSION_STRING=5:24.0.0-1~ubuntu.22.04~jammy
 sudo apt-get install docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-1.  Выполняем `certbot --nginx -d [имя домена].com`
-2.  Соглашаемся со всем, указываем почту и перезапускаем nginx `nginx -s reload`
-3.  На локальном компьютере заполняем переменные окружения для `production` базы данных:
+12. Выполняем `certbot --nginx -d [имя домена].com`
+13. Соглашаемся со всем, указываем почту и перезапускаем nginx `nginx -s reload`
+14. На локальном компьютере заполняем переменные окружения для `production` базы данных:
     `DB_USER_PROD, DB_NAME_PROD, DB_PASS_PROD, DB_HOST_PROD`. Указываем данные для
-    подключения исходя из переменных, указанных в `docker-compose`. Если не заполняли в
-    Portainer, то это дефолтные значения `myuser123, mypassword123` и т.д. В хосте указать
-    IP
-4.  Выполняем `npm run db:setup`
+    подключения исходя из переменных, указанных в `docker-compose`. В хосте указать IP
+15. Выполняем `npm run db:setup`
