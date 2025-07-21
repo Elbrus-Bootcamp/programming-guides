@@ -17,6 +17,7 @@
 ## Express фичи
 
 - [Сервисы и контроллеры](./features/services-controllers.md)
+- [CORS](./features/cors.md)
 - [Рассылка писем](./features/send-mail.md) | [code](./examples/send_mail/)
 - [Универсальная middleware для проверки пустых полей](./features/check_empty_fields.MD) |
   [code](./examples/empty_fields/)
