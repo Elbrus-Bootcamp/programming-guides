@@ -14,7 +14,7 @@
 - [React Context](./features/react-context.md)
 - [useEffect](./features/useEffect.md)
 - [React Hook Form](./features/react-hook-form.md)
-- [Swiper - лучшая библиотека для создания каруселей и слайдеров](./swiper.md)
+- [Swiper - лучшая библиотека для создания каруселей и слайдеров](./features/swiper.md)
 
 ## Express фичи
 
