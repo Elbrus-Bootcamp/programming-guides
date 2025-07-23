@@ -6,7 +6,7 @@
 
 - [Как сделать инпут управляемым](./features/controlled-input.md)
 - [Загрузка файла на сервер](./features/file-upload.md) | [code](./examples/file_upload/)
-- [Загрузка файла на сервер Multer & Sharp](./features/multer-sharp.md)
+- [Загрузка файла на сервер - Multer & Sharp](./features/multer-sharp.md)
 - [Loader/spinner (ожидание загрузки данных)](./features/simple-loader.md) |
   [code](./examples/loader/)
 - [Компоненты высшего порядка](./features/hoc.md)
