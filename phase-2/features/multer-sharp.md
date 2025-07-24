@@ -206,3 +206,7 @@ module.exports = app;
 ## Что ещё?
 
 1. **Дополнительные функции Sharp**: Например, можно изменить размер изображения с помощью `.resize({ width: 300 })`.
+
+## Видеоинструкция
+
+[![Подключаем Multer+Sharp в React приложение](https://i.ytimg.com/vi/KR4YTFL1c_0/maxresdefault.jpg)](https://www.youtube.com/watch?v=KR4YTFL1c_0)
