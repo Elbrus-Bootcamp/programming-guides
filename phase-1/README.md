@@ -19,6 +19,10 @@
 - [MVC через EventEmitter](./mvc/event-emitter/MVC-guide.md)
 - [Гайд по MVC, где C связывает M и V, то есть: M <-> C <-> V](./mvc/fat-controller/MVC-guide.md)
 
+## Интерактивный CLI
+
+- [Enquirer](./enquirer.md)
+
 ## Базы данных, Sequelize ORM
 
 - [Установка Postgres через Docker](./install/docker-postgres-install.md)
