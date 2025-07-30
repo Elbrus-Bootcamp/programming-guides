@@ -15,6 +15,7 @@
 - [useEffect](./features/useEffect.md)
 - [React Hook Form](./features/react-hook-form.md)
 - [Swiper - лучшая библиотека для создания каруселей и слайдеров](./features/swiper.md)
+- [Zod - библиотека для валидации данных](./features/zod.md)
 
 ## Express фичи
 
