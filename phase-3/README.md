@@ -25,4 +25,4 @@
 - [Деплой приложения на Render.com без контейнеризации](./deploy/deploy-guide-render.md)
 - [Деплой приложения на Heroku](./deploy/deploy-guide-heroku.md)
 
-- [**Backup DB**](./devops/backup_db.md) — Настройке автоматического бэкапа базы данных PostgreSQL.
+- [**Backup DB**](./backup_db.md) — Настройке автоматического бэкапа базы данных PostgreSQL.
