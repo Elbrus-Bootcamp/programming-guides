@@ -337,31 +337,12 @@ services:
       - 443:443
     networks:
       - services
-
-  pgadmin:
-    container_name: postgres-pgadmin
-    hostname: postgres-pgadmin
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL
-      - PGADMIN_DEFAULT_PASSWORD
-    networks:
-      - services
-    volumes:
-      - /home/[пользователь системы]/pgadmin_data:/var/lib/pgadmin
-    ports:
-      - 5050:80
-    restart: on-failure
-    depends_on:
-      - postgres-server
+    restart: always
 
 volumes:
   postgres-server-master_data:
     driver: local
     name: postgres-server-master_data
-  pgadmin_data:
-    driver: local
-    name: pgadmin_data
 
 networks:
   services:
@@ -380,8 +361,6 @@ DB_PASS_PROD="ваш пароль подключения к базе данны�
 DB_USER_PROD="имя пользователя для подключения к базе данных (укажите, как в переменной POSTGRES_USER)"
 ACCESS_TOKEN_SECRET="ваш токен доступа"
 REFRESH_TOKEN_SECRET="ваш токен обновления"
-PGADMIN_DEFAULT_EMAIL="ваш email для подключения к PGAdmin (используйте нормальый email, например elbrus@mail.com)"
-PGADMIN_DEFAULT_PASSWORD="ваш пароль для подключения к PGAdmin"
 ```
 
 10. Стартуем стак дожидаемся когда поднимутся контейнеры
