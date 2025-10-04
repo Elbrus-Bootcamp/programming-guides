@@ -25,4 +25,7 @@
 - [Деплой приложения на Render.com без контейнеризации](./deploy/deploy-guide-render.md)
 - [Деплой приложения на Heroku](./deploy/deploy-guide-heroku.md)
 
+---
+
 - [**Backup DB**](./backup_db.md) — Настройке автоматического бэкапа базы данных PostgreSQL.
+- [**Redis**](./redis.md) — Высокопроизводительная платформа для работы с данными в реальном времени.
